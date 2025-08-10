@@ -18,6 +18,7 @@ from matplotlib.colors import LogNorm
 from pylab import *
 import gzip
 import shutil
+import netCDF4 as nc
 from scipy import stats
 from scipy.optimize import minimize
 from scipy.optimize import least_squares
@@ -336,7 +337,7 @@ def read_excel_sheet_row(filename,row,sheetname='Sheet1'):
     rowvalue = sheet.row_values(row)
     return rowvalue
 
-def read_binary(filename, type = np.int):
+def read_binary(filename, type = np.int_):
     '''
     读取二进制文件，并转成特定格式，默认是整型
     :param filename:文件名
@@ -529,8 +530,8 @@ def resize_data(preArray, nl, ns, method = 'cv2.INTER_NEAREST'):
     :param method:  缩放方法,默认是双线性插值
     :return: 返回缩放后的数组
     '''
-    ns = np.int(ns)
-    nl = np.int(nl)
+    ns = np.int_(ns)
+    nl = np.int_(nl)
     data = cv2.resize(preArray,(ns,nl),interpolation=0)
     return data
 
@@ -543,8 +544,8 @@ def resize_data_ratio(preArray, ratio = 0.5, method = 'cv2.INTER_LINEAR'):
     :return: 新数组
     '''
     [pre_nl,pre_ns] = np.shape(preArray)
-    ns = np.int(pre_ns*ratio)
-    nl = np.int(pre_nl*ratio)
+    ns = np.int_(pre_ns*ratio)
+    nl = np.int_(pre_nl*ratio)
     data = cv2.resize(preArray,(ns,nl),interpolation=method)
     return data
 
@@ -721,8 +722,8 @@ def reproj_image_gdal(dataset_destination, dataset_source):
     data2 = dataset_source.ReadAsArray(0, 0, ns2, nl2)
     temp21, temp22 = lonlat2geo(dataset_source, lat, lon)
     imagex, imagey = geo2imagexy(dataset_source, temp21, temp22)
-    imagex = np.asarray(imagex+0.5, np.int)
-    imagey = np.asarray(imagey+0.5, np.int)
+    imagex = np.asarray(imagex+0.5, np.int_)
+    imagey = np.asarray(imagey+0.5, np.int_)
     imagex[imagex < 0] = 0
     imagey[imagey < 0] = 0
     imagex[imagex >= nl2-1] = nl2-1
@@ -769,8 +770,8 @@ def reproj_image_ref_gdal(dataset_destination, dataset_reff, dataset_source):
         data2[k,:,:] = resize_data(temp[k,:,:],nl2,ns2)
     temp21, temp22 = lonlat2geo(dataset_reff, lat, lon)
     imagex, imagey = geo2imagexy(dataset_reff, temp21, temp22)
-    imagex = np.asarray(imagex+0.5, np.int)
-    imagey = np.asarray(imagey+0.5, np.int)
+    imagex = np.asarray(imagex+0.5, np.int_)
+    imagey = np.asarray(imagey+0.5, np.int_)
 
     imagex[imagex < 0] = 0
     imagey[imagey < 0] = 0
@@ -801,10 +802,10 @@ def loc2map(lat, lon, dataset):
     data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
     temp21, temp22 = lonlat2geo(dataset, lat, lon)
     imagex, imagey = geo2imagexy(dataset, temp21, temp22)
-    # imagex = np.asarray(imagex+0.5, np.int)
-    # imagey = np.asarray(imagey+0.5, np.int)
-    imagex = np.asarray(imagex, np.int)
-    imagey = np.asarray(imagey, np.int)
+    # imagex = np.asarray(imagex+0.5, np.int_)
+    # imagey = np.asarray(imagey+0.5, np.int_)
+    imagex = np.asarray(imagex, np.int_)
+    imagey = np.asarray(imagey, np.int_)
     return imagex,imagey
 
 
@@ -1247,9 +1248,9 @@ def date2DOY(year,month,day):
     '''
     days_of_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     monthsum = np.zeros(12)
-    year = np.int(year)
-    month = np.int(month)
-    day = np.int(day)
+    year = np.int_(year)
+    month = np.int_(month)
+    day = np.int_(day)
     if isinstance(day * 1.0, float):
         total = 0
         for index in range(month - 1):
@@ -1261,7 +1262,7 @@ def date2DOY(year,month,day):
     else:
         for index in range(1,12):
             monthsum[index] = monthsum[index-1]+days_of_month[index-1]
-        month = np.asarray(month,dtype=np.int)
+        month = np.asarray(month,dtype=np.int_)
         DOY = monthsum[month-1] + day
         ind = ((year % 4 == 0) * (year % 100 != 0)) * (month>2)
         DOY[ind] = DOY[ind] + 1
@@ -1277,8 +1278,8 @@ def doy2date(year, doy):
     :param doy: day of year
     :return:  日期（月,日）
     '''
-    year = np.int(year)
-    doy = np.int(doy)
+    year = np.int_(year)
+    doy = np.int_(doy)
     month_leapyear = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     month_notleap = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
