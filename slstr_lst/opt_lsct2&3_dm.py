@@ -12,6 +12,8 @@ from util.util_inversion_hotspot_simulation import *
 import warnings
 warnings.filterwarnings("ignore")
 
+from util_lsct import *
+
 '''2024.7.8'''
 '''三角度反演组分温度最新版'''
 '''2022年DM站'''

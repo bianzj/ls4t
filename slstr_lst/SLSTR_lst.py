@@ -5,6 +5,10 @@ warnings.filterwarnings("ignore")
 
 '''
 SLSTR lst反演
+1. 裁剪对应的type，作为参考 （abc.py）
+2. 算fvc （fvc-ndvi， fvc-lai）
+3. 算对应的emis，tcw
+4. 算lst，（***）
 '''
 
 # os.environ['PROJ_LIB'] = r'C:\Users\zzz\anaconda3\envs\patrol\Library\share\proj'
