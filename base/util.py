@@ -1,51 +1,18 @@
-import numpy as np
-import pandas as pd
-from scipy.interpolate import griddata
-from scipy.linalg import lstsq
-from osgeo import gdal
-from osgeo import osr,ogr
-import re
-import scipy
-import xlrd
 import os
-import cv2
-import struct
-# import netCDF4
-from sklearn.linear_model import LinearRegression
-import seaborn as sns
-import matplotlib.pylab as plt
-from matplotlib.colors import LogNorm
-from pylab import *
-import gzip
-import shutil
-import netCDF4 as nc
-from scipy import stats
-from scipy.optimize import minimize
-from scipy.optimize import least_squares
-from sklearn.linear_model import Lasso
-from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import LassoCV
-from sklearn.linear_model import RidgeCV
-from sklearn.linear_model import BayesianRidge
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import BayesianRidge
-os.environ['PROJ_LIB'] =  r"C:\ProgramData\anaconda3\envs\python37\Lib\site-packages\osgeo\data"
-########################################################################################################################
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from base.util_packages import *
 
 '''
-util_constant
-'''
-rd = np.pi/180.0
-planck_c1 = 11910.439340652
-planck_c2 = 14388.291040407
-temperature_threshold = 100
-temperature_zero = 273.15
-
+util
+util_file: 文件操作（查找、复制、删除、读取和写入各种格式影像等）
+util_data: 数据操作（重采样，读取点的值）
+util_map： 投影相关函数
+util_plot： 绘图相关函数
+util_time: 时间相关函数(年月日和年积日)
 '''
 
-util_file
-'''
+'''util_file'''
 def search(dir):
     '''
     查找路径下所有的文件和文件夹
@@ -54,7 +21,6 @@ def search(dir):
     '''
     results = os.listdir(dir)
     return results
-
 
 def search_file(dir,specstr):
     '''
@@ -89,6 +55,7 @@ def search_file(dir,specstr):
                     and specstr2 in x
                     and specstr3 in x]
     return results
+
 def search_dir(dir,specstr):
     '''
     查找某个路径下，含有特定标识的文件夹，需要list把标识括起来，即使只有1个
@@ -121,7 +88,6 @@ def search_dir(dir,specstr):
                     and specstr2 in x
                     and specstr3 in x]
     return results
-
 
 def search_file_rej(dir,specstr,rejstr):
     '''
@@ -199,7 +165,6 @@ def search_dir_rej(dir,specstr,rejstr):
                     and rejstr not in x]
     return results
 
-
 def remove_file(dir, specstr):
     '''
     删除某个路径下，含有某个标识的所有文件
@@ -213,7 +178,6 @@ def remove_file(dir, specstr):
         if re.search(specstr, x) is not None:
             print(fp)
             os.remove(fp)
-
 
 def rename_file(dir, specstr):
     '''
@@ -244,7 +208,6 @@ def move_file(infile,outfile):
     '''
     os.rename(infile,outfile)
 
-
 def read_txt_float(filename):
     '''
     读取txt文件，并将其按照float存储，行列号作为索引的矩阵
@@ -261,7 +224,6 @@ def read_txt_float(filename):
     mydata = np.asarray(mydata,dtype=float)
     return mydata
 
-
 def read_txt_str(filename, spt):
     '''
     读取文件数据，然后按照特定的约束进行解析，随后按照行列进行存储
@@ -277,7 +239,6 @@ def read_txt_str(filename, spt):
             mydata.append(line)
             lines = f.readline()
     return mydata
-
 
 def read_txt_array(filename, num_pass, num_col):
     '''
@@ -416,7 +377,6 @@ def read_image_raw(filename, ns, nl, nb, type = np.int_):
                 mydata[ks][kl][kb] = elem
     return mydata
 
-
 def read_image_Nc_group(fileName, groupName, objectName,ifscale=0):
     '''
     读取NC格式的数据，需要指定是否需要缩放转换
@@ -468,7 +428,6 @@ def getDatafromNc(fileName, objectName):
             dataset.close();
     return predata
 
-
 def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, path, imageType = 'GTiff'):
     '''
     保存数据，输出成tif格式
@@ -504,7 +463,6 @@ def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, 
         dataset.GetRasterBand(i+1).WriteArray(im_data[i])
     del dataset
 
-
 def read_dataset_gdal(fileName):
     '''
     读取数据，返回数据集，多用于基于数据集的数据转换
@@ -514,11 +472,45 @@ def read_dataset_gdal(fileName):
     dataset = gdal.Open(fileName)
     return dataset
 
+def mkdir_if_not_exist(dir_name, is_delete=False):
+    """
+    创建文件夹
+    :param dir_name: 文件夹
+    :param is_delete: 是否删除
+    :return: 是否成功
+    """
+    try:
+        if is_delete:
+            if os.path.exists(dir_name):
+                shutil.rmtree(dir_name)
+                print("Path exists, remove and recreate")
 
-'''
-util_data
-'''
+        if not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+            print("Created path:" + dir_name)
+        return True
+    except Exception as e:
+        return False
 
+def un_gz(file_name,infile,outdir):
+    '''
+    解压gz文件
+    :param file_name:要解压文件名称
+    :param infile:要解压文件位置
+    :param outdir:输出位置
+    '''
+    mkdir_if_not_exist(outdir)
+    f_name = outdir + file_name.replace(".gz", "")
+    # 获取文件的名称，去掉
+    g_file = gzip.GzipFile(infile + file_name)
+    # 创建gzip对象
+    open(f_name, "wb+").write(g_file.read())
+    # gzip对象用read()打开后，写入open()建立的文件里。
+    g_file.close()  # 关闭gzip对象
+    print("Unzip " + file_name + " finished!")
+
+
+'''util_data'''
 
 def resize_data(preArray, nl, ns, method = 'cv2.INTER_NEAREST'):
     '''
@@ -582,47 +574,10 @@ def getPointfromImage(data, imagex_, imagey_, dist= 0, dn = 3,  minThreshold = -
         result[k] = np.average(temp[indd])
     return result
 
-def mkdir_if_not_exist(dir_name, is_delete=False):
-    """
-    创建文件夹
-    :param dir_name: 文件夹
-    :param is_delete: 是否删除
-    :return: 是否成功
-    """
-    try:
-        if is_delete:
-            if os.path.exists(dir_name):
-                shutil.rmtree(dir_name)
-                print("Path exists, remove and recreate")
 
-        if not os.path.exists(dir_name):
-            os.makedirs(dir_name)
-            print("Created path:" + dir_name)
-        return True
-    except Exception as e:
-        return False
-
-def un_gz(file_name,infile,outdir):
-    '''
-    解压gz文件
-    :param file_name:要解压文件名称
-    :param infile:要解压文件位置
-    :param outdir:输出位置
-    '''
-    mkdir_if_not_exist(outdir)
-    f_name = outdir + file_name.replace(".gz", "")
-    # 获取文件的名称，去掉
-    g_file = gzip.GzipFile(infile + file_name)
-    # 创建gzip对象
-    open(f_name, "wb+").write(g_file.read())
-    # gzip对象用read()打开后，写入open()建立的文件里。
-    g_file.close()  # 关闭gzip对象
-    print("Unzip " + file_name + " finished!")
 '''
 util_map
 '''
-
-
 def getSRSPair(dataset):
     '''
     获得给定数据的投影参考系和地理参考系
@@ -787,7 +742,6 @@ def reproj_image_ref_gdal(dataset_destination, dataset_reff, dataset_source):
             data[k,:] =  np.reshape(temp[imagex,imagey],[nl1,ns1])
     return data
 
-
 def loc2map(lat, lon, dataset):
     '''
     经纬度转图上行列号
@@ -808,7 +762,6 @@ def loc2map(lat, lon, dataset):
     imagey = np.asarray(imagey, np.int_)
     return imagex,imagey
 
-
 def calc_azimuth(lat1, lon1, lat2, lon2):
     '''
     计算地球上两点间的相对方位角
@@ -827,8 +780,6 @@ def calc_azimuth(lat1, lon1, lat2, lon2):
         np.sin(lat1_rad) * np.cos(lat2_rad) * np.cos(lon2_rad - lon1_rad)
     brng = np.arctan2(y, x) * 180 / np.pi
     return float((brng + 360.0) % 360.0)
-
-
 
 def write_vrt(vrtfile, datafile, xfile, yfile, xscale, yscale, noDataValue = 65535, bandnumber = 1):
     '''
@@ -891,7 +842,6 @@ def write_vrt(vrtfile, datafile, xfile, yfile, xscale, yscale, noDataValue = 655
     f.close()
     return 1
 
-
 def eliminate_edge(data,edge=1):
     '''
     消除重采样后边界的异常值
@@ -910,9 +860,7 @@ def eliminate_edge(data,edge=1):
     return dataa
 
 
-'''
-util_plot
-'''
+'''util_plot'''
 
 '''
 plot with plt and seaborn
@@ -953,7 +901,6 @@ def plt_scatter(data1,data2,title='',dif=10,min1 = 225,min2 = 225,max1 = 335,max
     plt.title(title)
     plt.show()
     return 0
-
 
 def plt_hist(data,bins = 30, alpha = 0.5):
     '''
@@ -1013,7 +960,6 @@ def plt_hist_scatter(data1,data2,bins = 30, alpha = 0.5):
     colorbar()
     plt.show()
 
-
 def plt_pie(labels,sizes,colors):
     '''
     饼图的画法，这里是个例子
@@ -1031,7 +977,6 @@ def plt_pie(labels,sizes,colors):
            colors=colors, autopct='%1.1f%%', shadow=False, startangle=50)
     plt.axis('equal')
     plt.show()
-
 
 def plt_coutourPolar(theta,rho,z,n,maxrho=50,step = 5):
     '''
@@ -1131,7 +1076,6 @@ def sns_scatter(data1,data2,lai,smc):
     # g.set()
     plt.show()
 
-
 def sns_density(data1,data2,xmin = 250,xmax = 350, ymin = 250, ymax = 350):
     '''
     画散点图，重点是展示密度图
@@ -1186,58 +1130,9 @@ def sns_hist(data, label='data',):
     cumulative=False, stat="density")
     plt.tight_layout()
     plt.show()
-'''
-util_phy
-'''
-def planck(wavelength, Ts):
-    '''
-    基于planck公式，计算某个波长时候，从温度到辐射的转换
-    :param wavelength: 波长，10.5
-    :param Ts: 温度，可以是亮温，也可以是摄氏度
-    :return: 辐射
-    '''
-    c1 = planck_c1
-    c2 = planck_c2
-    if isinstance(Ts * 1.0, float):
-        if (Ts < temperature_threshold): Ts = Ts + temperature_zero
-        wavelength = np.float(wavelength)
-        Ts = np.float(Ts)
-        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
-    else:
-        Ts[Ts < temperature_threshold] = Ts[Ts < temperature_threshold] + temperature_zero
-        wavelength = np.float(wavelength)
-        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
-    return rad
 
 
-def inv_planck(wavelength, rad):
-    '''
-    基于planck公式，计算从辐射到亮温的转换
-    :param wavelength: 波长,10.5
-    :param rad: 辐射
-    :return: 亮温 （300）
-    '''
-    c1 = planck_c1 * 10000
-    c2 = planck_c2
-    temp = c1 / (rad * np.power((wavelength), 5)) + 1
-    Ts = c2 / (wavelength * np.log(temp))
-    return Ts
-
-
-def vapor(T,eap):
-    '''
-    计算空气的水汽压
-    :param T: 空气温度
-    :param eap: 湿度
-    :return:
-    '''
-    a = 7.5
-    b = 237.3
-    es = 6.107*np.power(10,(7.5*T/(b+T)))
-    s = es*np.log(10)*a*b/np.power(b+T,2)
-    ea = es*eap*0.01
-    return ea
-
+'''util_time'''
 def date2DOY(year,month,day):
     '''
     日期到Day of Year 的转换
@@ -1270,7 +1165,6 @@ def date2DOY(year,month,day):
         DOY[ind] = DOY[ind] + 1
     return DOY
 
-
 def doy2date(year, doy):
     '''
     doy 到日期的转换
@@ -1302,165 +1196,3 @@ def doy2date(year, doy):
                 day = doy
                 break
     return month, day
-
-
-def fieldcalibrate(undertemp,overtemp,atmtemp,underemis,overemis,lai,wl = 10.5):
-    '''
-    计算消除了大气影响后的温度
-    :param undertemp: 测量的地面温度
-    :param overtemp: 测量的上层温度
-    :param atmtemp: 大气等效温度
-    :param underemis: 上层发射率
-    :param overemis: 下层发射率
-    :param lai: lai
-    :param wl: 波长
-    :return: 消除大气校正后的结果
-    '''
-    rad_under = planck(wl,undertemp)
-    rad_over = planck(wl,overtemp)
-    rad_atm = planck(wl,atmtemp)
-
-    fvc = 1-np.exp(-lai*0.5)
-    rad_under = (rad_under - (1-underemis)*(fvc*rad_over +(1-fvc)*rad_atm))/underemis
-   # rad_over = (rad_over - (1-overemis)*rad_atm)/overemis
-    rad_over = (rad_over - (1-overemis)*(fvc*rad_over +(1-fvc)*rad_atm)) / overemis
-
-    result_under = inv_planck(wl,rad_under)
-    result_over = inv_planck(wl,rad_over)
-    return result_under-273.15,result_over-273.15
-
-
-def simpleForward(undertemp,overtemp,atmtemp,underemis,overemis,lai,wl = 10.5):
-    '''
-    收到大气校正影响
-    :param undertemp:
-    :param overtemp:
-    :param atmtemp:
-    :param underemis:
-    :param overemis:
-    :param lai:
-    :param wl:
-    :return:
-    '''
-    rad_under = planck(wl, undertemp)
-    rad_over = planck(wl, overtemp)
-    rad_atm = planck(wl, atmtemp)
-
-    fvc = 1 - np.exp(-lai * 0.5)
-    rad_under = (rad_under*underemis + (1 - underemis) * (fvc * rad_over + (1 - fvc) * rad_atm))
-    rad_over = (rad_over*overemis + (1 - overemis) * rad_atm) / overemis
-
-    result_under = inv_planck(wl, rad_under)
-    result_over = inv_planck(wl, rad_over)
-    return result_under - 273.15, result_over - 273.15
-
-
-
-'''
-util_inv
-'''
-
-def fitting_unknown_linear_ls(y,A):
-    '''
-    线性反演未知数，y=ax1+bx2+cx3, x3=1
-    :param y: 因变量
-    :param x: 自变量
-    :return:
-    '''
-    coeffs = np.asarray(lstsq(A, y))[0]
-    return coeffs
-
-
-def fitting_unknown_nonlinear_fmin(fun,y,A,xn,x0):
-    '''
-    非线性反演/回归，基于fmin函数，能给初值，不能给边界条件
-    :param fun: 函数
-    :param y: 因变量
-    :param x: 自变量，是个多列数组
-    :param x0: 初值
-    :param xn: 列数
-    :return: 回归系数
-    '''
-    res = fmin(fun, x0=x0, args=(y,A,xn), disp=0)
-    return res
-
-
-
-def fitting_unknown_nonlinear_min(fun,y,A,xn,x0,bnds,method = 'Powell'):
-    '''
-    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
-    :param fun: 函数
-    :param y: 因变量
-    :param x: 自变量，是个多列数组
-    :param x0: 初值
-    :param xn: 列数
-    :param bnds: 边界
-    :param method: 方法，默认为powell，还有slsqp，L-BFGS-B，TNC，
-    :return: 回归系数
-    '''
-    res = minimize(fun, x0,
-                   args=(y,A,xn),
-                   method=method,
-                   bounds=bnds, )
-    return res.x
-
-
-def fitting_unknown_nonlinear_ls(fun,y,A,xn,x0,bnds,method = 'trf'):
-    '''
-    非线性反演/回归，基于least_squares函数，能给初值，也能给边界条件
-    :param fun: 函数
-    :param y: 因变量
-    :param A: 矩阵
-    :param x0: 初值
-    :param xn: 列数
-    :param bnds: 边界
-    :param method: 方法，trf', 'dogbox', 'lm'
-    :return: 回归系数
-    '''
-    res = least_squares(fun, x0,
-                   args=(y,A,xn),
-                   method=method,
-                   bounds=bnds, )
-    return res.x
-
-
-
-def fitting_unknown_linear_sklearn(y,A,method='ridge'):
-    '''
-    线性反演未知数，
-    :param y: 因变量
-    :param x: 自变量
-    :param method: 方法，推荐ridge，然后是lasso，因为lasso会倾向于拟合0
-    :return: 回归系数
-    '''
-    alphas = [0.0001,0.001,0.01,0.1,1,10,100]
-    coeffs = 1.0
-    if method=='ridge':
-        clf = RidgeCV(alphas=alphas, fit_intercept=False)
-        clf.fit(A, y)
-        coeffs = clf.coef_
-    elif method =='lasso':
-        lasso = LassoCV(alphas=alphas, fit_intercept=False)
-        lasso.fit(A, y)
-        coeffs = lasso.coef_
-    elif method =='bayesianridge':
-        clf = BayesianRidge(fit_intercept=False)
-        clf.fit(A,y)
-        coeffs = clf.coef_
-
-    return coeffs
-
-
-from scipy.sparse.linalg import lsqr
-def fitting_unknown_linear_sparse(y,A,iter=100):
-    '''
-    找到大型稀疏线性方程组的least-squares 解。
-    :param y:
-    :param x:
-    :param iter:
-    :return:
-    '''
-    coeffs = lsqr(A,y,iter_lim=iter)[0]
-    return coeffs
-
-

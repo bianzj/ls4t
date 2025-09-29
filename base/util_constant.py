@@ -1,6 +1,9 @@
 import numpy as np
 
-
+'''
+util_constant
+常量
+'''
 
 rd = np.pi/180.0
 ndvi_max_avhrr = 0.95
@@ -59,3 +62,12 @@ adjust_ymax_no_g = 1200
 # aodvalue = 0.05 ### low
 aodvalue = 0.12 ### normal
 # aodvalue = 0.15 ### high
+
+'''
+util_constant
+'''
+rd = np.pi/180.0
+planck_c1 = 11910.439340652
+planck_c2 = 14388.291040407
+temperature_threshold = 100
+temperature_zero = 273.15
