@@ -7,18 +7,15 @@ land surface four-component temperature 旨在解决热红外地表温度的分�
 -   ATSR温度模块：用于ATSR温度数据的处理、反演和优化等；
 -   SHIP模块：留存了上个版本的LS4T，将来进行销毁；
 
+现有的模块：
+1.0 BASE:基础模块
+2.0 SLSTR_LST:温度模块
+3.0 ATSR_lst:温度模块
 
-1.0 基础模块
-
-
-
-2.0 SLSTR温度模块
-
-
-
-3.0 ATSR温度模块
-
-
-
+将来的工作
+1. ATSR_LST与BASE 不配套；
+2. SLSTR_LST 与BASE 不配套；
+3. 增加fusion的实现模块；
+4. 增加histream的优化模块；
 
 
