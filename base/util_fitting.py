@@ -6,6 +6,8 @@ from base.util_packages import *
 '''
 util_fitting
 求解方程函数
+y = ax + b
+y = f(x1,x2,x3...)
 '''
 
 def fitting_unknown_linear_ls(y,A):
