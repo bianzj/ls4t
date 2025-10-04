@@ -2,8 +2,8 @@ import sys
 sys.path.append('opt_lsct/rt/')
 import numpy as np
 import scipy.integrate as sci
-from base.util_lsct.rt.gap import *
-from base.util_lsct.rt.hotspot import *
+from base.rt.gap import *
+from base.rt.hotspot import *
 # from scatter import *
 import matplotlib.pyplot as plt
 

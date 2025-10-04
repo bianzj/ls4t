@@ -3,6 +3,7 @@ import numpy as np
 '''
 util_constant
 常量
+以后常量尽量的用大写，多个名词间用下划线明确
 '''
 
 rd = np.pi/180.0
@@ -71,3 +72,5 @@ planck_c1 = 11910.439340652
 planck_c2 = 14388.291040407
 temperature_threshold = 100
 temperature_zero = 273.15
+
+

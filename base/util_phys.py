@@ -2,20 +2,13 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from base.util_packages import *
-
+from base.util_constant import *
 '''
 util_phy
 物理公式
 '''
 
-'''
-constant
-'''
-rd = np.pi/180.0
-planck_c1 = 11910.439340652
-planck_c2 = 14388.291040407
-temperature_threshold = 100
-temperature_zero = 273.15
+
 
 
 def planck(wavelength, Ts):
@@ -37,7 +30,6 @@ def planck(wavelength, Ts):
         wavelength = np.float(wavelength)
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     return rad
-
 
 def inv_planck(wavelength, rad):
     '''

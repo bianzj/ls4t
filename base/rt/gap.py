@@ -1,6 +1,6 @@
 import numpy as np
 import scipy.integrate as sci
-from base.util_lsct.rt.physicsF import *
+from base.rt.physicsF import *
 
 '''
 gap probability 透过率

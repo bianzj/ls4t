@@ -5,7 +5,7 @@ import os
 import numpy
 import numpy as np
 import scipy.integrate as sci
-from base.util_lsct.rt.gap import *
+from base.rt.gap import *
 
 '''
 热点/双向透过率

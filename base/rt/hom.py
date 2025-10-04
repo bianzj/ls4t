@@ -3,26 +3,26 @@
 #####################################################
 #### Homgeneous vegetation scene
 #####################################################
+import sys
+import os
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 import numpy as np
-from base.util_lsct.rt.hotspot import *
-from base.util_lsct.rt.gap import *
-from base.util_lsct.rt.scatter import *
-from base.util_lsct.rt.proportion import *
-from base.util_lsct.rt.radiance import *
-from base.util_lsct.rt.emissivity import *
+from base.rt.hotspot import *
+from base.rt.gap import *
+from base.rt.scatter import *
+from base.rt.emissivity import *
+from base.rt.radiance import *
 
-class Crown():
+class Hom():
 
     ### structual variables
-    leaf_area_index = 3.0
+    leaf_area_index = 1.0
     clumping_index = 1.0
-    stand_density = 0.05
-    hcr = 1.0
-    rcr = 1.0
     leaf_average_inclination_angle = 53
     hspot = 0.2
     G = 0.5
+    wavelength = 10.5
 
     ### optical and thermal variables
     number_band = 1
@@ -40,14 +40,9 @@ class Crown():
     solar_zenith_angle = np.asarray([25])
     relative_azimuth_angle = np.asarray([0])
 
-
-
-    def set_structure(self,lai,hspot,stand_density,hcr,rcr):
-        self.leaf_area_index = lai
+    def set_structure(self,leaf_area_index,hspot):
+        self.leaf_area_index = leaf_area_index
         self.hspot = hspot
-        self.stand_density = stand_density
-        self.rcr = rcr
-        self.hcr = hcr
 
     def set_thermal(self,temperature_soil_sunlit,temperature_soil_shaded,temperature_leaf_sunlit,temperature_leaf_shaded,):
         self.temperature_soil_shaded = np.asarray(temperature_soil_shaded)
@@ -60,7 +55,9 @@ class Crown():
         self.emissivity_soil = emissivity_soil
         self.emissivity_leaf = emissivity_leaf
 
+
     def set_angle(self,view_zenith_angle,solar_zenith_angle,relative_azimuth_angle):
+
         if type(view_zenith_angle) == numpy.ndarray:
             self.number_angle = np.max([self.number_angle, np.size(view_zenith_angle)])
         if type(solar_zenith_angle) == numpy.ndarray:
@@ -69,16 +66,39 @@ class Crown():
             self.number_angle = np.max([self.number_angle, np.size(relative_azimuth_angle)])
 
         if (self.number_angle > 1) and type(view_zenith_angle) != numpy.ndarray:
-            view_zenith_angle = np.repeat(view_zenith_angle, self.number_angle)
+            view_zenith_angle = np.resize(view_zenith_angle, self.number_angle)
         if (self.number_angle > 1) and type(solar_zenith_angle) != numpy.ndarray:
-            solar_zenith_angle = np.repeat(solar_zenith_angle, self.number_angle)
+            solar_zenith_angle = np.resize(solar_zenith_angle, self.number_angle)
         if (self.number_angle > 1) and type(relative_azimuth_angle) != numpy.ndarray:
-            relative_azimuth_angle = np.repeat(relative_azimuth_angle, self.number_angle)
+            relative_azimuth_angle = np.resize(relative_azimuth_angle, self.number_angle)
 
         self.viewing_zenith_angle = np.asarray(view_zenith_angle)
         self.solar_zenith_angle = np.asarray(solar_zenith_angle)
         self.relative_azimuth_angle = np.asarray(relative_azimuth_angle)
 
+    def run_emis(self,ifradiance = 0):
+        el = self.emissivity_leaf
+        es = self.emissivity_soil
+
+        vza = self.viewing_zenith_angle
+        sza = self.solar_zenith_angle
+        vsa = self.relative_azimuth_angle
+        lai = self.leaf_area_index
+        hspot = self.hspot
+
+        ### Pleaf 和 Psoil 是植被和土壤组分的可视比例
+        ### Ksoil 和 Kleaf 是植被和土壤组分的可视比例的光照比例 K = Psunlitvisible / Pvisible
+
+        Ecom = np.asarray([es,es,el,el])
+        # 四组分比例
+        Pcom = proportion_bidirectional_hom_one(lai,hspot,vza,sza,vsa)
+        Ecom_direct,Ecom_direct_sum = emissivity_direct(Pcom,Ecom)
+
+        Ecom_scatter,Ecom_scatter_sum = emissivity_scatter_analytical(lai, el, es, vza, sza)
+
+        emis = Ecom_direct + Ecom_scatter
+        emis = np.nan_to_num(emis)
+        return emis
 
     def run(self,ifradiance = 0):
 
@@ -94,25 +114,19 @@ class Crown():
         vsa = self.relative_azimuth_angle
         lai = self.leaf_area_index
         hspot = self.hspot
-        std = self.stand_density
-        hcr = self.hcr
-        rcr = self.rcr
 
         ### Pleaf 和 Psoil 是植被和土壤组分的可视比例
         ### Ksoil 和 Kleaf 是植被和土壤组分的可视比例的光照比例 K = Psunlitvisible / Pvisible
+        Ecom = np.asarray([es,es,el,el]) # 组分发射率
+        Tcom = np.asarray([Tss,Tsh,Tls,Tlh]) # 组分温度
+        Rcom = planck(Tcom) # 辐射
 
-        Ecom = np.asarray([es, es, el, el])
-        Tcom = np.asarray([Tss, Tsh, Tls, Tlh])
-        Rcom = planck(Tcom)
+        Pcom = proportion_bidirectional_hom_one(lai,hspot,vza,sza,vsa)
+        Ecom_direct,Ecom_direct_sum = emissivity_direct(Pcom,Ecom)
+        Rcom_direct = radiance_direct(Ecom_direct,Rcom)
 
-        Pcom = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vza, sza, vsa)
-        Ecom_direct, Ecom_direct_sum = emissivity_direct(Pcom, Ecom)
-        Rcom_direct = radiance_direct(Ecom_direct, Rcom)
-
-        Ecom_scatter, Ecom_scatter_sum = emissivity_scatter_analytical(lai, el, es, vza, sza)
-        emis = Ecom_direct + Ecom_scatter
-
-        Rcom_scatter = radiance_scatter(Ecom_scatter, Rcom)
+        Ecom_scatter,Ecom_scatter_sum = emissivity_scatter_analytical(lai, el, es, vza, sza)
+        Rcom_scatter = radiance_scatter(Ecom_scatter,Rcom)
 
         self.radiance = Rcom_direct + Rcom_scatter
 
@@ -120,28 +134,3 @@ class Crown():
             return self.radiance
         else:
             return inv_planck(self.radiance, self.wavelength)
-
-    def run_emis(self,ifradiance = 0):
-        el = self.emissivity_leaf
-        es = self.emissivity_soil
-
-        vza = self.viewing_zenith_angle
-        sza = self.solar_zenith_angle
-        vsa = self.relative_azimuth_angle
-        lai = self.leaf_area_index
-        hspot = self.hspot
-        std = self.stand_density
-        hcr = self.hcr
-        rcr = self.rcr
-
-        ### Pleaf 和 Psoil 是植被和土壤组分的可视比例
-        ### Ksoil 和 Kleaf 是植被和土壤组分的可视比例的光照比例 K = Psunlitvisible / Pvisible
-
-        Ecom = np.asarray([es, es, el, el])
-
-        Pcom = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vza, sza, vsa)
-        Ecom_direct, Ecom_direct_sum = emissivity_direct(Pcom, Ecom)
-
-        Ecom_scatter, Ecom_scatter_sum = emissivity_scatter_analytical(lai, el, es, vza, sza)
-        emis = Ecom_direct + Ecom_scatter
-        return emis

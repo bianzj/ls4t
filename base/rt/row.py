@@ -3,12 +3,12 @@
  垄行结构场景的热辐射方向性模型
 '''
 import numpy as np
-from base.util_lsct.rt.hotspot import *
-from base.util_lsct.rt.gap import *
-from base.util_lsct.rt.scatter import *
-from base.util_lsct.rt.proportion import *
-from base.util_lsct.rt.emissivity import *
-from base.util_lsct.rt.radiance import *
+from base.rt.hotspot import *
+from base.rt.gap import *
+from base.rt.scatter import *
+from base.rt.proportion import *
+from base.rt.emissivity import *
+from base.rt.radiance import *
 
 class Row():
 

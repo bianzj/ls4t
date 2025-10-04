@@ -30,6 +30,7 @@ from sklearn.linear_model import BayesianRidge
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import BayesianRidge
+import pysolar.solar as Sun
 
 # os.environ['PROJ_LIB'] =  r"C:\ProgramData\anaconda3\envs\python37\Lib\site-packages\osgeo\data"
 

@@ -2,9 +2,9 @@ import numpy as np
 import scipy.integrate as sci
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from base.util_lsct.rt.gap import *
-from base.util_lsct.rt.hotspot import *
-from base.util_lsct.rt.proportion import *
+from base.rt.gap import *
+from base.rt.hotspot import *
+from base.rt.proportion import *
 
 ''' 
 多次散射项

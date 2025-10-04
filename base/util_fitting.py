@@ -18,7 +18,6 @@ def fitting_unknown_linear_ls(y,A):
     coeffs = np.asarray(lstsq(A, y))[0]
     return coeffs
 
-
 def fitting_unknown_nonlinear_fmin(fun,y,A,xn,x0):
     '''
     非线性反演/回归，基于fmin函数，能给初值，不能给边界条件
@@ -31,8 +30,6 @@ def fitting_unknown_nonlinear_fmin(fun,y,A,xn,x0):
     '''
     res = fmin(fun, x0=x0, args=(y,A,xn), disp=0)
     return res
-
-
 
 def fitting_unknown_nonlinear_min(fun,y,A,xn,x0,bnds,method = 'Powell'):
     '''
@@ -50,8 +47,9 @@ def fitting_unknown_nonlinear_min(fun,y,A,xn,x0,bnds,method = 'Powell'):
                    args=(y,A,xn),
                    method=method,
                    bounds=bnds, )
-    return res.x
 
+
+    return res.x
 
 def fitting_unknown_nonlinear_ls(fun,y,A,xn,x0,bnds,method = 'trf'):
     '''
@@ -70,8 +68,6 @@ def fitting_unknown_nonlinear_ls(fun,y,A,xn,x0,bnds,method = 'trf'):
                    method=method,
                    bounds=bnds, )
     return res.x
-
-
 
 def fitting_unknown_linear_sklearn(y,A,method='ridge'):
     '''
@@ -98,7 +94,6 @@ def fitting_unknown_linear_sklearn(y,A,method='ridge'):
 
     return coeffs
 
-
 from scipy.sparse.linalg import lsqr
 def fitting_unknown_linear_sparse(y,A,iter=100):
     '''
@@ -110,3 +105,39 @@ def fitting_unknown_linear_sparse(y,A,iter=100):
     '''
     coeffs = lsqr(A,y,iter_lim=iter)[0]
     return coeffs
+
+from scipy.sparse.linalg import lsqr
+
+'''
+from here user defiend specific functions
+'''
+
+def fitting_unknown_nonlinear_min_condition(fun, y, A, xn, x0, bnds, method='Powell', constraints=None, **kwargs):
+    '''
+    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
+    参数:
+        fun: 目标函数，格式为fun(x, *args)
+        y: 因变量数组
+        A: 自变量矩阵
+        xn: 变量个数
+        x0: 初始值
+        bnds: 边界条件列表
+        method: 优化方法('Powell','SLSQP'等)
+        constraints: 约束条件
+        **kwargs: 传递给目标函数的额外参数
+    返回:
+        优化结果向量
+    '''
+    # 合并固定参数和额外参数
+    fixed_args = (y, A, xn)
+    extra_args = tuple(kwargs.values())
+    all_args = fixed_args + extra_args
+
+    res = minimize(fun, x0,
+                   args=all_args,
+                   method=method,
+                   bounds=bnds,
+                   constraints=constraints)
+    return res.x
+
+

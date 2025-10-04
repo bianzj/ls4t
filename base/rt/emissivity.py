@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.integrate as sci
-from base.util_lsct.rt.gap import *
-from base.util_lsct.rt.hotspot import *
-from base.util_lsct.rt.scatter import *
+from base.rt.gap import *
+from base.rt.hotspot import *
+from base.rt.scatter import *
 import matplotlib.pyplot as plt
 
 
