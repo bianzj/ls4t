@@ -517,6 +517,12 @@ def fitting_Nangle_Mcomponent_window(w, b, n, m, mask, weight, constraints, x0, 
     return x
 
 
+######################################################################################################
+#### from here specific functions
+######################################################################################################
+
+
+
 def lsct3_inv(wNLine, wOLine, wALine, radNLine, radOLine, radAhiLine, maskLine,ns = 1024):
     wl = 10.8
     radiance_max_threshold = 20
