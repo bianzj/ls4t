@@ -2,11 +2,11 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from base.util_phys import *
 from base.util_data import *
 from base.util_fitting import *
 from base.rt.hom import *
 from base.rt.crown import *
+from base.util_phys import *
 
 
 from scipy.optimize import fsolve

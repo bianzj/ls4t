@@ -503,3 +503,15 @@ def un_gz(file_name,infile,outdir):
     g_file.close()  # 关闭gzip对象
     print("Unzip " + file_name + " finished!")
 
+def unzip_file(zipfilename,outdir):
+    '''
+    解压zip文件
+    :param zipfilename: 要解压文件名称
+    :param outdir: 输出位置
+    '''
+    mkdir_if_not_exist(outdir)
+    zip_file = zipfile.ZipFile(zipfilename)
+    for names in zip_file.namelist():
+        zip_file.extract(names, outdir)  # 解压到outdir目录下
+    zip_file.close()
+    print("Unzip " + zipfilename + " finished!")

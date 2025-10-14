@@ -1,18 +1,25 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import netCDF4
 import time
-from util.util_constant import *
-from util.util import *
+from base.util_constant import *
+from base.util_file import *
+from base.util_data import *
+import math
 import warnings
 warnings.filterwarnings("ignore")
 
+'''2025.10.12 ls4t case: （注意python版本不同lonlat2geo输入顺序)'''
 '''2023.10.04 增加倾斜方向日夜提取'''
 '''2023.7.22 增加垂直方向夜晚提取的部分用于定标'''
 '''2023.5.7 slstr 两角度数据提取（重构版）'''
 '''只输出了白天的数据，方便后续用于组分温度反演'''
 '''注意：不同时区一定要调day_start_hour\day_end_hour'''
 
-
 '''
+slstr_data.py
+从解压后的原始数据中提取相关信息，并根据type文件进行重投影
 脚本操作包括：
 1. 先提出出来成tif
 2. gdal进行投影转换
@@ -20,19 +27,17 @@ warnings.filterwarnings("ignore")
 '''
 
 # 数据输入
-indir_raw = r'E:\Sentinel3_SLSTR\S3_2017_Europe\2017_xx_15\raw_add\\'
-indir_med = r'E:\Sentinel3_SLSTR\S3_2017_Europe\2017_xx_15\med\\'
-indir_tif = r'E:\Sentinel3_SLSTR\S3_2017_Europe\2017_xx_15\tif\\'
+indir_raw = r'/home/hero/data/SLSTR_heihe/raw/'
+indir_med = r'/home/hero/data/SLSTR_heihe/med/'
+indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
+mkdir_if_not_exist(indir_med)
+mkdir_if_not_exist(indir_tif)
 
-# indir_raw = r'D:\data\data_download\Sentinel3\test\s3_raw\\'
-# indir_med = r'D:\data\data_download\Sentinel3\test\s3_med\\'
-# indir_tif = r'D:\data\data_download\Sentinel3\test\s3_tif\\'
-
-targetArea = r'E:\data\type\type_Europe_0.01.tif'
+targetArea = r'/home/hero/data/type/type_heihe_1000_utm47N.tif'
 
 s = 'S3'  # 同时处理S3A和S3B数据
-day_start_hour = 6  # 研究区白天开始的utm小时（不含）24小时制
-day_end_hour = 18  # 研究区白天开始的utm小时（不含）
+day_start_hour = 22  # 研究区白天开始的utm小时（不含）24小时制
+day_end_hour = 10  # 研究区白天开始的utm小时（不含）
 
 adjust_xmin_n_g = 0  # 观测几何重采样用的参数
 adjust_xmax_n_g = 95 + 1
@@ -40,15 +45,14 @@ adjust_xmin_o_g = 36
 adjust_xmax_o_g = 94 + 1
 
 # 数据操作
-ifextract_n = 1
-ifproj_n = 1
-ifresample_n = 1
+ifextract_n = 0
+ifproj_n = 0
+ifresample_n = 0
 
 
 ifextract_o = 0
 ifproj_o = 0
-ifresample_o = 0
-
+ifresample_o = 1
 
 
 # 读取type数据
@@ -74,26 +78,31 @@ dataset = None
 
 # 查找数据文件夹
 fileNames = search_dir_rej(indir_raw,['S3'],'zip')
+fileNames.sort()
 fileNum = len(fileNames)
 for k in range(fileNum):
     fileName = fileNames[k].strip()
-    fileDir = indir_raw + fileName + '\\'
+    fileDir = indir_raw + fileName + '/'
     print(k, fileDir)
     symbol = fileName[0:3]
     date_str = fileName[16:8 + 16]
-    year = np.int(np.uint(date_str[:4]))
-    month = np.int(fileName[20:22])
-    day = np.int(fileName[22:24])
+    year = int(uint(date_str[:4]))
+    month = int(fileName[20:22])
+    day = int(fileName[22:24])
     doy = date2DOY(2019, month, day)
+
+    ### 测试只处理某一天的数据
+    # if doy <= 182: continue
+
     time_str1 = fileName[25:25 + 6]
     time_str2 = fileName[41:41+6]
-    hh = np.int(np.uint(time_str1[0:2]))
-    mm = np.int(np.uint(time_str1[2:4]))
-    ss = np.int(np.uint(time_str2[4:6]))
+    hh = int(uint(time_str1[0:2]))
+    mm = int(uint(time_str1[2:4]))
+    ss = int(uint(time_str2[4:6]))
     # 终止时间
-    hh2 = np.int(np.uint(time_str2[0:2]))
-    mm2 = np.int(np.uint(time_str2[2:4]))
-    ss2 = np.int(np.uint(time_str2[4:6]))
+    hh2 = int(uint(time_str2[0:2]))
+    mm2 = int(uint(time_str2[2:4]))
+    ss2 = int(uint(time_str2[4:6]))
     t1 = hh + mm / 60 + ss / 3600
     t2 = hh2 + mm2 / 60 + ss2 / 3600
 
@@ -110,17 +119,17 @@ for k in range(fileNum):
         else:
             dayNight = 'nig'
 
-    # if dayNight == 'day' :
-    #     print("Pass day!")
-    #     continue  # 不输入晚上的结果
+    if dayNight == 'nig':
+        print("Pass nig!")
+        continue  # 不输入晚上的结果
 
     # 判断文件是否齐全
-    c1 = os.path.exists(fileDir + r'\S2_radiance_an.nc')
-    c2 = os.path.exists(fileDir + r'\S3_radiance_an.nc')
-    c3 = os.path.exists(fileDir + r'\geodetic_in.nc')
-    c4 = os.path.exists(fileDir + r'\met_tx.nc')
-    c5 = os.path.exists(fileDir + r'\S6_radiance_an.nc')
-    c6 = os.path.exists(fileDir + r'\S8_BT_in.nc')
+    c1 = os.path.exists(fileDir + r'/S2_radiance_an.nc')
+    c2 = os.path.exists(fileDir + r'/S3_radiance_an.nc')
+    c3 = os.path.exists(fileDir + r'/geodetic_in.nc')
+    c4 = os.path.exists(fileDir + r'/met_tx.nc')
+    c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
+    c6 = os.path.exists(fileDir + r'/S8_BT_in.nc')
     if c1*c2*c3*c4*c5*c6 == 0:
         print("File damaged!")
         continue
@@ -132,17 +141,17 @@ for k in range(fileNum):
         if dayNight == "day":
             if dayNight == "day":
                 '''提取可见光（红光、近红外）数据'''
-                fileName = fileDir + '\\S2_radiance_an.nc'
+                fileName = fileDir + '/S2_radiance_an.nc'
                 objectName = r'S2_radiance_an'
                 rad_red = getDatafromNc(fileName, objectName)
-                fileName = fileDir + '\\S2_quality_an.nc'
+                fileName = fileDir + '/S2_quality_an.nc'
                 objectName = r'S2_solar_irradiance_an'
                 sr_red = getDatafromNc(fileName, objectName)
 
-                fileName = fileDir + '\\S3_radiance_an.nc'
+                fileName = fileDir + '/S3_radiance_an.nc'
                 objectName = r'S3_radiance_an'
                 rad_nir = getDatafromNc(fileName, objectName)
-                fileName = fileDir + '\\S3_quality_an.nc'
+                fileName = fileDir + '/S3_quality_an.nc'
                 objectName = r'S3_solar_irradiance_an'
                 sr_nir = getDatafromNc(fileName, objectName)
 
@@ -159,7 +168,7 @@ for k in range(fileNum):
                 write_image_gdal(refl_nir[:nl, :ns], ns, nl, 1, '', '', outfile)
 
                 '''读取观测几何和云数据'''
-                fileName = fileDir + '\\geometry_tn.nc'
+                fileName = fileDir + '/geometry_tn.nc'
                 objectName = r'solar_zenith_tn'
                 sza = getDatafromNc(fileName, objectName)
                 objectName = r'solar_azimuth_tn'
@@ -175,11 +184,11 @@ for k in range(fileNum):
                 write_image_gdal(saa[:nl, :ns], ns, nl, 1, '', '', outfile)
 
         '''读取热红外数据'''
-        fileName = fileDir + '\\S8_BT_in.nc'
+        fileName = fileDir + '/S8_BT_in.nc'
         objectName = r'S8_BT_in'
         BT8 = getDatafromNc(fileName, objectName)
 
-        fileName = fileDir + '\\S9_BT_in.nc'
+        fileName = fileDir + '/S9_BT_in.nc'
         objectName = r'S9_BT_in'
         BT9 = getDatafromNc(fileName, objectName)
 
@@ -198,7 +207,7 @@ for k in range(fileNum):
         write_image_gdal(BT9, ns_nadir_g, nl_nadir_g, 1, '', '', outfile)
 
         '''读取观测几何和云数据'''
-        fileName = fileDir + '\\geometry_tn.nc'
+        fileName = fileDir + '/geometry_tn.nc'
         objectName = r'sat_zenith_tn'
         vza = getDatafromNc(fileName, objectName)
 
@@ -227,11 +236,11 @@ for k in range(fileNum):
 
 
         '''lon and lat'''
-        fileName = fileDir + '\\geodetic_in.nc'
+        fileName = fileDir + '/geodetic_in.nc'
         objectName = r'latitude_in'
         lat = getDatafromNc(fileName, objectName)
 
-        fileName = fileDir + '\\geodetic_in.nc'
+        fileName = fileDir + '/geodetic_in.nc'
         objectName = r'longitude_in'
         lon = getDatafromNc(fileName, objectName)
 
@@ -244,7 +253,7 @@ for k in range(fileNum):
         write_image_gdal(lon[:nl, :ns], ns, nl, 1, '', '', outfile)
 
         '''cloud'''
-        fileName = fileDir + '\\flags_in.nc'
+        fileName = fileDir + '/flags_in.nc'
         objectName = r'cloud_in'
         cloud = getDatafromNc(fileName, objectName)
 
@@ -426,12 +435,13 @@ for k in range(fileNum):
         data = dataset.ReadAsArray(0, 0, im_width, im_height)
         im_geotrans = dataset.GetGeoTransform()
         im_proj = dataset.GetProjection()
-        temp1, temp2 = lonlat2geo(dataset, lat_type, lon_type)
+        temp1, temp2 = lonlat2geo(dataset, lon_type, lat_type)
         imagex, imagey = geo2imagexy(dataset, temp1, temp2)
+        print(imagex,imagey)
         dataset = None
 
-        imagex = np.asarray(imagex, np.int)
-        imagey = np.asarray(imagey, np.int)
+        imagex = np.asarray(imagex, int)
+        imagey = np.asarray(imagey, int)
         ind = (imagex > 0) * (imagex < im_height - 1) * (imagey > 0) * (imagey < im_width - 1)
         imagex[imagex < 0] = 0
         imagex[imagex > (im_height - 1)] = im_height - 1
@@ -572,17 +582,17 @@ for k in range(fileNum):
         nl = nl_obliq_g
         if dayNight == "day":
             '''提取可见光（红光、近红外）数据'''
-            fileName = fileDir + '\\S2_radiance_ao.nc'
+            fileName = fileDir + '/S2_radiance_ao.nc'
             objectName = r'S2_radiance_ao'
             rad_red = getDatafromNc(fileName, objectName)
-            fileName = fileDir + '\\S2_quality_ao.nc'
+            fileName = fileDir + '/S2_quality_ao.nc'
             objectName = r'S2_solar_irradiance_ao'
             sr_red = getDatafromNc(fileName, objectName)
 
-            fileName = fileDir + '\\S3_radiance_ao.nc'
+            fileName = fileDir + '/S3_radiance_ao.nc'
             objectName = r'S3_radiance_ao'
             rad_nir = getDatafromNc(fileName, objectName)
-            fileName = fileDir + '\\S3_quality_ao.nc'
+            fileName = fileDir + '/S3_quality_ao.nc'
             objectName = r'S3_solar_irradiance_ao'
             sr_nir = getDatafromNc(fileName, objectName)
 
@@ -599,7 +609,7 @@ for k in range(fileNum):
             write_image_gdal(refl_nir[:nl, :ns], ns, nl, 1, '', '', outfile)
 
             '''读取观测几何和云数据'''
-            fileName = fileDir + '\\geometry_to.nc'
+            fileName = fileDir + '/geometry_to.nc'
             objectName = r'solar_zenith_to'
             sza = getDatafromNc(fileName, objectName)
 
@@ -616,11 +626,11 @@ for k in range(fileNum):
             write_image_gdal(saa[:nl, :ns], ns, nl, 1, '', '', outfile)
 
         '''读取热红外数据'''
-        fileName = fileDir + '\\S8_BT_io.nc'
+        fileName = fileDir + '/S8_BT_io.nc'
         objectName = r'S8_BT_io'
         BT8 = getDatafromNc(fileName, objectName)
 
-        fileName = fileDir + '\\S9_BT_io.nc'
+        fileName = fileDir + '/S9_BT_io.nc'
         objectName = r'S9_BT_io'
         BT9 = getDatafromNc(fileName, objectName)
 
@@ -639,7 +649,7 @@ for k in range(fileNum):
         write_image_gdal(BT9, ns_nadir_g, nl_nadir_g, 1, '', '', outfile)
 
         '''读取观测几何和云数据'''
-        fileName = fileDir + '\\geometry_to.nc'
+        fileName = fileDir + '/geometry_to.nc'
         objectName = r'sat_zenith_to'
         vza = getDatafromNc(fileName, objectName)
         objectName = r'sat_azimuth_to'
@@ -663,11 +673,11 @@ for k in range(fileNum):
         write_image_gdal(vaa[:nl, :ns], ns, nl, 1, '', '', outfile)
 
         '''lon and lat'''
-        fileName = fileDir + '\\geodetic_io.nc'
+        fileName = fileDir + '/geodetic_io.nc'
         objectName = r'latitude_io'
         lat = getDatafromNc(fileName, objectName)
 
-        fileName = fileDir + '\\geodetic_io.nc'
+        fileName = fileDir + '/geodetic_io.nc'
         objectName = r'longitude_io'
         lon = getDatafromNc(fileName, objectName)
 
@@ -680,7 +690,7 @@ for k in range(fileNum):
         write_image_gdal(lon[:nl, :ns], ns, nl, 1, '', '', outfile)
 
         '''cloud'''
-        fileName = fileDir + '\\flags_io.nc'
+        fileName = fileDir + '/flags_io.nc'
         objectName = r'cloud_io'
         cloud = getDatafromNc(fileName, objectName)
 
@@ -835,12 +845,12 @@ for k in range(fileNum):
         data = dataset.ReadAsArray(0, 0, im_width, im_height)
         im_geotrans = dataset.GetGeoTransform()
         im_proj = dataset.GetProjection()
-        temp1, temp2 = lonlat2geo(dataset, lat_type, lon_type)
+        temp1, temp2 = lonlat2geo(dataset, lon_type, lat_type)
         imagex, imagey = geo2imagexy(dataset, temp1, temp2)
         dataset = None
 
-        imagex = np.asarray(imagex, np.int)
-        imagey = np.asarray(imagey, np.int)
+        imagex = np.asarray(imagex, int)
+        imagey = np.asarray(imagey, int)
         ind = (imagex > 0) * (imagex < im_height - 1) * (imagey > 0) * (imagey < im_width - 1)
         imagex[imagex < 0] = 0
         imagex[imagex > (im_height - 1)] = im_height - 1

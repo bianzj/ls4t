@@ -4,10 +4,10 @@ import numpy as np
 def planck(Ts,wavelength=10.8):
     c1 = 11910.439340652
     c2 = 14388.291040407
-    if isinstance(Ts * 1.0, float):
+    if not isinstance(Ts, np.ndarray):
         if (Ts < 100): Ts = Ts + 273.15
-        wavelength = np.float(wavelength)
-        Ts = np.float(Ts)
+        wavelength = float(wavelength)
+        Ts = float(Ts)
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     else:
         Ts[Ts < 100] = Ts[Ts < 100] + 273.15

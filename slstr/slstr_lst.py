@@ -1,5 +1,11 @@
-from util.util import *
-from util.util_constant import *
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import time
+from base.util_constant import *
+from base.util_file import *
+from base.util_data import *
+import math
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -35,16 +41,18 @@ ndvi_max = ndvi_max_g
 # infile14 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Day.txt'
 # infile15 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Night.txt'
 
-indir_tif = r'D:\data\LSCT3\LSCT_dm_2022\1_slstr\tif\\'
-indir_lst = r'D:\data\LSCT3\LSCT_dm_2022\1_slstr\lst\\'
+indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
+indir_lst = r'/home/hero/data/SLSTR_heihe/lst/'
+mkdir_if_not_exist(indir_lst)
 
 # indir_fvc = r"D:\data\lai\MCD_TIF\fvc\\"
 
-indir_emis = r'D:\data\LSCT3\LSCT_dm_2022\0_base\emis\\'
-indir_type =r'D:\data\LSCT3\LSCT_dm_2022\0_base\type\\'
-indir_split = r'D:\data\LSCT3\LSCT_dm_2022\0_base\base\\'
-indir_tcw = r'F:\data\ERA5_tcw_tif\2022\\'
-indir_fvc = r'D:\data\LSCT3\LSCT_dm_2022\2_fvc(lai)\\'
+indir_emis = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/emis/'
+indir_type =r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/type/'
+indir_split = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/base/'
+
+indir_tcw = r'/home/hero/data/SLSTR_heihe/tcwv/tif/'
+# indir_fvc = r'/home/hero/data/LSCT3/LSCT_dm_2022/2_fvc(lai)/'
 
 infile10 = indir_emis + 'emis1_heihe_utm47N_1000.tif'
 infile11 = indir_emis + 'emis2_heihe_utm47N_1000.tif'
@@ -63,7 +71,7 @@ emis1_s = emis1_s / 1000.0
 [emis2_s, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile11)
 emis2_s = emis2_s / 1000.0
 [classif, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile12)
-classif = np.asarray(classif, np.int)
+classif = np.asarray(classif, int)
 emis_v = read_txt_array(infile13, 0, 2)
 
 ifnadir = 1
@@ -84,12 +92,12 @@ temp1, temp2 = imagexy2geo(dataset, nli, nsi)
 lon, lat = geo2lonlat(dataset, temp1, temp2)
 lon = np.reshape(lon,[nl,ns])
 lat = np.reshape(lat,[nl, ns])
-tcw_dir_0 = r"F:\data\ERA5_tcw_tif\2017\\\001\\ERA5_tcw_2017_001_00.tif"
+tcw_dir_0 = r"/home/hero/data/SLSTR_heihe/tcwv/tif/180/ERA5_tcw_2022_180_00.tif"
 dataset = gdal.Open(tcw_dir_0)
 indx, indy = loc2map(lat, lon, dataset)
 
 if ifnadir:
-    fileNames = search_file_rej(indir_tif, ['bt1'],'obliq')
+    fileNames = search_file_rej(indir_tif, ['day_bt1_nadir'],'aux')
     fileNum = np.size(fileNames)
     off = 13
     for k in range(fileNum):
@@ -98,7 +106,7 @@ if ifnadir:
         time_str = fileName[4:12]
         year = int(time_str[0:4])
         doy_str = time_str[5:8]
-        doy = np.int(doy_str)
+        doy = int(doy_str)
 
         outfile = indir_lst + fileName[:-off] + 'lst_nadir.tif'
 
@@ -116,12 +124,12 @@ if ifnadir:
         [BT9, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile2)
         # [tcw, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile5)
         [vza, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile8)
-        # [red, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile3)
-        # [nir, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
-        [fvcN, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
+        [red, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile3)
+        [nir, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
+        # [fvcN, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
 
-        # ndvi = (nir-red)/(nir+red)
-        # ndvi[np.isnan(ndvi)] = 0
+        ndvi = (nir-red)/(nir+red)
+        ndvi[np.isnan(ndvi)] = 0
 
         # infile9 = indir_fvc + fileName[:-off-5] + '_fvcN.tif'
         # if os.path.exists(infile9) == 0:
@@ -129,8 +137,8 @@ if ifnadir:
         # [fvc, ns0, nl0, temp3, temp4, temp5] = read_image_gdal(infile9)
 
 
-        # fvc = (ndvi - ndvi_min) / (ndvi_max - ndvi_min)
-        fvc = resize_data(fvcN, nl, ns)
+        fvc = (ndvi - ndvi_min) / (ndvi_max - ndvi_min)
+        fvc = resize_data(fvc, nl, ns)
         fvc[fvc > 1] = 1
         fvc[fvc < 0] = 0
 
@@ -243,7 +251,7 @@ if ifnadir:
         write_image_gdal(LST, ns, nl, 1, geog, proj, outfile)
 
 if ifobliq:
-    fileNames = search_file_rej(indir_tif, ['bt1'], 'nadir')
+    fileNames = search_file_rej(indir_tif, ['day_bt1_obliq'], 'nadir')
     fileNum = np.size(fileNames)
     off = 13
     for k in range(fileNum):
@@ -252,7 +260,7 @@ if ifobliq:
         time_str = fileName[4:12]
         year = int(time_str[0:4])
         doy_str = time_str[5:8]
-        doy = np.int(doy_str)
+        doy = int(doy_str)
 
         outfile = indir_lst + fileName[:-off] + 'lst_obliq.tif'
 
@@ -270,20 +278,20 @@ if ifobliq:
         [BT9, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile2)
         # [tcw, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile5)
         [vza, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile8)
-        # [red, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile3)
-        # [nir, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
-        [fvcO, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_fvcO)
+        [red, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile3)
+        [nir, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile4)
+        # [fvcO, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_fvcO)
 
 
-        # ndvi = (nir - red) / (nir + red)
-        # ndvi[np.isnan(ndvi)] = 0
+        ndvi = (nir - red) / (nir + red)
+        ndvi[np.isnan(ndvi)] = 0
 
         # infile9 = indir_fvc + fileName[:-off-5] + '_fvcO.tif'
         # if os.path.exists(infile9) == 0:
         #     continue
         # [fvc, ns0, nl0, temp3, temp4, temp5] = read_image_gdal(infile9)
-        # fvc = (ndvi - ndvi_min) / (ndvi_max - ndvi_min)
-        fvc = resize_data(fvcO, nl, ns)
+        fvc = (ndvi - ndvi_min) / (ndvi_max - ndvi_min)
+        fvc = resize_data(fvc, nl, ns)
         fvc[fvc > 1] = 1
         fvc[fvc < 0] = 0
 
