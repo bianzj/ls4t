@@ -45,13 +45,13 @@ adjust_xmin_o_g = 36
 adjust_xmax_o_g = 94 + 1
 
 # 数据操作
-ifextract_n = 0
-ifproj_n = 0
-ifresample_n = 0
+ifextract_n = 1
+ifproj_n = 1
+ifresample_n = 1
 
 
-ifextract_o = 0
-ifproj_o = 0
+ifextract_o = 1
+ifproj_o = 1
 ifresample_o = 1
 
 
@@ -376,6 +376,7 @@ for k in range(fileNum):
         write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
         outfile = indir_med + file + '_proj.tif'
         dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
+        dst_ds = None
 
     if ifresample_n:
         ns = ns_type
@@ -777,8 +778,6 @@ for k in range(fileNum):
         outfile = indir_med + file + '_proj.tif'
         dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
 
-
-
         file = 'vaa_obliq'
         datafile = indir_med + file + '.tif'
         xfile = indir_med + 'lon_obliq.tif'
@@ -787,7 +786,7 @@ for k in range(fileNum):
         write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
         outfile = indir_med + file + '_proj.tif'
         dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
-
+        dst_ds = None
 
     if ifresample_o:
         ns = ns_type
@@ -831,7 +830,6 @@ for k in range(fileNum):
             data6 = np.zeros([nl, ns])
             data9 = np.zeros([nl, ns])
             data10 = np.zeros([nl, ns])
-
         '''类重采样'''
         # BT8
         infile = indir_med + r'bt8_obliq_proj.tif'
@@ -894,6 +892,17 @@ for k in range(fileNum):
         data5[data5 < 0] = 0
         data5[data5 > 500] = 0
 
+        # vaa
+        infile = indir_med + r'vaa_obliq_proj.tif'
+        [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
+        temp = data[imagex, imagey]
+        indnew = (temp < 500.0) * (temp > 0.0) * ind
+        data9 = np.reshape(data9, [-1])
+        data9[indnew] = temp[indnew]
+        data9 = np.reshape(data9, [nl, ns])
+        data9[data9 < 0.0] = 0
+        data9[data9 > 500.0] = 0
+
         # cloud
         infile = indir_med + r'cloud_obliq_proj.tif'
         [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
@@ -904,6 +913,8 @@ for k in range(fileNum):
         data11 = np.reshape(data11, [nl, ns])
         data11[data11 < 0] = 0
         data11[data11 > 500] = 0
+
+
 
         if dayNight == "day":
             # red
@@ -957,20 +968,11 @@ for k in range(fileNum):
             write_image_gdal(data6, ns, nl, 1, geog, proj, outfile6)
             write_image_gdal(data10, ns, nl, 1, geog, proj, outfile10)
 
-        # vaa
-        infile = indir_med + r'vaa_obliq_proj.tif'
-        [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
-        temp = data[imagex, imagey]
-        indnew = (temp < 500) * (temp > 0) * ind
-        data9 = np.reshape(data9, [-1])
-        data9[indnew] = temp[indnew]
-        data9 = np.reshape(data9, [nl, ns])
-        data9[data9 < 0] = 0
-        data9[data9 > 500] = 0
 
         write_image_gdal(data1, ns, nl, 1, geog, proj, outfile1)
         write_image_gdal(data2, ns, nl, 1, geog, proj, outfile2)
         write_image_gdal(data5, ns, nl, 1, geog, proj, outfile5)
         # write_image_gdal(data8, ns, nl, 1, geog, proj, outfile8)
-        write_image_gdal(data11, ns, nl, 1, geog, proj, outfile11)
         write_image_gdal(data9, ns, nl, 1, geog, proj, outfile9)
+        write_image_gdal(data11, ns, nl, 1, geog, proj, outfile11)
+

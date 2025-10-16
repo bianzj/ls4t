@@ -19,6 +19,7 @@ from pylab import *
 import gzip
 import shutil
 import netCDF4 as nc
+import zipfile
 from scipy import stats
 from scipy.optimize import minimize
 from scipy.optimize import least_squares

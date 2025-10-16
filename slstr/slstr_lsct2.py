@@ -10,52 +10,19 @@ warnings.filterwarnings("ignore")
 
 '''2025.10.14'''
 '''
-两组分窗口组分温度反演
+两组分窗口2组分温度反演
 先确定观测角度n，反演组分数m，窗口大小ws
 1. 计算有效发射率
 2. 计算辐亮度
 3. 求解组分温度
 '''
 
-
-
-def inv_lsct2_window(n, m, ws, wl, w, b, mask, lst):
-    off = ws//2 # 窗口偏移量
-    weights = set_weights(ws) # 窗口权重
-    nl,ns = w.shape[0], w.shape[1]
-    result = np.zeros([nl,ns,m])
-    for i in range(off,nl-off):
-        for j in range(off,ns-off):
-            if np.sum(mask[i,j,:]) >= n:
-                w_win = w[i-off:i+off+1,j-off:j+off+1,:,:]
-                b_win = b[i-off:i+off+1,j-off:j+off+1,:]
-                mask_win = mask[i-off:i+off+1,j-off:j+off+1,:]
-                lst_win = lst[i-off:i+off+1,j-off:j+off+1,:]
-
-                # 两组分温差约束
-                d = [-5,30]
-                constraints = {
-                    'type': 'ineq',  # 不等式约束
-                    'fun': constraint_func_Nangle_2component,
-                    'args': (lst_win, d,ws, wl)  # 注意是元组
-                }
-
-                x0,bounds = set_x0_bnds_Nangle_Mcomponent(lst_win,n,m,ws)
-
-                p = fitting_Nangle_Mcomponent_window(w_win,b_win,n,m,mask_win,weights,constraints,x0,bounds,ws,method='SLSQP')
-                result[i,j,:] = p
-            else:
-                result[i,j,:] = np.nan
-    lsct = inv_planck(wl,result)
-    return lsct
-
-
 if __name__ == '__main__':
     '''读入数据'''
     indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
     indir_lst = r'/home/hero/data/SLSTR_heihe/lst/'
     indir_lai = r'/home/hero/data/SLSTR_heihe/lai/' 
-    outdir_lsct = r'/home/hero/data/SLSTR_heihe/lsct/'
+    outdir_lsct = r'/home/hero/data/SLSTR_heihe/lsct2/'
     mkdir_if_not_exist(outdir_lsct)
 
     indir_type = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/type/'
