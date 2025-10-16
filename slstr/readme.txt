@@ -3,7 +3,9 @@ SLSTR
 FOR L1B Product
 version: 1.0
 reformate date: 2025-10-16
-author: TIRTLab (lyf, bzj)
+author: TIRTLab (Yifan Lu, luyifan22@mails.ucas.ac.cn)
+supervisor: Zunjian Bian, Qing Xiao
+recommend python version: 3.11
 =================
 what can do:
 1. retrieve dual-angle LST
@@ -19,5 +21,3 @@ how to use:
 ================
 test data link:
 url: https://pan.baidu.com/s/19NJZhuA4byh8eAuAcVnDzA code: k21x
-================
-recommend python version: 3.11
