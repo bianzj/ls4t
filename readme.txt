@@ -17,5 +17,6 @@ land surface four-component temperature 旨在解决热红外地表温度的分�
 2. SLSTR_LST 与BASE 不配套；
 3. 增加fusion的实现模块；
 4. 增加histream的优化模块；
+5. 增加计算太阳角度的代码；
 
 
