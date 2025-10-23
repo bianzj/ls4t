@@ -466,6 +466,92 @@ def read_dataset_gdal(fileName):
     dataset = gdal.Open(fileName)
     return dataset
 
+def write_h5py_item(infile,name,data,dtype,compression=None):
+    '''
+    Write h5py
+    para infile: h5py
+    para name: string
+    para data: numpy array
+    para dtype: string
+    para compression: string
+    '''
+    if not os.path.exists(infile):
+        f = h5py.File(infile,'w')
+    else:
+        f = h5py.File(infile,'a')
+    f.create_dataset(name,data=data,dtype=dtype,compression=compression)
+    f.close()
+
+def write_h5py_file(infile,name_list,data_list,dtype_list,compression=None,ifcover = 0):
+    '''
+    Write h5py
+    para infile: h5py
+    para name_list:
+    para data_list:
+    para dtype_list:
+    para compression: gzip, lzf, szip, None (only applied to array data)
+    '''
+    item_num = len(name_list)
+    if item_num == 0:
+        return 0
+    if os.path.exists(infile):
+        if ifcover: mode = "w"
+        else: mode = "a"
+        f = h5py.File(infile,mode)
+    else:
+        f = h5py.File(infile,'w')
+    for i,name in enumerate(name_list):
+        data = data_list[i]
+        # Only apply compression to array/matrix data
+        if isinstance(data, (np.ndarray, list, tuple)) and len(np.shape(data)) > 0:
+            f.create_dataset(name,data=data,dtype=dtype_list[i],compression=compression)
+        else:
+            f.create_dataset(name,data=data,dtype=dtype_list[i])
+    f.close()
+
+
+def read_h5py_item(infile,name):
+    '''
+    para infile: h5py
+    para name: string
+    '''
+    f = h5py.File(infile,'r')
+    data = f[name]
+    return np.array(data)
+
+def read_h5py_items(infile,names):
+    '''
+    para infile: h5py
+    para name: string
+    '''
+    # 初始化一个空列表，用于存储从h5py文件中读取的数据
+    data_list = []
+    # 打开h5py文件
+    f = h5py.File(infile)
+    # 遍历输入的名称列表
+    for name in names:
+        # 检查当前名称是否存在于h5py文件中
+        if name in f:
+            # 如果存在，将数据转换为numpy数组并添加到结果列表中
+            data_list.append(np.array(f[name]))
+        else:
+            # 如果不存在，添加一个空列表到结果列表中
+            data_list.append([])
+    # 返回包含所有数据的列表
+    return data_list
+
+def read_h5py_file(infile):
+    '''
+    para infile: h5py
+    '''
+    f = h5py.File(infile)
+    name_list = []
+    data_list = []
+    for key in f.keys():
+        name_list.append(key)
+        data_list.append(np.array(f[key]))
+    return name_list,data_list
+
 def mkdir_if_not_exist(dir_name, is_delete=False):
     """
     创建文件夹
