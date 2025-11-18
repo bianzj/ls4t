@@ -64,7 +64,7 @@ def search_dir(dir,specstr):
     elif num==1:
         results += [x for x in os.listdir(dir) if
                     os.path.isdir(os.path.join(dir, x)) and
-                    specstr in x]
+                    specstr[0] in x]
     elif num==2:
         specstr1 = specstr[0]
         specstr2 = specstr[1]
@@ -456,6 +456,106 @@ def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, 
     for i in range(im_bands):
         dataset.GetRasterBand(i+1).WriteArray(im_data[i])
     del dataset
+
+def write_image_gdal_bigfile(im_data, im_width, im_height, im_bands, im_trans, im_proj, path, imageType='GTiff'):
+    '''
+    优化版的GDAL图像保存函数，提高CPU运行效率
+    '''
+    try:
+        # 预定义数据类型映射，避免重复字符串检查
+        dtype_mapping = {
+            'int8': gdal.GDT_Byte,
+            'uint8': gdal.GDT_Byte,
+            'uint16': gdal.GDT_UInt16, 
+            'int16': gdal.GDT_Int16,
+            'uint32': gdal.GDT_UInt32,
+            'int32': gdal.GDT_Int32,
+            'float32': gdal.GDT_Float32,
+            'float64': gdal.GDT_Float64
+        }
+        
+        # 获取数据类型，默认为Float32
+        datatype = dtype_mapping.get(im_data.dtype.name, gdal.GDT_Float32)
+        
+        # 优化数组形状处理
+        data_shape = im_data.shape
+        data_ndim = im_data.ndim
+        
+        if data_ndim == 3:
+            # 确保数组形状为 (bands, height, width)
+            if data_shape[0] == im_bands and data_shape[1] == im_height and data_shape[2] == im_width:
+                # 形状匹配，直接使用
+                pass
+            else:
+                # 自动检测正确的形状
+                if data_shape[2] == im_bands:  # 可能是 (height, width, bands)
+                    im_data = np.transpose(im_data, (2, 0, 1))
+                im_bands, im_height, im_width = im_data.shape
+                
+        elif data_ndim == 2:
+            # 单波段数据，确保形状为 (1, height, width)
+            im_data = im_data.reshape(1, im_height, im_width)
+            im_bands = 1
+        else:
+            raise ValueError(f"不支持的数组维度: {data_ndim}")
+        
+        # 确保数据在内存中连续存储，提高写入性能
+        if not im_data.flags['C_CONTIGUOUS']:
+            im_data = np.ascontiguousarray(im_data)
+        
+        # 创建输出目录（如果不存在）
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        
+        # 创建GDAL数据集
+        driver = gdal.GetDriverByName(imageType)
+        if driver is None:
+            raise ValueError(f"不支持的GDAL驱动类型: {imageType}")
+        
+        # 使用更高效的创建选项
+        creation_options = []
+        if imageType == 'GTiff':
+            creation_options = ['COMPRESS=LZW', 'TILED=YES', 'BIGTIFF=IF_SAFER']
+        
+        dataset = driver.Create(path, im_width, im_height, im_bands, datatype, creation_options)
+        
+        if dataset is None:
+            raise RuntimeError(f"无法创建文件: {path}")
+        
+        # 设置地理参考信息
+        if im_trans and im_proj:
+            dataset.SetGeoTransform(im_trans)
+            dataset.SetProjection(im_proj)
+        
+        # 优化波段写入：批量处理，减少Python循环开销
+        if im_bands == 1:
+            # 单波段直接写入
+            dataset.GetRasterBand(1).WriteArray(im_data[0])
+        else:
+            # 多波段写入，使用更高效的方式
+            for i in range(im_bands):
+                band = dataset.GetRasterBand(i + 1)
+                band.WriteArray(im_data[i])
+                # 可选：设置无数据值
+                # band.SetNoDataValue(nodata_value)
+        
+        # 强制刷新到磁盘
+        dataset.FlushCache()
+        del dataset
+        
+        return True
+        
+    except Exception as e:
+        print(f"保存图像时出错: {str(e)}")
+        # 清理可能创建的不完整文件
+        if 'dataset' in locals() and dataset is not None:
+            del dataset
+        if os.path.exists(path):
+            try:
+                os.remove(path)
+            except:
+                pass
+        return False
+
 
 def read_dataset_gdal(fileName):
     '''
