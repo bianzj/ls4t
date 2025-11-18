@@ -566,21 +566,25 @@ def read_dataset_gdal(fileName):
     dataset = gdal.Open(fileName)
     return dataset
 
-def write_h5py_item(infile,name,data,dtype,compression=None):
+def write_h5py_item(infile,name,data,dtype,if_overwrite=1,compression=None):
     '''
     Write h5py
     para infile: h5py
     para name: string
     para data: numpy array
     para dtype: string
+    para if_overwrite: 0 or 1
     para compression: string
     '''
     if not os.path.exists(infile):
         f = h5py.File(infile,'w')
     else:
         f = h5py.File(infile,'a')
+    if name in f and if_overwrite == 1:
+        del f[name]
     f.create_dataset(name,data=data,dtype=dtype,compression=compression)
     f.close()
+
 
 def write_h5py_file(infile,name_list,data_list,dtype_list,compression=None,ifcover = 0):
     '''

@@ -346,13 +346,41 @@ def set_x0_bnds_Nangle_Mcomponent(lst, n, m, ws=None, wl=10.8):
 
     if m == 2:
         x0 = np.array([max(b) + 5, min(b) - 3])
-        bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 30), planck(wl, lsta + 30)]]
+        bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 10), planck(wl, lsta + 10)]]
     elif m == 3:
         x0 = np.array([max(b) + 10, np.min(b) - 5, np.average(b)])
         bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 30), planck(wl, lsta + 30)],
-                  [planck(wl, lsta - 20), planck(wl, lsta + 20)]]
+                  [planck(wl, lsta - 10), planck(wl, lsta + 20)]]
     elif m == 4:
         x0 = np.array([max(b) + 10, np.min(b) - 5, np.average(b), min(b) - 5])
+        bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [planck(wl, lsta - 20), planck(wl, lsta + 20)], [planck(wl, lsta - 30), planck(wl, lsta + 30)]]
+    return x0, bounds
+
+def set_x0_bnds_Nangle_Mcomponent_night(lst, n, m, ws=None, wl=10.8):
+    '''
+    设置初值和边界
+    :param lst: LST,注意此处为 (n,)
+    :param wl: 波长
+    :return: x0,bnds
+    '''
+    if ws is not None:
+        center = int(ws // 2)
+        b = planck(wl, lst[center, center, :])
+        lsta = np.nanmean(lst[center, center, :])
+    else:
+        b = planck(wl, lst)
+        lsta = np.nanmean(lst)
+
+    if m == 2:
+        x0 = np.array([np.min(b), np.max(b)])
+        bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 10)], [planck(wl, lsta - 10), planck(wl, lsta + 10)]]
+    elif m == 3:
+        x0 = np.array([max(b), np.min(b), np.average(b)])
+        bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 10)], [planck(wl, lsta - 10), planck(wl, lsta + 10)],
+                  [planck(wl, lsta - 10), planck(wl, lsta + 10)]]
+    elif m == 4:
+        x0 = np.array([max(b), np.min(b), np.average(b), min(b)])
         bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 30), planck(wl, lsta + 30)],
                   [planck(wl, lsta - 20), planck(wl, lsta + 20)], [planck(wl, lsta - 30), planck(wl, lsta + 30)]]
     return x0, bounds
