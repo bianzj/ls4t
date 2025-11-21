@@ -1,0 +1,7 @@
+inv_lstC_global 
+
+inv_lsct2_NDVI(pbs)： NDVI版本两组分反演，NDVIs，NDVIv = 0.04，0.87
+
+inv_lsct2_v0: lai， 多像元多角度，假设组分温度二次分布，贝叶斯结合单点结果
+
+inv_lsct2_v1&v2: lai，v1 多角度， v2 多角度权重，仅有最简单温差限制（土壤、植被温度在两边）

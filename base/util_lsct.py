@@ -143,16 +143,16 @@ ls4t_emis
 '''
 def cal_effective_emissivity_hom(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,angle_number,component_number):
     '''
-    计算均值假设下冠层的有效发射率
+    计算均值假设下冠层的有效发射率,仅能处理单点多角度输入
     :param lai: 叶面积指数 float
     :param hspot: 热点参数 float
     :param wl: 波长 float
     :param emisS: 土壤发射率 float
     :param emisV: 植被发射率 float
     :param vza: 观测天顶角 (n,)
-    :param sza: 太阳天顶角 (n,)
+    :param sza: 太阳天顶角 (n,)/float
     :param vaa: 观测方位角 (n,)
-    :param saa: 太阳方位角 (n,)
+    :param saa: 太阳方位角 (n,)/float
     :param component_number: 组分数量，2，3，4
     :return: w 有效发射率 (n,m)
     '''
@@ -173,6 +173,45 @@ def cal_effective_emissivity_hom(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,angle_
     if component_number == 4:
         w = w4
     return w.T
+
+def cal_effective_emissivity_hom_region(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,angle_number,component_number,CI = 1.0):
+    '''
+    计算均值假设下冠层的有效发射率,处理区域且多角度输入
+    :param lai: 叶面积指数 nl*ns
+    :param hspot: 热点参数 float
+    :param wl: 波长 float
+    :param emisS: 土壤发射率 nl*ns
+    :param emisV: 植被发射率 nl*ns
+    :param vza: 观测天顶角 nl*ns*n
+    :param sza: 太阳天顶角 nl*ns
+    :param vaa: 观测方位角 nl*ns*n
+    :param saa: 太阳方位角 nl*ns
+    :param component_number: 组分数量，2，3，4
+    :param CI: 聚集指数 float
+    :return: w 有效发射率 nl*ns*n*m
+    '''
+    nl,ns = np.shape(lai)
+    es,el = emisS,emisV
+    Ecom = np.asarray([es,es,el,el])
+    if sza.shape != vza.shape:
+        sza = np.repeat(sza,  axis=2)
+        saa = np.repeat(saa,  axis=2)
+    vsa = np.abs(saa-vaa)
+    
+    for ni in range(n):
+        continue
+    
+    w = np.zeros([nl,ns, component_number, angle_number]) # m*n 后面再转置
+    if component_number == 2:
+        w[:,:,0,:] = w4[:,:,0,:] + w4[:,:,1,:]
+        w[:,:,1,:] = w4[:,:,2,:] + w4[:,:,3,:]
+    if component_number == 3:
+        w[:,:,0:2,:] = w4[:,:,0:2,:]
+        w[:,:,2,:] = w4[:,:,2,:] + w4[:,:,3,:]
+    if component_number == 4:
+        w = w4
+    return w.T
+
 
 def cal_psoil_hom(lai,sza):
     '''
