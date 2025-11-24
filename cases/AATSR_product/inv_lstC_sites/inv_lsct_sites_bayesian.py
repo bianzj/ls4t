@@ -437,7 +437,7 @@ def inv_mpl_agl_multiple_2(lst_n, lst_o,emis_s, emis_v, fvcN, fvcO, wl=10.8):
         para.append([wNLine, wOLine, radNLine, radOLine, maskLine, nl])
 
     tasks= []
-    pool = Pool(min(192,int(cpu_count())))
+    pool = Pool(min(32,int(cpu_count())))
     print('cpu_count',cpu_count())
     for p in para:
         tasks.append(pool.apply_async(doMultiple_line_inv_2_s, (p,)))
@@ -604,11 +604,11 @@ if __name__ == '__main__':
     lst_min, lst_max = 250, 350
     hspot, wl = 0.2, 10.8
 
-    if_Dahra = 1 # 只反演Dahra站点
-    if_PureSites = 0 # 只反演纯站点
+    if_Dahra = 0 # 只反演Dahra站点
+    if_PureSites = 1 # 只反演纯站点
     if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
     if_bayesian = 1 # bayesian 方法反演
-    if_crown = 1  # 用森林假设反演
+    if_crown = 0  # 用森林假设反演
 
     # outdir_h5_sites = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/inv_%01dc_%01dw_' % (m,ws) + ('ndvi' if if_ndvi == 1 else 'lai') + r'/'
     outdir_h5_sites = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/inv_%01dc_%01dw_' % (m,ws) + 'bayesian' + r'/'
@@ -644,8 +644,8 @@ if __name__ == '__main__':
             year = int(fileName.split('_')[1])
             doy = int(fileName.split('_')[2])
 
-            if year != 2009: continue
-            if doy < 120: continue
+            # if year != 2009: continue
+            # if doy < 120: continue
 
             print(i,fileName)
             month,day = doy2date(year,doy)
@@ -726,13 +726,13 @@ if __name__ == '__main__':
             #     w = np.stack([wN, wF], axis=2)
             
             if if_bayesian:
-                # LAI 版本
-                # fvc_n = cal_fvc_from_lai(vzaN, lai)
-                # fvc_o = cal_fvc_from_lai(vzaF, lai)
-                # # print(lai[16,16])
+                ## LAI 版本
+                fvc_n = cal_fvc_from_lai(vzaN, lai)
+                fvc_o = cal_fvc_from_lai(vzaF, lai)
+                # print(lai[16,16])
 
-                # fvcN = fvc_n
-                # fvcF = fvc_o
+                fvcN = fvc_n
+                fvcF = fvc_o
 
                 ## NDVI 版本
                 # fvcN = (ndviN - ndvi_min)/(ndvi_max - ndvi_min)  # nl*ns
@@ -746,13 +746,13 @@ if __name__ == '__main__':
                 # if np.isnan(fvcN[16,16]): continue
                 # print(ndviN[16,16],ndviF[16,16])
 
-                # 森林版本
-                indx,indy = indx.astype(int),indy.astype(int)
-                std,tcc,hcr = std_gl[indx,indy], tcc_gl[indx,indy], hcr_gl[indx,indy]
-                hcr[hcr<0.5] = 0.5
-                rcr = hcr / 3.0
-                fvcN = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vzaN, sza, np.abs(vaaN-saa))
-                fvcF = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vzaN, sza, np.abs(vaaF-saa))
+                # # 森林版本
+                # indx,indy = indx.astype(int),indy.astype(int)
+                # std,tcc,hcr = std_gl[indx,indy], tcc_gl[indx,indy], hcr_gl[indx,indy]
+                # hcr[hcr<0.5] = 0.5
+                # rcr = hcr / 3.0
+                # fvcN = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vzaN, sza, np.abs(vaaN-saa))
+                # fvcF = proportion_bidirectional_crown_one(lai, std, hspot, hcr,rcr, vzaN, sza, np.abs(vaaF-saa))
                 
                 fvcN[fvcN>1.0] = 1.0
                 fvcF[fvcF>1.0]  = 1.0
@@ -764,14 +764,14 @@ if __name__ == '__main__':
             # # break
 
             # 2.计算有效发射率矩阵
-            if if_ndvi == 0: # lai反演0
-                bN = cal_rad_from_lst(lstN,wl,lai,vzaN,emisS,emisV)
-                bF = cal_rad_from_lst(lstF,wl,lai,vzaF,emisS,emisV)
-                b = np.concatenate([bN[:,:,np.newaxis], bF[:,:,np.newaxis]], axis=2)
-            else:
-                bN = cal_rad_from_lst_fvc(lstN,wl,fvcN,emisS,emisV)
-                bF = cal_rad_from_lst_fvc(lstF,wl,fvcF,emisS,emisV)
-                b = np.concatenate([bN[:,:,np.newaxis], bF[:,:,np.newaxis]], axis=2)
+            # if if_ndvi == 0: # lai反演0
+            #     bN = cal_rad_from_lst(lstN,wl,lai,vzaN,emisS,emisV)
+            #     bF = cal_rad_from_lst(lstF,wl,lai,vzaF,emisS,emisV)
+            #     b = np.concatenate([bN[:,:,np.newaxis], bF[:,:,np.newaxis]], axis=2)
+            # else:
+            #     bN = cal_rad_from_lst_fvc(lstN,wl,fvcN,emisS,emisV)
+            #     bF = cal_rad_from_lst_fvc(lstF,wl,fvcF,emisS,emisV)
+            #     b = np.concatenate([bN[:,:,np.newaxis], bF[:,:,np.newaxis]], axis=2)
 
 
             # 3.求解
@@ -789,31 +789,31 @@ if __name__ == '__main__':
             mask = mask * (lst>lst_min)*(lst<lst_max) # 只保留合理范围内的LST
             off = ws//2
 
-            if m ==2:
-                lsct = inv_lsct2_window(n, m, ws, wl, w, b, mask, lst)
+            # if m ==2:
+            #     lsct = inv_lsct2_window(n, m, ws, wl, w, b, mask, lst)
 
-            elif m ==3:
-                lsct = np.full([nl,ns,4],np.nan)  # 4维：Tsl,Tsh,Ts,Tv 夜晚 前两者均为Ts
+            # elif m ==3:
+            #     lsct = np.full([nl,ns,4],np.nan)  # 4维：Tsl,Tsh,Ts,Tv 夜晚 前两者均为Ts
 
-                day_mask = sza < 89
-                mask_day = mask * day_mask[:,:,np.newaxis]
-                mask_night = mask * (~day_mask[:,:,np.newaxis])
+            #     day_mask = sza < 89
+            #     mask_day = mask * day_mask[:,:,np.newaxis]
+            #     mask_night = mask * (~day_mask[:,:,np.newaxis])
 
-                if np.sum(mask_day) > 0:
-                    lsct_day = inv_lsct3_window(n, m, ws, wl, w, b, mask_day, lst)
-                    psoil = cal_psoil_hom(lai,sza)
-                    Tsl, Tsh,Tv = lsct_day[:,:,0], lsct_day[:,:,1], lsct_day[:,:,2]
-                    Ts = inv_planck(wl, psoil * planck(wl,Tsl) + (1-psoil) *planck(wl,Tsh))
-                    lsct[:,:,0], lsct[:,:,1], lsct[:,:,2], lsct[:,:,3] = Tsl, Tsh, Ts,Tv
-                elif np.sum(mask_night) > 0:
-                    w2 = np.zeros([nl,ns,n,2])
-                    w2[:,:,:,0] = w[:,:,:,0] + w[:,:,:,1]
-                    w2[:,:,:,1] = w[:,:,:,2]
-                    lsct_night = inv_lsct2_window(n, 2, ws, wl, w2, b, mask_night, lst,ifday = 0)
-                    lsct[~day_mask,0] = lsct_night[~day_mask,0]
-                    lsct[~day_mask,1] = lsct_night[~day_mask,0]
-                    lsct[~day_mask,2] = lsct_night[~day_mask,0]
-                    lsct[~day_mask,3] = lsct_night[~day_mask,1]
+            #     if np.sum(mask_day) > 0:
+            #         lsct_day = inv_lsct3_window(n, m, ws, wl, w, b, mask_day, lst)
+            #         psoil = cal_psoil_hom(lai,sza)
+            #         Tsl, Tsh,Tv = lsct_day[:,:,0], lsct_day[:,:,1], lsct_day[:,:,2]
+            #         Ts = inv_planck(wl, psoil * planck(wl,Tsl) + (1-psoil) *planck(wl,Tsh))
+            #         lsct[:,:,0], lsct[:,:,1], lsct[:,:,2], lsct[:,:,3] = Tsl, Tsh, Ts,Tv
+            #     elif np.sum(mask_night) > 0:
+            #         w2 = np.zeros([nl,ns,n,2])
+            #         w2[:,:,:,0] = w[:,:,:,0] + w[:,:,:,1]
+            #         w2[:,:,:,1] = w[:,:,:,2]
+            #         lsct_night = inv_lsct2_window(n, 2, ws, wl, w2, b, mask_night, lst,ifday = 0)
+            #         lsct[~day_mask,0] = lsct_night[~day_mask,0]
+            #         lsct[~day_mask,1] = lsct_night[~day_mask,0]
+            #         lsct[~day_mask,2] = lsct_night[~day_mask,0]
+            #         lsct[~day_mask,3] = lsct_night[~day_mask,1]
 
 
             # 保存结果

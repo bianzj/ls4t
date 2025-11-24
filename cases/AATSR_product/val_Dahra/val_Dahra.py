@@ -58,7 +58,7 @@ def plot_density(data1,data2,ind,label1,label2 ,dif_therhold,outfile):
     plt.close()
 
 if __name__ == '__main__':
-    m = 2
+    m = 3
     ws = 5
     if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
     if_bayesian = 1

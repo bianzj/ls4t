@@ -33,8 +33,8 @@ ref0,ns0,nl0,nb0,geog0,proj0 = read_image_gdal(infile_ref)
 Tmin_threshold = 25000
 Tmax_threshold = 35000
 
-for kyear in range(2003, 2004):  # 2009 10 11
-    for kmonth in range(2, 4):
+for kyear in range(2009, 2010):  # 2009 10 11
+    for kmonth in range(10, 12):
 
         lstN_day_all = np.zeros([nl0,ns0],dtype=np.float32)
         Ts_day_all = np.zeros([nl0,ns0],dtype=np.float32)

@@ -141,77 +141,73 @@ def cal_lst_from_bt(bt,wl,lai,vza,emisS,emisV):
 ls4t_emis
 计算有效发射率方法
 '''
-def cal_effective_emissivity_hom(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,angle_number,component_number):
+def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n , m, CI=1.0):
     '''
-    计算均值假设下冠层的有效发射率,仅能处理单点多角度输入
-    :param lai: 叶面积指数 float
+    计算均值假设下冠层的有效发射率，既能处理单点多角度输入又能处理区域输入
+    :param lai: 叶面积指数 float 或 nl*ns
     :param hspot: 热点参数 float
     :param wl: 波长 float
-    :param emisS: 土壤发射率 float
-    :param emisV: 植被发射率 float
-    :param vza: 观测天顶角 (n,)
-    :param sza: 太阳天顶角 (n,)/float
-    :param vaa: 观测方位角 (n,)
-    :param saa: 太阳方位角 (n,)/float
-    :param component_number: 组分数量，2，3，4
-    :return: w 有效发射率 (n,m)
-    '''
-    # 获取数组形状 (处理标量输入的情况)
-    vza = np.atleast_1d(np.asarray(vza))
-    sza = np.atleast_1d(np.asarray(sza))
-    vaa = np.atleast_1d(np.asarray(vaa))
-    saa = np.atleast_1d(np.asarray(saa))
-    w4 = sample_hom_Emis(lai,hspot,wl,emisS,emisV,vza,sza,np.abs(vaa-saa))
-    w4 = reshape(w4,(4,angle_number)) # 4*n
-    w = np.zeros([component_number, angle_number]) # m*n 后面再转置
-    if component_number == 2:
-        w[0,:] = w4[0,:] + w4[1,:]
-        w[1,:] = w4[2,:] + w4[3,:]
-    if component_number == 3:
-        w[0:2,:] = w4[0:2,:]
-        w[2,:] = w4[2,:] + w4[3,:]
-    if component_number == 4:
-        w = w4
-    return w.T
-
-def cal_effective_emissivity_hom_region(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,angle_number,component_number,CI = 1.0):
-    '''
-    计算均值假设下冠层的有效发射率,处理区域且多角度输入
-    :param lai: 叶面积指数 nl*ns
-    :param hspot: 热点参数 float
-    :param wl: 波长 float
-    :param emisS: 土壤发射率 nl*ns
-    :param emisV: 植被发射率 nl*ns
-    :param vza: 观测天顶角 nl*ns*n
-    :param sza: 太阳天顶角 nl*ns
-    :param vaa: 观测方位角 nl*ns*n
-    :param saa: 太阳方位角 nl*ns
-    :param component_number: 组分数量，2，3，4
+    :param emisS: 土壤发射率 float 或 nl*ns
+    :param emisV: 植被发射率 float 或 nl*ns
+    :param vza: 观测天顶角 (n,) 或 nl*ns*n
+    :param sza: 太阳天顶角 (n,)/float 或 nl*ns*n(nl*ns)
+    :param vaa: 观测方位角 (n,) 或 nl*ns*n
+    :param saa: 太阳方位角 (n,)/float 或 nl*ns*n(nl*ns)
+    :param n: 观测角度数量
+    :param m: 组分数量，2，3，4
     :param CI: 聚集指数 float
-    :return: w 有效发射率 nl*ns*n*m
+    :return: w 有效发射率 (n,m) 或 nl*ns*n*m
     '''
-    nl,ns = np.shape(lai)
-    es,el = emisS,emisV
-    Ecom = np.asarray([es,es,el,el])
-    if sza.shape != vza.shape:
-        sza = np.repeat(sza,  axis=2)
-        saa = np.repeat(saa,  axis=2)
-    vsa = np.abs(saa-vaa)
-    
-    for ni in range(n):
-        continue
-    
-    w = np.zeros([nl,ns, component_number, angle_number]) # m*n 后面再转置
-    if component_number == 2:
-        w[:,:,0,:] = w4[:,:,0,:] + w4[:,:,1,:]
-        w[:,:,1,:] = w4[:,:,2,:] + w4[:,:,3,:]
-    if component_number == 3:
-        w[:,:,0:2,:] = w4[:,:,0:2,:]
-        w[:,:,2,:] = w4[:,:,2,:] + w4[:,:,3,:]
-    if component_number == 4:
-        w = w4
-    return w.T
-
+    # 确保输入为numpy数组
+    lai = np.asarray(lai)
+    emisS = np.asarray(emisS)
+    emisV = np.asarray(emisV)
+    vza = np.asarray(vza)
+    sza = np.asarray(sza)
+    vaa = np.asarray(vaa)
+    saa = np.asarray(saa)
+    if lai.ndim == 0:  # 标量输入，转换为点输入
+        # 点输入处理
+        vza = np.atleast_1d(vza)
+        sza = np.atleast_1d(sza)
+        vaa = np.atleast_1d(vaa)
+        saa = np.atleast_1d(saa)
+        w4 = sample_hom_Emis(lai, hspot, wl, emisS, emisV, vza, sza, np.abs(vaa-saa))
+        w4 = w4.reshape((4, n))  # 4*n
+        w = np.zeros([m, n])  # m*n 后面再转置
+        if m == 2:
+            w[0, :] = w4[0, :] + w4[1, :]
+            w[1, :] = w4[2, :] + w4[3, :]
+        elif m == 3:
+            w[0:2, :] = w4[0:2, :]
+            w[2, :] = w4[2, :] + w4[3, :]
+        elif m == 4:
+            w = w4
+        return w.T
+        
+    else:  # 区域输入处理
+        nl, ns = lai.shape  # 区域大小
+        if sza.shape != vza.shape:
+            sza = np.repeat(sza[:, :, np.newaxis], n, axis=2)
+            saa = np.repeat(saa[:, :, np.newaxis], n, axis=2)
+        vsa = np.abs(vaa - saa)
+        w4 = np.zeros([nl, ns, 4, n])  # nl*ns*4*n
+        for ni in range(n):
+            result = sample_hom_Emis(lai, hspot, wl, emisS, emisV, 
+                                   vza[:, :, ni], sza[:, :, ni], vsa[:, :, ni])
+            w4[:, :, :, ni] = result.transpose(1, 2, 0)
+        
+        w = np.zeros([nl, ns, m, n])  # nl*ns*m*n
+        
+        if m == 2:
+            w[:, :, 0, :] = w4[:, :, 0, :] + w4[:, :, 1, :]
+            w[:, :, 1, :] = w4[:, :, 2, :] + w4[:, :, 3, :]
+        elif m == 3:
+            w[:, :, 0:2, :] = w4[:, :, 0:2, :]
+            w[:, :, 2, :] = w4[:, :, 2, :] + w4[:, :, 3, :]
+        elif m == 4:
+            w = w4
+        return w.transpose(0, 1, 3, 2) # nl*ns*n*m
 
 def cal_psoil_hom(lai,sza):
     '''
@@ -509,6 +505,9 @@ def fitting_Nangle_Mcomponent_window(w, b, n, m, mask, weight, constraints, x0, 
                                       weight=masked_weights)  # 使用关键字参数传入权重
     return x
 
+
+def fitting_Nangle_Mcomponent_bayesian(w, b, n, m, mask, weight, constraints, x0, bounds, window_size=5, method='SLSQP'):
+    return
 
 ######################################################################################################
 #### from here specific functions

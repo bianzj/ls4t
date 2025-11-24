@@ -1,4 +1,8 @@
-from util.util_ls4t import *
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+from base.util_lsct import *
 import numpy as np
 
 nl, ns = 2,2

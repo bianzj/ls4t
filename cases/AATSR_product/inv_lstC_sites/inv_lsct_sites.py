@@ -1,6 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 from base.util_lsct import *
 from base.util_constant import *
 from base.util_file import *
@@ -232,7 +233,7 @@ if __name__ == '__main__':
 
     if_Dahra = 1 # 只反演Dahra站点
     if_PureSites = 0 # 只反演纯站点
-    if_ndvi = 1 # 0 用lai反演； 1 用NDVI反演 
+    if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
 
     outdir_h5_sites = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/inv_%01dc_%01dw_' % (m,ws) + ('ndvi' if if_ndvi == 1 else 'lai') + r'/'
     mkdir_if_not_exist(outdir_h5_sites)
@@ -264,7 +265,7 @@ if __name__ == '__main__':
             doy = int(fileName.split('_')[2])
 
             if year != 2009: continue
-            if doy < 120: continue
+            if doy < 150: continue
 
             start_time = time.time()
             infile = indir_site + fileName
@@ -290,7 +291,7 @@ if __name__ == '__main__':
             nl,ns = lstN.shape
 
             # 1.计算有效发射率矩阵
-            ws = 7
+            ws = 5
             off = ws//2
 
             # for i in range(16 , 16+1):

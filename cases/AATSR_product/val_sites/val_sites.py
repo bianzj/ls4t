@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 from base.util_lsct import *
 from base.util_constant import *
@@ -56,7 +56,9 @@ if __name__ == '__main__':
     m = 2
     ws = 5
     if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
+    if_bayesian = 0
     label = 'inv_%01dc_%01dw_' % (m,ws) + ('ndvi' if if_ndvi == 1 else 'lai')
+    if if_bayesian: label  = 'inv_%01dc_%01dw_' % (m,ws) + 'bayesian'
     base_dir = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/'
     indir_h5_sites = base_dir + label + r'/'
     infile_fluxnet_xy = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/sites_data/Fluxnet/FLUXSITE_imagexy.xlsx'
