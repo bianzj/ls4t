@@ -5,17 +5,25 @@ from subprocess import Popen
 
 '''2025.11.13'''
 '''下载ERA5月平均数据 作为约束数据'''
+'''python 环境 ERA5'''
+
 # c = cdsapi.Client()
 for year in range(2002, 2013):
-    outfile = r'/home/hero/data/AATSR/ERA5_month/ERA5_MonthAve_%04d.nc' % (year)
+    outfile = r'/media/hero/lsct02/ERA5_month/raw1/ERA5_MonthAve_%04d.nc' % (year)
     if os.path.exists(outfile): continue
 
     dataset = "reanalysis-era5-single-levels-monthly-means"
     request = {
         "product_type": ["monthly_averaged_reanalysis_by_hour_of_day"],
+        # "variable": [
+        #     "2m_temperature",
+        #     "skin_temperature"
+        # ],
         "variable": [
-            "2m_temperature",
-            "skin_temperature"
+            "soil_temperature_level_1",
+            "soil_temperature_level_2",
+            "soil_temperature_level_3",
+            "soil_temperature_level_4"
         ],
         "year": '%04d' % year,
         "month": [

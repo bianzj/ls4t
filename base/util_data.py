@@ -18,7 +18,7 @@ def resize_data(preArray, nl, ns, method = 'cv2.INTER_NEAREST'):
     '''
     ns = np.int_(ns)
     nl = np.int_(nl)
-    data = cv2.resize(preArray,(ns,nl),interpolation=0)
+    data = cv2.resize(preArray,(ns,nl),interpolation=method)
     return data
 
 def resize_data_ratio(preArray, ratio = 0.5, method = 'cv2.INTER_LINEAR'):
@@ -467,3 +467,14 @@ def cal_rmse_r2(data1,data2,tshred=9):
     coef = corrcoef(data1[ind],data2[ind])
     r2 = coef[1]*coef[1]
     return bias,rmse,r2
+
+def cal_rmse_r2_3sigma(mea,inv):
+    data1,data2 = mea,inv
+    dif = (data2-data1)
+    tshred = 3*1.4826*np.median(np.abs(dif-np.median(dif)))
+    ind = np.abs(dif)<tshred
+    bias = np.average(dif[ind])
+    rmse = np.sqrt(np.average(dif[ind]*dif[ind]))
+    coef = corrcoef(data1[ind],data2[ind])
+    r2 = coef[1]*coef[1]
+    return bias,rmse,r2[0]
