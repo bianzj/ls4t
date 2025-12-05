@@ -11,6 +11,8 @@ from datetime import datetime
 import csv
 import pytz
 from timezonefinder import TimezoneFinder
+import warnings
+warnings.filterwarnings("ignore")
 
 '''2025.11.11'''
 '''提取反演结果'''
@@ -58,16 +60,20 @@ def plot_density(data1,data2,ind,label1,label2 ,dif_therhold,outfile):
     plt.close()
 
 if __name__ == '__main__':
-    m = 3
-    ws = 5
-    if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
-    if_bayesian = 1
+    ###  反演参数设置
+    n, m, ws = 2, 3, 5 # n 角度， m组分， ws窗口大小
+    ndvi_max, ndvi_min, k = 0.87, 0.15, 1 # ndvi 参数
+    lst_min, lst_max = 250, 350 # 范围参数
+    hspot, wl = 0.2, 10.8 # 结构参数
+    # 反演方法
+    method_effective_emissivity = 'lai' # lai / ndvi
+    method_mpl_pixel = 'winquad' # point / winconst / winquad
+    method_solve = 'none' # bayesian / nobayesian / none
 
-    label = 'inv_%01dc_%01dw_' % (m,ws) + ('ndvi' if if_ndvi == 1 else 'lai')
-    if if_bayesian: label  = 'inv_%01dc_%01dw_' % (m,ws) + 'bayesian'
+    label = 'inv_%01dc_' % m + method_effective_emissivity + '_' + method_mpl_pixel + '_' + method_solve
+
     base_dir = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/'
     indir_h5_sites = base_dir + label + r'/'
-
     outdir = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/results/Dahra/'
     mkdir_if_not_exist(outdir)
 
@@ -120,21 +126,13 @@ if __name__ == '__main__':
             name_list = ["lstN", "lstF", "cloN_mask", "cloF_mask"]
             lstN,lstF,cloN_mask,cloF_mask = read_h5py_items(infile,name_list)
 
-            if m == 2 and if_ndvi == 0 and if_bayesian == 0:
-                items=['lsct2_Ts_lai','lsct2_Tv_lai']
+            if m == 2:
+                items=['Ts','Tv']
                 Ts,Tv = read_h5py_items(infile,items)
-            elif m == 2 and if_ndvi == 1 and if_bayesian == 0:
-                items = ['lsct2_Ts_ndvi', 'lsct2_Tv_ndvi']
-                Ts, Tv = read_h5py_items(infile, items)
-            elif m == 2 and if_bayesian == 1:
-                items = ['lsct2_Ts_bayesian', 'lsct2_Tv_bayesian']
-                Ts, Tv = read_h5py_items(infile, items)
-            elif m == 3 and if_ndvi == 0:
-                items=['lsct3_Ts_lai','lsct3_Tv_lai','lsct3_Tsl_lai','lsct3_Tsh_lai']
-                Ts,Tv,Tsl,Tsh = read_h5py_items(infile,items)
-            elif m == 3 and if_ndvi == 1:
-                items = ['lsct2_Ts_ndvi', 'lsct2_Tv_ndvi','lsct3_Tsl_ndvi','lsct3_Tsh_ndvi']
-                Ts, Tv,Tsl,Tsh = read_h5py_items(infile, items)
+            
+            elif m == 3:
+                items=['Tsl','Tsh','Ts','Tv']
+                Tsl,Tsh, Ts,Tv = read_h5py_items(infile,items)
             
             lstN_save = np.nanmean(lstN[ind])
             lstF_save = np.nanmean(lstF[ind])
@@ -224,7 +222,7 @@ if __name__ == '__main__':
         Ts_inv = data['Ts_inv']
         Tv_inv = data['Tv_inv']
 
-        if m ==2 and if_ndvi == 0:  # 两组分 LAI
+        if m ==2 and method_effective_emissivity == 'lai':  # 两组分 LAI
             # 总误差
             ind = (cloN == 1) * (cloF == 1) * (Ts_mea - lstN > -5)
             ind_Ts = ind * (Ts_mea.isna() == False) * (Ts_inv.isna() == False) * (np.abs(Ts_mea - Ts_inv) < 15)
@@ -256,28 +254,28 @@ if __name__ == '__main__':
             outfile_tv_day = outdir + label + '_Tv_day.png'
             outfile_tv_night = outdir + label + '_Tv_night.png'
 
-            dif_s_day = (Ts_mea[ind_Ts_day]-Ts_inv[ind_Ts_day])
-            dif_s_day = 3*1.4826*np.median(np.abs(dif_s_day-np.median(dif_s_day)))
-            dif_s_night = (Ts_mea[ind_Ts_night]-Ts_inv[ind_Ts_night])
-            dif_s_night = 3*1.4826*np.median(np.abs(dif_s_night-np.median(dif_s_night)))
-            dif_v_day = (Tv_mea[ind_Tv_day]-Tv_inv[ind_Tv_day])
-            dif_v_day = 3*1.4826*np.median(np.abs(dif_v_day-np.median(dif_v_day)))
-            dif_v_night = (Tv_mea[ind_Tv_night]-Tv_inv[ind_Tv_night])
-            dif_v_night = 3*1.4826*np.median(np.abs(dif_v_night-np.median(dif_v_night)))
+            # dif_s_day = (Ts_mea[ind_Ts_day]-Ts_inv[ind_Ts_day])
+            # dif_s_day = 3*1.4826*np.median(np.abs(dif_s_day-np.median(dif_s_day)))
+            # dif_s_night = (Ts_mea[ind_Ts_night]-Ts_inv[ind_Ts_night])
+            # dif_s_night = 3*1.4826*np.median(np.abs(dif_s_night-np.median(dif_s_night)))
+            # dif_v_day = (Tv_mea[ind_Tv_day]-Tv_inv[ind_Tv_day])
+            # dif_v_day = 3*1.4826*np.median(np.abs(dif_v_day-np.median(dif_v_day)))
+            # dif_v_night = (Tv_mea[ind_Tv_night]-Tv_inv[ind_Tv_night])
+            # dif_v_night = 3*1.4826*np.median(np.abs(dif_v_night-np.median(dif_v_night)))
 
             # print(dif_s_day,dif_s_night,dif_v_day,dif_v_night)
             # plot_density(Ts_mea,Ts_inv,ind_Ts_day,'Tg_mea','Ts_inv',dif_s_day,outfile_ts_day)
             # plot_density(Ts_mea,Ts_inv,ind_Ts_night,'Tg_mea','Ts_inv',dif_s_night,outfile_ts_night)
             # plot_density(Tv_mea,Tv_inv,ind_Tv_day,'Tc_mea','Tv_inv',dif_v_day,outfile_tv_day)
             # plot_density(Tv_mea,Tv_inv,ind_Tv_night,'Tc_mea','Tv_inv',dif_v_night,outfile_tv_night)
-            print(dif_s_day,dif_s_night,dif_v_day,dif_v_night)
+            # print(dif_s_day,dif_s_night,dif_v_day,dif_v_night)
             plot_density(Ts_mea,Ts_inv,ind_Ts_day,'Tg_mea','Ts_inv',dif_s,outfile_ts_day)
             plot_density(Ts_mea,Ts_inv,ind_Ts_night,'Tg_mea','Ts_inv',dif_s,outfile_ts_night)
             plot_density(Tv_mea,Tv_inv,ind_Tv_day,'Tc_mea','Tv_inv',dif_v,outfile_tv_day)
             plot_density(Tv_mea,Tv_inv,ind_Tv_night,'Tc_mea','Tv_inv',dif_v,outfile_tv_night)
 
 
-        elif if_ndvi == 1 and m == 2:  # 两组分 NDVI
+        elif method_effective_emissivity == 'ndvi' and m == 2:  # 两组分 NDVI
             ind = (cloN == 1) * (cloF == 1)
             ind_Ts = ind * (Ts_mea.isna() == False) * (Ts_inv.isna() == False) * (np.abs(Ts_mea - Ts_inv) < 15)
             ind_Tv = ind * (Tv_mea.isna() == False) * (Tv_inv.isna() == False) * (np.abs(Tv_mea - Tv_inv) < 15)
@@ -301,7 +299,7 @@ if __name__ == '__main__':
             plot_density(Ts_mea,Ts_inv,ind_Ts_day,'Tg_mea','Ts_inv',dif_s_day,outfile_ts_day)
             plot_density(Tv_mea,Tv_inv,ind_Tv_day,'Tc_mea','Tv_inv',dif_v_day,outfile_tv_day)
 
-        elif m == 3 and if_ndvi == 0:  # 三组分 LAI
+        elif m == 3 and method_effective_emissivity == 'lai':  # 三组分 LAI
             # 总误差
             ind = (cloN == 1) * (cloF == 1)
             ind_Ts = ind * (Ts_mea.isna() == False) * (Ts_inv.isna() == False) * (np.abs(Ts_mea - Ts_inv) < 15)
@@ -333,17 +331,17 @@ if __name__ == '__main__':
             outfile_tv_day = outdir + label + '_Tv_day.png'
             outfile_tv_night = outdir + label + '_Tv_night.png'
 
-            dif_s_day = (Ts_mea[ind_Ts_day]-Ts_inv[ind_Ts_day])
-            dif_s_day = 3*1.4826*np.median(np.abs(dif_s_day-np.median(dif_s_day)))
-            dif_s_night = (Ts_mea[ind_Ts_night]-Ts_inv[ind_Ts_night])
-            dif_s_night = 3*1.4826*np.median(np.abs(dif_s_night-np.median(dif_s_night)))
-            dif_v_day = (Tv_mea[ind_Tv_day]-Tv_inv[ind_Tv_day])
-            dif_v_day = 3*1.4826*np.median(np.abs(dif_v_day-np.median(dif_v_day)))
-            dif_v_night = (Tv_mea[ind_Tv_night]-Tv_inv[ind_Tv_night])
-            dif_v_night = 3*1.4826*np.median(np.abs(dif_v_night-np.median(dif_v_night)))
+            # dif_s_day = (Ts_mea[ind_Ts_day]-Ts_inv[ind_Ts_day])
+            # dif_s_day = 3*1.4826*np.median(np.abs(dif_s_day-np.median(dif_s_day)))
+            # dif_s_night = (Ts_mea[ind_Ts_night]-Ts_inv[ind_Ts_night])
+            # dif_s_night = 3*1.4826*np.median(np.abs(dif_s_night-np.median(dif_s_night)))
+            # dif_v_day = (Tv_mea[ind_Tv_day]-Tv_inv[ind_Tv_day])
+            # dif_v_day = 3*1.4826*np.median(np.abs(dif_v_day-np.median(dif_v_day)))
+            # dif_v_night = (Tv_mea[ind_Tv_night]-Tv_inv[ind_Tv_night])
+            # dif_v_night = 3*1.4826*np.median(np.abs(dif_v_night-np.median(dif_v_night)))
 
-            print(dif_s_day,dif_s_night,dif_v_day,dif_v_night)
-            plot_density(Ts_mea,Ts_inv,ind_Ts_day,'Tg_mea','Ts_inv',dif_s_day,outfile_ts_day)
-            plot_density(Ts_mea,Ts_inv,ind_Ts_night,'Tg_mea','Ts_inv',dif_s_night,outfile_ts_night)
-            plot_density(Tv_mea,Tv_inv,ind_Tv_day,'Tc_mea','Tv_inv',dif_v_day,outfile_tv_day)
-            plot_density(Tv_mea,Tv_inv,ind_Tv_night,'Tc_mea','Tv_inv',dif_v_night,outfile_tv_night)
+            # print(dif_s_day,dif_s_night,dif_v_day,dif_v_night)
+            plot_density(Ts_mea,Ts_inv,ind_Ts_day,'Tg_mea','Ts_inv',dif_s,outfile_ts_day)
+            plot_density(Ts_mea,Ts_inv,ind_Ts_night,'Tg_mea','Ts_inv',dif_s,outfile_ts_night)
+            plot_density(Tv_mea,Tv_inv,ind_Tv_day,'Tc_mea','Tv_inv',dif_v,outfile_tv_day)
+            plot_density(Tv_mea,Tv_inv,ind_Tv_night,'Tc_mea','Tv_inv',dif_v,outfile_tv_night)

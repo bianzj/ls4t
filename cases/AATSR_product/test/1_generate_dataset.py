@@ -1,6 +1,11 @@
 import sys
-sys.path.append('/home/hero/code/AATSR_product')
-from util.util_ls4t import *
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+from base.util_lsct import *
+from base.util_constant import *
+from base.util_file import *
+from base.util_data import *
+from cases.AATSR_product.util.util_aatsr import *
 import numpy as np
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -8,10 +13,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 '''2025.9.25'''
 '''生成测试数据'''
 def initial_para():
-    n ,m = 2,2 # 角度数，组分数
-    nl,ns = 43520,512 # 行列数
+    n ,m = 2,4 # 角度数，组分数
+    nl,ns = 5,5 # 行列数
     Tsl = np.full((nl,ns),315)
-    Tsh = np.full((nl,ns),315)
+    Tsh = np.full((nl,ns),295)
     Tvl = np.full((nl,ns),300)
     Tvh = np.full((nl,ns),300)
     hspot = 1.0
@@ -34,7 +39,7 @@ if __name__ == '__main__':
     
     print("图像开始生成...")
     start_time = time.time()
-    bt,w = generate_hom_Nangle_Mcomponent_mlt(n,m,nl,ns,Tsl,Tsh,Tvl,Tvh,lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,ifmlt=1)
+    bt,w = generate_hom_Nangle_Mcomponent_mlt(n,m,nl,ns,Tsl,Tsh,Tvl,Tvh,lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,ifmlt=0)
     lst = np.zeros([nl,ns,n])
     for i in range(n):
         lst[:,:,i] = cal_lst_from_bt(bt[:,:,i],wl,lai,vza[:,:,i],emisS,emisV)

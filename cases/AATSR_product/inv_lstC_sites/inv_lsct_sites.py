@@ -233,6 +233,7 @@ if __name__ == '__main__':
 
     if_Dahra = 1 # 只反演Dahra站点
     if_PureSites = 0 # 只反演纯站点
+    
     if_ndvi = 0 # 0 用lai反演； 1 用NDVI反演 
 
     outdir_h5_sites = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/aatsr_sites/inv_%01dc_%01dw_' % (m,ws) + ('ndvi' if if_ndvi == 1 else 'lai') + r'/'

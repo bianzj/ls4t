@@ -17,7 +17,7 @@ def fitting_unknown_linear_ls(y,A):
     :param x: 自变量
     :return:
     '''
-    coeffs = np.asarray(lstsq(A, y))[0]
+    coeffs = np.asarray(lstsq(A, y)[0])
     return coeffs
 
 def fitting_unknown_nonlinear_fmin(fun,y,A,xn,x0):
