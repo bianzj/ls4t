@@ -116,8 +116,8 @@ if __name__ == '__main__':
             infile = indir_site + fileName
             name_list = ["indx", "indy", "ref_indx", "ref_indy",'utc_time','lai']
             indx,indy,ref_indx,ref_indy,utc_time,lai = read_h5py_items(infile,name_list)
-            mask_x = indx==ref_indx
-            mask_y = indy==ref_indy
+            mask_x = indx == ref_indx
+            mask_y = indy == ref_indy
             ind = np.bitwise_and(mask_x,mask_y)
             if sum(ind) == 0:
                 print('no valid pixel')

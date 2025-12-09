@@ -366,6 +366,35 @@ def constraint_func_Nangle_3component(x, lst, d12, d23, ws=None, wl=10.8):
     constraint6 = d23_max - (x[1] - x[2])
     return [constraint1, constraint2, constraint3, constraint4, constraint5, constraint6]
 
+def constraint_func_Nangle_3component_winquad(x, lst, d12, d23, ws=None, wl=10.8):
+    '''
+    三组分温差限制,光照阴影土壤、阴影土壤植被 温差限制
+    :param x: 组分能量
+    :param ws: 窗口大小
+    :param lst: 垂直LST,注意此处为ws*ws*n
+    :param d12: 光照土壤与阴影土壤的温差范围,单位是K [min,max]
+    :param d23: 阴影土壤与植被的温差范围,单位是K [min,max]
+    :return: 约束条件值
+    '''
+    if ws is not None:
+        center = int(ws // 2)
+        b = planck(wl, lst[center, center, :])
+        lsta = np.nanmean(lst[center, center, :])
+    else:
+        b = planck(wl, lst)
+        lsta = np.nanmean(lst)
+    d12_min = planck(wl, lsta + d12[0] / 2) - planck(10.8, lsta - d12[0] / 2)
+    d12_max = planck(wl, lsta + d12[1] / 2) - planck(10.8, lsta - d12[1] / 2)
+    d23_min = planck(wl, lsta + d23[0] / 2) - planck(10.8, lsta - d23[0] / 2)
+    d23_max = planck(wl, lsta + d23[1] / 2) - planck(10.8, lsta - d23[1] / 2)
+    constraint1 = np.max(x) - np.max(b)
+    constraint2 = np.min(b) - np.min(x)
+    constraint3 = -d12_min + (x[0] - x[6])
+    constraint4 = d12_max - (x[0] - x[6])
+    constraint5 = -d23_min + (x[6] - x[12])
+    constraint6 = d23_max - (x[6] - x[12])
+    return [constraint1, constraint2, constraint3, constraint4, constraint5, constraint6]
+
 
 def set_weights(window_size):
     center = window_size // 2
@@ -409,6 +438,7 @@ def set_x0_bnds_Nangle_Mcomponent(lst, n, m, ws=None, wl=10.8):
                   [planck(wl, lsta - 20), planck(wl, lsta + 20)], [planck(wl, lsta - 30), planck(wl, lsta + 30)]]
     return x0, bounds
 
+
 def set_x0_bnds_Nangle_Mcomponent_night(lst, n, m, ws=None, wl=10.8):
     '''
     设置初值和边界
@@ -425,7 +455,7 @@ def set_x0_bnds_Nangle_Mcomponent_night(lst, n, m, ws=None, wl=10.8):
         lsta = np.nanmean(lst)
 
     if m == 2:
-        x0 = np.array([np.min(b), np.max(b)])
+        x0 = np.array([np.max(b), np.min(b)])
         bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 10)], [planck(wl, lsta - 10), planck(wl, lsta + 10)]]
     elif m == 3:
         x0 = np.array([max(b), np.min(b), np.average(b)])
@@ -435,6 +465,50 @@ def set_x0_bnds_Nangle_Mcomponent_night(lst, n, m, ws=None, wl=10.8):
         x0 = np.array([max(b), np.min(b), np.average(b), min(b)])
         bounds = [[planck(wl, lsta - 10), planck(wl, lsta + 40)], [planck(wl, lsta - 30), planck(wl, lsta + 30)],
                   [planck(wl, lsta - 20), planck(wl, lsta + 20)], [planck(wl, lsta - 30), planck(wl, lsta + 30)]]
+    return x0, bounds
+
+
+def set_x0_bnds_Nangle_Mcomponent_winquad(lst, n, m, ws = 5, wl=10.8):
+    '''
+    生成二次曲面拟合所需的 x0, bounds
+    x 结构: [Comp1_coeff(6个), Comp2_coeff(6个), Comp3_coeff(6个)]
+    其中每个组分的第0位是常数项(代表平均辐射亮度)，即 x[0], x[6], x[12]
+    '''
+    if ws is not None:
+        center = int(ws // 2)
+        b = planck(wl, lst[center, center, :])
+        lst[lst<230.0] = np.nan
+        lsta = np.nanmean(lst[center, center, :])
+    else:
+        b = planck(wl, lst)
+        lsta = np.nanmean(lst)
+    
+    coeff_1 = 1
+    coeff_2 = 0.5
+    if m == 2:
+        x0 = np.array([np.max(b), 0,0,0,0,0,np.min(b),0,0,0,0,0])
+        bounds = [[planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [-coeff_1, coeff_1], [-coeff_1, coeff_1],
+                  [-coeff_2, coeff_2], [-coeff_2, coeff_2],
+                  [-coeff_2, coeff_2],
+                   [planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [-coeff_1, coeff_1], [-coeff_1, coeff_1],
+                  [-coeff_2, coeff_2], [-coeff_2, coeff_2],
+                  [-coeff_2, coeff_2]]
+    elif m == 3:
+        x0 = np.array([max(b),0,0,0,0,0, np.min(b),0,0,0,0,0, np.average(b),0,0,0,0,0])
+        bounds = [[planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [-coeff_1, coeff_1], [-coeff_1, coeff_1],
+                  [-coeff_2, coeff_2], [-coeff_2, coeff_2],
+                  [-coeff_2, coeff_2],
+                  [planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [-coeff_1, coeff_1], [-coeff_1, coeff_1],
+                  [-coeff_2, coeff_2], [-coeff_2, coeff_2],
+                  [-coeff_2, coeff_2],
+                  [planck(wl, lsta - 30), planck(wl, lsta + 30)],
+                  [-coeff_1, coeff_1], [-coeff_1, coeff_1],
+                  [-coeff_2, coeff_2], [-coeff_2, coeff_2],
+                  [-coeff_2, coeff_2]]
     return x0, bounds
 
 
@@ -465,7 +539,6 @@ def fitting_Nangle_Mcomponent_point(w, b, n, m, method='ridge'):
     elif method == 'ls':
         p = fitting_unknown_linear_ls(b, w)
     return p
-
 
 def fitting_Nangle_Mcomponent_window_constant(w, b, n, m, mask, weight, constraints, x0, bounds, window_size=5, method='SLSQP'):
     '''
@@ -521,7 +594,6 @@ def fitting_Nangle_Mcomponent_window_constant(w, b, n, m, mask, weight, constrai
                                       constraints=constraints,
                                       weight=masked_weights)  # 使用关键字参数传入权重
     return x
-
 
 def fitting_Nangle_Mcomponent_window_quadratic(w, b, n, m, mask,weight, window_size=5):
     '''
@@ -612,6 +684,187 @@ def fitting_Nangle_Mcomponent_window_quadratic(w, b, n, m, mask,weight, window_s
     
     return p_final
 
+def fitting_Nangle_Mcomponent_window_quadratic(w, b, n, m, mask,weight, window_size=5):
+    '''
+    多角度 多组分 窗口内组分温度二次分布
+    :param w: 有效发射率矩阵 shape(ws,ws,n,m) ws:窗口大小
+    :param b: 亮温矩阵 shape(ws,ws,n)
+    :param mask: 窗口掩码,能反演是1，不能是0 shape(ws,ws,n)
+    :param n: 角度数
+    :param m: 组分数
+    :param window_size: 窗口大小
+    :param method: 非线性求解方法 BFGS/powell/SLSQP/L-BFGS-B/TNC
+    :return: p： 组分能量 shape(nl,ns,m）
+    '''
+    ws = window_size
+    w, b, mask = np.asarray(w), np.asarray(b), np.asarray(mask)
+    weight = np.asarray(weight)
+
+    # --- 基础检查 ---
+    if w.shape[0] != ws or w.shape[1] != ws or w.shape[2] != n or w.shape[3] != m:
+        print('Error: w shape mismatch')
+        return -1
+    if b.shape[0] != ws or b.shape[1] != ws or b.shape[2] != n:
+        print('Error: b shape mismatch')
+        return -1
+    if mask.shape[0] != ws or mask.shape[1] != ws or mask.shape[2] != n:
+        print('Error: mask shape mismatch')
+        return -1
+
+    # --- 展平数据 ---
+    # 展平后的顺序：Pixel(0,0)_Ang0, Pixel(0,0)_Ang1, Pixel(0,1)_Ang0...
+    w_flat = w.reshape(-1, m)   # (ws*ws*n, m)
+    b_flat = b.reshape(-1)      # (ws*ws*n, )
+    mask_flat = mask.reshape(-1).astype(bool) # (ws*ws*n, )
+
+    if np.sum(mask_flat) < 6 * m: 
+        return np.full((m,), np.nan)
+
+    # --- 构建几何矩阵 X ---
+    radius = window_size // 2 
+    offsets = np.arange(-radius, radius + 1)
+    ns_grid, nl_grid = np.meshgrid(offsets, offsets)
+    ns_temp = ns_grid.flatten()
+    nl_temp = nl_grid.flatten()
+    n0 = np.ones(len(ns_temp))
+    
+    # x_base: (6, 25)
+    x_base = np.asarray([n0, ns_temp, nl_temp, ns_temp * nl_temp, ns_temp * ns_temp, nl_temp * nl_temp])
+    
+    # 【修正1】使用 repeat 而不是 tile
+    # 这里的 repeat_factor 通常等于 n (角度数)
+    # 结果: [x0, x0, x1, x1...] 对应 [p0_a1, p0_a2, p1_a1, p1_a2...]
+    x = np.repeat(x_base, n, axis=1) # (6, 50)
+    
+    # --- 构建 WW 和 BB ---
+    part = 6
+    ww_list = [w_flat[:, j] * x[i, :] for j in range(m) for i in range(part)]
+    ww = np.asarray(ww_list).T
+    bb = b_flat
+
+    # --- 求解 ---
+    try:
+        coeffprior = np.asarray(lstsq(ww[mask_flat], bb[mask_flat], rcond=None)[0])
+        # print(coeffprior)
+    except Exception:
+        return np.full((m,), np.nan)
+        
+    coeffs = coeffprior.reshape(m, part)
+    p_distribution = np.dot(coeffs, x_base) # (m, 25)
+    
+    # 扩展权重以匹配观测序列 (50,) -> [w0, w0, w1, w1...]
+    w_obs_full = np.repeat(weight.flatten(), n)
+    
+    # 应用掩膜：无效观测的权重置为0
+    # 注意：这里直接乘 mask_flat，也就是 0 的位置权重变 0
+    w_obs_valid = w_obs_full * mask_flat # (50, )
+    
+    # 聚合回空间维度 (25, )
+    # 将 50 个观测权重变回 25 个像元权重 (对每个像元的 n 个角度求和)
+    w_spatial_agg = w_obs_valid.reshape(-1, n).sum(axis=1) # (25, )
+    
+    sum_weights = np.sum(w_spatial_agg)
+    if sum_weights == 0:
+        return np.full((m,), np.nan)
+        
+    w_norm = w_spatial_agg / sum_weights # (25, )
+    
+    p_final = np.dot(p_distribution, w_norm)
+    
+    return p_final
+
+def fitting_Nangle_Mcomponent_window_quadratic_constraint(w, b, n, m, mask, weight, constraints, x0, bounds, window_size=5, method='SLSQP'):
+    '''
+    多角度 多组分 窗口内组分温度二次分布 (非线性约束版)
+    '''
+    ws = window_size
+    w, b, mask = np.asarray(w), np.asarray(b), np.asarray(mask)
+    weight = np.asarray(weight)
+
+    if w.shape[0] != ws or w.shape[1] != ws or w.shape[2] != n or w.shape[3] != m:
+        print('Error: w shape mismatch')
+        return -1
+    if b.shape[0] != ws or b.shape[1] != ws or b.shape[2] != n:
+        print('Error: b shape mismatch')
+        return -1
+    if mask.shape[0] != ws or mask.shape[1] != ws or mask.shape[2] != n:
+        print('Error: mask shape mismatch')
+        return -1
+
+    # --- 展平数据 ---
+    w_flat = w.reshape(-1, m)   # (ws*ws*n, m)
+    b_flat = b.reshape(-1)      # (ws*ws*n, )
+    mask_flat = mask.reshape(-1).astype(bool) # (ws*ws*n, )
+
+    if np.sum(mask_flat) < 6 * m: 
+        return np.full((m,), np.nan)
+
+    # --- 构建几何矩阵 X ---
+    radius = window_size // 2 
+    offsets = np.arange(-radius, radius + 1)
+    ns_grid, nl_grid = np.meshgrid(offsets, offsets)
+    ns_temp = ns_grid.flatten()
+    nl_temp = nl_grid.flatten()
+    n0 = np.ones(len(ns_temp))
+    
+    # x_base: (6, 25)
+    x_base = np.asarray([n0, ns_temp, nl_temp, ns_temp * nl_temp, ns_temp * ns_temp, nl_temp * nl_temp])
+    
+    # x: (6, 25*n) -> (6, ws*ws*n)
+    x = np.repeat(x_base, n, axis=1) 
+    
+    # --- 构建 WW 和 BB (保留原有的列表推导式写法) ---
+    part = 6
+    # 这里是你原来的核心逻辑，保持不变
+    ww_list = [w_flat[:, j] * x[i, :] for j in range(m) for i in range(part)]
+    ww = np.asarray(ww_list).T
+    bb = b_flat
+
+    # --- 准备求解数据 ---
+    # 提取 mask 后的数据，用于传入 objective_func
+    ww_masked = ww[mask_flat]
+    bb_masked = bb[mask_flat]
+    
+    # 处理权重：weight是(ws,ws)，需要展平并重复n次以对应观测
+    weight_full = np.repeat(weight.flatten(), n)
+    weight_masked = weight_full[mask_flat]
+
+    # --- 非线性求解 ---
+    def objective_func(x_params):
+        # x_params shape: (m*6, )
+        residuals = np.dot(ww_masked, x_params) - bb_masked
+        return np.sum((residuals ** 2))
+
+    try:
+        # 使用 scipy.optimize.minimize
+        res = minimize(objective_func, 
+                       x0, 
+                       method=method, 
+                       bounds=bounds, 
+                       constraints=constraints)
+        coeffprior = res.x
+    except Exception as e:
+        # print(f"Optimization failed: {e}")
+        return np.full((m,), np.nan)
+
+    # --- 结果后处理 (保留你原有的逻辑) ---
+    coeffs = coeffprior.reshape(m, part)
+    p_distribution = np.dot(coeffs, x_base) # (m, 25)
+    
+    w_obs_full = np.repeat(weight.flatten(), n)
+    w_obs_valid = w_obs_full * mask_flat # (50, )
+    
+    # 聚合回空间维度 (25, )
+    w_spatial_agg = w_obs_valid.reshape(-1, n).sum(axis=1) 
+    
+    sum_weights = np.sum(w_spatial_agg)
+    if sum_weights == 0:
+        return np.full((m,), np.nan)
+        
+    w_norm = w_spatial_agg / sum_weights # (25, )
+    p_final = np.dot(p_distribution, w_norm)
+    
+    return p_final
 
 '''
 ls4t_inv
@@ -622,7 +875,7 @@ Nangle_Mcomponent_point/window_Constraints
 #### from here specific functions
 ######################################################################################################
 
-def inv_lsct_point(w, b, mask,n , m , wl = 10.8,  method='rigde'):
+def inv_lsct_point(w, b, mask,n , m , wl = 10.8,  method='ridge'):
     '''
     多角度 多组分 点反演
     :param w: 有效发射率矩阵 shape(n,m)
@@ -843,6 +1096,89 @@ def inv_lsct3_winquad(w2, w3, b, mask, psoil,n = 2, m = 2, ws = 5, wl = 10.8, if
                 
                 # 初始拟合
                 p3 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, 3, mask_win, weight, window_size=5)
+                p = np.zeros([m])
+                p[0] = p3[0] * ps + p3[1] * (1 - ps)
+                p[1] = p3[2]
+                result[i,j,:2] = p3[:2]  # Tsl Tsh
+
+                if if_bayesian:
+                    w_win = w2[i-off:i+off+1, j-off:j+off+1, :, :]
+                    valid_idx = mask_win.reshape(-1) == 1
+                    w_win = w_win.reshape(-1, m)[valid_idx] # shape变为 (N_valid, m)
+                    b_win = b_win.reshape(-1, 1)[valid_idx] # shape变为 (N_valid, 1)
+
+                    if len(b_win) >= m:
+                        try:
+                            # 公式: (w.T * Cd^-1 * w + Cm^-1)^-1 * (w.T * Cd^-1 * b + Cm^-1 * p)
+                            # 部分1: w.T * Cd^-1 * w
+                            term1 = (w_win.T @ w_win) * inv_Cd 
+                            # 部分2: w.T * Cd^-1 * b
+                            term2 = (w_win.T @ b_win) * inv_Cd
+                            
+                            pre = np.linalg.inv(term1 + inv_Cm)
+                            coeff = pre @ (term2 + inv_Cm @ p.reshape(-1, 1))
+                            p = coeff.flatten()
+                        except np.linalg.LinAlgError:
+                            pass # 矩阵不可逆保持原值
+
+                result[i, j, 2:] = p # Ts Tv
+            else:
+                result[i, j, :] = np.nan
+                
+    lsct = inv_planck(wl, result)
+    return lsct
+
+def inv_lsct3_winquad_constraint(w2, w3, b, mask,lst, psoil,n = 2, m = 2, ws = 5, wl = 10.8, if_bayesian = 1):
+    '''
+    两角度 两组分（多像元过程三组分） 窗口反演 假设窗口内组分温度分布为二次函数
+    :param n: 角度数
+    :param m: 组分数
+    :param ws: 窗口大小
+    :param wl: 波长
+    :param w: 有效发射率矩阵 shape(nl,ns,n,m)
+    :param b: 亮温矩阵 shape(nl,ns,n)
+    :param mask: 窗口掩码,能反演是1，不能是0 shape(nl,ns,n)
+    :param psoil: 光照土壤占比 (nl,ns)
+    :param if_bayesian: 是否使用贝叶斯联合单点解
+    :return: p： 组分温度 shape(nl,ns,m）
+    '''
+    soil_radiance_variance = 2
+    leaf_radiance_variance = 1
+    sensor_noise = 0.05
+
+    off = ws // 2 
+    nl, ns = w3.shape[0], w3.shape[1]
+
+    result = np.zeros([nl, ns, 4])
+    weight = set_weights(ws)
+    
+    inv_Cm = np.linalg.inv(np.diag([soil_radiance_variance, leaf_radiance_variance]))
+    inv_Cd = 1.0 / (sensor_noise ** 2)
+
+    for i in range(off, nl - off):
+        for j in range(off, ns - off):
+            if np.sum(mask[i, j, :]) >= n:
+                w_win = w3[i-off:i+off+1, j-off:j+off+1, :, :]
+                b_win = b[i-off:i+off+1, j-off:j+off+1, :]
+                mask_win = mask[i-off:i+off+1, j-off:j+off+1, :]
+                lst_win = lst[i-off:i+off+1,j-off:j+off+1,:]
+                ps = psoil[i,j]
+                
+                # 初始拟合
+                p30 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, 3, mask_win, weight, window_size=5)
+
+                x0,bounds = set_x0_bnds_Nangle_Mcomponent_winquad(lst_win,n,3,ws)
+
+                # 三组分温差约束
+                d12 = [5,40] # 光照土壤 阴影土壤温差限制 
+                d23 = [-15,15] # 阴影土壤 植被温差限制
+                constraints = {
+                    'type': 'ineq',  # 不等式约束
+                    'fun': constraint_func_Nangle_3component_winquad,
+                    'args': (lst_win, d12, d23,ws, wl)  # 注意是元组
+                }
+
+                p3 = fitting_Nangle_Mcomponent_window_quadratic_constraint(w_win, b_win, n, 3, mask_win, weight,constraints,x0,bounds, window_size=5,method='SLSQP')
                 p = np.zeros([m])
                 p[0] = p3[0] * ps + p3[1] * (1 - ps)
                 p[1] = p3[2]
