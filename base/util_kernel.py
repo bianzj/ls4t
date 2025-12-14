@@ -472,6 +472,7 @@ def cost_kernel_RL(x,y,fhs,fn):
     res = mod - mea
     return np.sum(res * res)
 
+
 def cost_kernel_RL_dif(x,y,fhs,fn):
     b = x[0]
     k = x[1]
@@ -481,15 +482,7 @@ def cost_kernel_RL_dif(x,y,fhs,fn):
     res = mod - mea
     return np.sum(res * res)
 
-def cost_kernel_VolRL_ab(x,k,y,kvol,fhs,fn):
-    a = x[0]
-    b = x[1]
-    c = x[2]
-    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
-    mea = y
-    mod = a * kvol + b * kRL + c
-    res = mod - mea
-    return np.sum(res * res)
+
 
 def cost_kernel_VolR_ab(x,k,y,kvol,fhs,fn):
     a = x[0]
@@ -903,7 +896,7 @@ def fitting_kernel_R_min(fun,y,kvol,fhs,x0,bnds,method = 'Powell'):
                    bounds=bnds, )
     return res.x
 
-def fitting_kernel_RL_min(fun,y,kvol,fhs,fn,x0,bnds,method = 'Powell'):
+def fitting_kernel_RL_min(fun,y,kvol,fhs,fn,x0,bnds,method = 'slsqp'):
     '''
     非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
     :param fun: 函数
@@ -997,6 +990,21 @@ def model_LSFR(coeffs, vza, sza, raa):
     sim = a * Kcom + b * Kgeo + c * Kiso
     return sim
 
+def model_LSFRL(coeffs, vza, sza, raa):
+    a = coeffs[0]
+    b = coeffs[1]
+    c = coeffs[2]
+    k = coeffs[3]
+    Kcom= kernel_LSF(vza)
+    RLf = kernel_RLf(vza,sza,raa)
+    fn = np.tan(np.deg2rad(sza))
+    Kgeo = (exp(-k*RLf)- exp(-k*fn))/(1- exp(-k*fn))
+    number = np.size(vza)
+    Kiso = np.ones(number)
+    sim = a * Kcom + b * Kgeo + c * Kiso
+    return sim
+
+
 def model_RossThickR(coeffs, vza, sza, raa):
     a = coeffs[0]
     b = coeffs[1]
@@ -1069,12 +1077,422 @@ def model_RPV(coeffs,sza,vza,raa):
     return obs0 * M * F * R
 
 
+rd = 3.14159/180.0
+def fun_DTC(x, mea,t):
+
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+
+    omg = 4/3.0*(tm-tsr)
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm))
+    res = mod - mea
+
+    return np.sum(res*res)
+
+def fitting_DTC( obs,pst,Tbase = 0):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    x0 = np.asarray([6+Tbase,16,12,6])
+    res = fmin(fun_DTC, x0,args=(obs,pst), disp = 0)
+    return res
+
+def model_DTC(x,t):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm))
+
+    return mod
+
+
+def fun_DTCRL(x, mea,t,fhs,fn):
+
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
+    res = mod - mea
+
+    return np.sum(res*res)
+
+# def fitting_DTCRL( obs,pst,fhs,fn,Tbase = 0):
+#     '''
+#     直接进行DTC系数的拟合
+#     :param obs:
+#     :param pst:
+#     :return:
+#     '''
+#     x0 = np.asarray([6+Tbase,16,14,6,1,0.5])
+#     res = fmin(fun_DTCRL, x0,args=(obs,pst,fhs,fn), disp = 0)
+#     return res
+
+def fitting_DTCRL( obs,pst,fhs,fn,x0 = np.asarray([6,16,14,6,1,0.5])):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+
+    res = fmin(fun_DTCRL, x0,args=(obs,pst,fhs,fn), disp = 0)
+    return res
+
+def model_DTCRL(x,t,fhs,fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
+
+    return mod
+
+def fun_DTCJRL(x, mea,t,fhs,fn,sr):
+
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    kRL = np.exp(-k * fhs)
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*sr*kRL
+    res = mod - mea
+
+    return np.sum(res*res)+0.00000001*np.sum(x*x)
+
+def fitting_DTCJRL( obs,pst,fhs,fn,sr,x0 = np.asarray([6,16,14,6,1,0.5])):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+
+    res = fmin(fun_DTCJRL, x0,args=(obs,pst,fhs,fn,sr), disp = 0)
+    return res
+
+def model_DTCJRL(x,t,fhs,fn,sr):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    kRL = np.exp(-k * fhs)
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*sr*kRL
+
+    return mod
+
+
+def cost_kernel_DTCRL(x,y,t,fhs,fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm)) + a * kRL
+    res = mod - y
+
+
+    return np.sum(res * res) + 0.00000001*np.sum(x*x)
+
+def fitting_kernel_DTCRL_min(fun,y,t,fhs,fn,x0,bnds,method = 'BFGS'):
+    '''
+    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
+    :param fun: 函数
+    :param y: 因变量
+    :param x: 自变量，是个多列数组
+    :param x0: 初值
+    :param xn: 列数
+    :param bnds: 边界
+    :param method: 方法，默认为powell，还有slsqp，L-BFGS-B，TNC，
+    :return: 回归系数
+    '''
+    res = minimize(fun, x0,
+                   args=(y,t,fhs,fn),
+                   method=method,
+                   bounds=bnds, )
+
+    # res = minimize(fun, x0,
+    #                args=(y,t,fhs,fn),
+    #                method=method)
+
+    return res.x
+
+def cost_kernel_DTC(x,y,t):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+
+
+    omg = 4 / 3.0 * (tm - tsr)
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm))
+    res = mod - y
+
+
+    return np.sum(res * res)
+
+def fitting_kernel_DTC_min(fun,y,t,x0,bnds,method = 'BFGS'):
+    '''
+    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
+    :param fun: 函数
+    :param y: 因变量
+    :param x: 自变量，是个多列数组
+    :param x0: 初值
+    :param xn: 列数
+    :param bnds: 边界
+    :param method: 方法，默认为powell，还有slsqp，L-BFGS-B，TNC，
+    :return: 回归系数
+    '''
+
+    res = minimize(fun, x0,
+                   args=(y,t),
+                   method=method,
+                   bounds=bnds, )
+
+    # res = minimize(fun, x0,
+    #                args=(y,t),
+    #                method=method)
+    return res.x
 
 
 
+def cost_R(x, mea,fhs):
 
 
+    a = x[0]
+    k = x[1]
+
+    mod = a*np.exp(-k*fhs)
+    res = mod - mea
+
+    return np.sum(res*res) + 0.001*np.sum(x*x)
+
+def fitting_R( obs,fhs):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    x0 = np.asarray([0.05,0.5])
+    res = fmin(cost_R, x0,args=(obs,fhs), disp = 0)
+    return res
+
+def model_R(x,fhs):
+    a = x[0]
+    k = x[1]
+
+    mod = a * np.exp(-k * fhs)
+    return mod
 
 
+def cost_RL(x, mea,fhs,fn):
 
 
+    a = x[0]
+    k = x[1]
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = a*kRL
+    res = mod - mea
+
+    return np.sum(res*res)
+
+def fitting_RL( obs,fhs,fn):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    x0 = np.asarray([0.05,0.5])
+    res = fmin(cost_RL, x0,args=(obs,fhs,fn), disp = 0)
+    return res
+
+def model_RL(x,fhs,fn):
+    a = x[0]
+    k = x[1]
+
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = a * kRL
+
+    return mod
+
+
+def cost_VolR(x, mea,kvol,fhs):
+
+
+    a = x[0]
+    b = x[1]
+    k = x[2]
+
+    mod = b*np.exp(-k*fhs) + a*kvol
+    res = mod - mea
+
+    return np.sum(res*res) + 0.001*np.sum(x*x)
+
+def fitting_VolR(obs,kvol,fhs):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    x0 = np.asarray([0.05,0.5,0.5])
+    res = fmin(cost_VolR, x0,args=(obs,kvol,fhs), disp = 0)
+    return res
+
+def model_VolR(x,kvol,fhs):
+    a = x[0]
+    b = x[1]
+    k = x[2]
+
+    mod = b * np.exp(-k * fhs) + a*kvol
+    return mod
+
+def cost_VolRL(x, mea,kvol,fhs,fn):
+
+
+    a = x[0]
+    b = x[1]
+    k = x[2]
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = b*kRL + a*kvol
+    res = mod - mea
+
+    return np.sum(res*res) + 0.001*np.sum(x*x)
+
+def fitting_VolRL(obs,kvol,fhs,fn):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    x0 = np.asarray([0.05,0.5,0.5])
+    res = fmin(cost_VolRL, x0,args=(obs,kvol,fhs,fn), disp = 0)
+    return res
+
+def model_VolRL(x,kvol,fhs,fn):
+    a = x[0]
+    b = x[1]
+    k = x[2]
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = b * kRL + a * kvol
+    return mod
+
+
+def fun_DTCR(x, mea,t,fhs):
+
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = np.exp(-k * fhs)
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
+    res = mod - mea
+
+    return np.sum(res*res)
+
+def fitting_DTCR( obs,pst,fhs, x0 = np.asarray([6,16,14,6,1,0.5])):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+    res = fmin(fun_DTCR, x0,args=(obs,pst,fhs), disp = 0)
+    return res
+
+def model_DTCR(x,t,fhs):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = np.exp(-k * fhs)
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
+
+    return mod
+
+
+def cost_kernel_DTCR(x,y,t,fhs):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    kRL = np.exp(-k * fhs)
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm)) + a * kRL
+    res = mod - y
+
+
+    return np.sum(res * res) + 0.0000001*np.sum(x*x)
+
+def fitting_kernel_DTCR_min(fun,y,t,fhs,x0,bnds,method = 'BFGS'):
+    '''
+    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
+    :param fun: 函数
+    :param y: 因变量
+    :param x: 自变量，是个多列数组
+    :param x0: 初值
+    :param xn: 列数
+    :param bnds: 边界
+    :param method: 方法，默认为powell，还有slsqp，L-BFGS-B，TNC，
+    :return: 回归系数
+    '''
+    res = minimize(fun, x0,
+                   args=(y,t,fhs),
+                   method=method,
+                   bounds=bnds, )
+
+    # res = minimize(fun, x0,
+    #                args=(y,t,fhs,fn),
+    #                method=method)
+
+    return res.x

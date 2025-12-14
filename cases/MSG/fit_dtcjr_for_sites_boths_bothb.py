@@ -21,7 +21,7 @@ import os
 import pyresample as pr
 from satpy import Scene
 
-from old.opt_temporal.fitting_DTC import fitting_ROSSRL_VNIR
+# from old.opt_temporal.fitting_DTC import fitting_ROSSRL_VNIR
 
 deg2rad = 3.1415926/180
 NS_PER_HR = 1.e9 * 3600.  # nanoseconds per hour

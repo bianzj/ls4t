@@ -19,10 +19,6 @@ from pylab import *
 import gzip
 import shutil
 import netCDF4 as nc
-import zipfile
-import h5py
-from timezonefinder import TimezoneFinder
-import pytz
 from scipy import stats
 from scipy.optimize import minimize
 from scipy.optimize import least_squares
@@ -35,6 +31,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import BayesianRidge
 import pysolar.solar as Sun
+from scipy.optimize import fmin
 
 # os.environ['PROJ_LIB'] =  r"C:\ProgramData\anaconda3\envs\python37\Lib\site-packages\osgeo\data"
 

@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from base.util_kernel import fitting_DTC
 from base.util_lst import *
 from base.util_data import *
 from base.util_fitting import *
@@ -53,6 +52,7 @@ for site in site_:
     plt.title(site)
     plt.plot(doy2,k4,"r.")
     plt.plot(doy1,k1,"b.")
+    plt.legend(["k in TIR","k in Red"])
     plt.show()
 
 

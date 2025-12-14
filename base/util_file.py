@@ -62,9 +62,10 @@ def search_dir(dir,specstr):
     if num == 0:
         results = os.listdir(dir)
     elif num==1:
+        specstr0 =  specstr[0]
         results += [x for x in os.listdir(dir) if
                     os.path.isdir(os.path.join(dir, x)) and
-                    specstr[0] in x]
+                    specstr0 in x]
     elif num==2:
         specstr1 = specstr[0]
         specstr2 = specstr[1]
@@ -234,7 +235,7 @@ def read_txt_str(filename, spt):
             lines = f.readline()
     return mydata
 
-def read_txt_array(filename, num_pass, num_col):
+def read_txt_array(filename, num_pass, num_col,pat = r'\s+'):
     '''
     限定读取txt文本数据，考虑了要跳过的行，但是必须要给定列数
     :param filename: 文件名
@@ -250,7 +251,7 @@ def read_txt_array(filename, num_pass, num_col):
     lut = np.zeros([num, num_col])
     for k in range(num):
         if (temp[k] == ""): continue
-        tempp = (re.split(r'\s+', temp[k].strip()))
+        tempp = (re.split(pat, temp[k].strip()))
         lut[k, :] = np.asarray(tempp)
     return lut
 
@@ -457,106 +458,6 @@ def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, 
         dataset.GetRasterBand(i+1).WriteArray(im_data[i])
     del dataset
 
-def write_image_gdal_bigfile(im_data, im_width, im_height, im_bands, im_trans, im_proj, path, imageType='GTiff'):
-    '''
-    优化版的GDAL图像保存函数，提高CPU运行效率
-    '''
-    try:
-        # 预定义数据类型映射，避免重复字符串检查
-        dtype_mapping = {
-            'int8': gdal.GDT_Byte,
-            'uint8': gdal.GDT_Byte,
-            'uint16': gdal.GDT_UInt16, 
-            'int16': gdal.GDT_Int16,
-            'uint32': gdal.GDT_UInt32,
-            'int32': gdal.GDT_Int32,
-            'float32': gdal.GDT_Float32,
-            'float64': gdal.GDT_Float64
-        }
-        
-        # 获取数据类型，默认为Float32
-        datatype = dtype_mapping.get(im_data.dtype.name, gdal.GDT_Float32)
-        
-        # 优化数组形状处理
-        data_shape = im_data.shape
-        data_ndim = im_data.ndim
-        
-        if data_ndim == 3:
-            # 确保数组形状为 (bands, height, width)
-            if data_shape[0] == im_bands and data_shape[1] == im_height and data_shape[2] == im_width:
-                # 形状匹配，直接使用
-                pass
-            else:
-                # 自动检测正确的形状
-                if data_shape[2] == im_bands:  # 可能是 (height, width, bands)
-                    im_data = np.transpose(im_data, (2, 0, 1))
-                im_bands, im_height, im_width = im_data.shape
-                
-        elif data_ndim == 2:
-            # 单波段数据，确保形状为 (1, height, width)
-            im_data = im_data.reshape(1, im_height, im_width)
-            im_bands = 1
-        else:
-            raise ValueError(f"不支持的数组维度: {data_ndim}")
-        
-        # 确保数据在内存中连续存储，提高写入性能
-        if not im_data.flags['C_CONTIGUOUS']:
-            im_data = np.ascontiguousarray(im_data)
-        
-        # 创建输出目录（如果不存在）
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        
-        # 创建GDAL数据集
-        driver = gdal.GetDriverByName(imageType)
-        if driver is None:
-            raise ValueError(f"不支持的GDAL驱动类型: {imageType}")
-        
-        # 使用更高效的创建选项
-        creation_options = []
-        if imageType == 'GTiff':
-            creation_options = ['COMPRESS=LZW', 'TILED=YES', 'BIGTIFF=IF_SAFER']
-        
-        dataset = driver.Create(path, im_width, im_height, im_bands, datatype, creation_options)
-        
-        if dataset is None:
-            raise RuntimeError(f"无法创建文件: {path}")
-        
-        # 设置地理参考信息
-        if im_trans and im_proj:
-            dataset.SetGeoTransform(im_trans)
-            dataset.SetProjection(im_proj)
-        
-        # 优化波段写入：批量处理，减少Python循环开销
-        if im_bands == 1:
-            # 单波段直接写入
-            dataset.GetRasterBand(1).WriteArray(im_data[0])
-        else:
-            # 多波段写入，使用更高效的方式
-            for i in range(im_bands):
-                band = dataset.GetRasterBand(i + 1)
-                band.WriteArray(im_data[i])
-                # 可选：设置无数据值
-                # band.SetNoDataValue(nodata_value)
-        
-        # 强制刷新到磁盘
-        dataset.FlushCache()
-        del dataset
-        
-        return True
-        
-    except Exception as e:
-        print(f"保存图像时出错: {str(e)}")
-        # 清理可能创建的不完整文件
-        if 'dataset' in locals() and dataset is not None:
-            del dataset
-        if os.path.exists(path):
-            try:
-                os.remove(path)
-            except:
-                pass
-        return False
-
-
 def read_dataset_gdal(fileName):
     '''
     读取数据，返回数据集，多用于基于数据集的数据转换
@@ -565,92 +466,6 @@ def read_dataset_gdal(fileName):
     '''
     dataset = gdal.Open(fileName)
     return dataset
-
-def write_h5py_item(infile,name,data,dtype,compression=None):
-    '''
-    Write h5py
-    para infile: h5py
-    para name: string
-    para data: numpy array
-    para dtype: string
-    para compression: string
-    '''
-    if not os.path.exists(infile):
-        f = h5py.File(infile,'w')
-    else:
-        f = h5py.File(infile,'a')
-    f.create_dataset(name,data=data,dtype=dtype,compression=compression)
-    f.close()
-
-def write_h5py_file(infile,name_list,data_list,dtype_list,compression=None,ifcover = 0):
-    '''
-    Write h5py
-    para infile: h5py
-    para name_list:
-    para data_list:
-    para dtype_list:
-    para compression: gzip, lzf, szip, None (only applied to array data)
-    '''
-    item_num = len(name_list)
-    if item_num == 0:
-        return 0
-    if os.path.exists(infile):
-        if ifcover: mode = "w"
-        else: mode = "a"
-        f = h5py.File(infile,mode)
-    else:
-        f = h5py.File(infile,'w')
-    for i,name in enumerate(name_list):
-        data = data_list[i]
-        # Only apply compression to array/matrix data
-        if isinstance(data, (np.ndarray, list, tuple)) and len(np.shape(data)) > 0:
-            f.create_dataset(name,data=data,dtype=dtype_list[i],compression=compression)
-        else:
-            f.create_dataset(name,data=data,dtype=dtype_list[i])
-    f.close()
-
-
-def read_h5py_item(infile,name):
-    '''
-    para infile: h5py
-    para name: string
-    '''
-    f = h5py.File(infile,'r')
-    data = f[name]
-    return np.array(data)
-
-def read_h5py_items(infile,names):
-    '''
-    para infile: h5py
-    para name: string
-    '''
-    # 初始化一个空列表，用于存储从h5py文件中读取的数据
-    data_list = []
-    # 打开h5py文件
-    f = h5py.File(infile)
-    # 遍历输入的名称列表
-    for name in names:
-        # 检查当前名称是否存在于h5py文件中
-        if name in f:
-            # 如果存在，将数据转换为numpy数组并添加到结果列表中
-            data_list.append(np.array(f[name]))
-        else:
-            # 如果不存在，添加一个空列表到结果列表中
-            data_list.append([])
-    # 返回包含所有数据的列表
-    return data_list
-
-def read_h5py_file(infile):
-    '''
-    para infile: h5py
-    '''
-    f = h5py.File(infile)
-    name_list = []
-    data_list = []
-    for key in f.keys():
-        name_list.append(key)
-        data_list.append(np.array(f[key]))
-    return name_list,data_list
 
 def mkdir_if_not_exist(dir_name, is_delete=False):
     """
@@ -689,15 +504,3 @@ def un_gz(file_name,infile,outdir):
     g_file.close()  # 关闭gzip对象
     print("Unzip " + file_name + " finished!")
 
-def unzip_file(zipfilename,outdir):
-    '''
-    解压zip文件
-    :param zipfilename: 要解压文件名称
-    :param outdir: 输出位置
-    '''
-    mkdir_if_not_exist(outdir)
-    zip_file = zipfile.ZipFile(zipfilename)
-    for names in zip_file.namelist():
-        zip_file.extract(names, outdir)  # 解压到outdir目录下
-    zip_file.close()
-    print("Unzip " + zipfilename + " finished!")
