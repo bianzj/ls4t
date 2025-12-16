@@ -79,7 +79,8 @@ def fitting_unknown_linear_sklearn(y,A,method='ridge'):
     :param method: 方法，推荐ridge，然后是lasso，因为lasso会倾向于拟合0
     :return: 回归系数
     '''
-    alphas = [0.0001,0.001,0.01,0.1,1,10,100]
+    # alphas = [0.0001,0.001,0.01,0.1,1,10,100]
+    alphas = [0.01]
     coeffs = 1.0
     if method=='ridge':
         clf = RidgeCV(alphas=alphas, fit_intercept=False)

@@ -441,6 +441,13 @@ def fitting_unknown_linear_sklearn(y,A,method='ridge'):
 def doMultiple_line_inv_2_AATSR(param):
     return inv_lsct2_AATSR_line((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]),(param[6]),(param[7]),(param[8]),(param[9]))
 
+def doMultiple_line_inv_2_AATSR_v1(param):
+    return inv_lsct2_AATSR_v1_line((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]),(param[6]),(param[7]),(param[8]),(param[9]))
+
+def doMultiple_line_inv_2_AATSR_v2(param):
+    return inv_lsct2_AATSR_v2_line((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]),(param[6]),(param[7]),(param[8]),(param[9]))
+
+
 def doMultiple_line_inv_2_AATSR_ridge(param):
     return inv_lsct2_AATSR_line_ridge((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]),(param[6]),(param[7]),(param[8]))
 
@@ -586,6 +593,97 @@ def inv_lsct2_AATSR_line(wNLine, wOLine, radNLine, radOLine, maskNLine,maskOLine
         Ts, Tv = inv_planck(wl, coeff[0]), inv_planck(wl, coeff[1])
         result[:, kk] = [lsct2[0],lsct2[1], Ts, Tv]
     return result
+
+
+def inv_lsct2_AATSR_v2_line(wNLine, wOLine, radNLine, radOLine, maskNLine,maskOLine, lstNLine,lstFLine, DTLine,ns = 1024):
+    wl = 10.8
+    window_size = wNLine.shape[1]
+    off = int((window_size-1)/2)
+    number_component= 2
+    result = np.zeros([number_component,ns])
+    for kk in range(off, ns-off):
+        ns1 = kk - off
+        ns2 = kk + off + 1
+        ###### w1是nadir，w2是oblique
+        maskN = np.reshape(maskNLine[:, ns1:ns2], -1)
+        maskO = np.reshape(maskOLine[:, ns1:ns2], -1)
+        if maskN[int((window_size*window_size-1)/2)]==0 or maskO[int((window_size*window_size-1)/2)]==0:
+            continue
+        id = int((window_size*window_size-1)/2)
+        lstN = np.reshape(lstNLine[:, ns1:ns2], -1)[int((window_size*window_size-1)/2)]
+        lstF = np.reshape(lstFLine[:, ns1:ns2], -1)[int((window_size*window_size-1)/2)]
+        DT = DTLine[off, kk]
+        delta12, delta23 = set_DT_value_day(DT)
+
+        w1 = wNLine[:, :, ns1:ns2]
+        w1 = np.asarray(np.reshape(w1, (number_component, -1)))
+        w2 = wOLine[:, :, ns1:ns2]
+        w2 = np.asarray(np.reshape(w2, (number_component, -1)))
+        w = np.concatenate((w1, w2), axis=1)
+
+        b1 = (np.reshape(radNLine[:, ns1:ns2], -1))
+        b2 = (np.reshape(radOLine[:, ns1:ns2], -1))
+        b = np.concatenate((b1, b2))
+
+        ind = np.concatenate((maskN, maskO))
+        num_val_point = np.sum(ind)
+
+        weight = calculate_weights(window_size)
+        weight = np.reshape(weight, -1)
+        weight = np.concatenate((weight,weight))
+
+        if num_val_point < 8: continue
+        # 两角度 多像元 三组分解
+        # coeff = fitting_linear_constraint_2angle_2component_window_weight(w[:,ind].T,b[ind],weight[ind],lstN,lstF,delta12)
+        coeff = fitting_unknown_linear_ls(b[ind],w[:,ind].T)
+        lsct2 = inv_planck(wl, coeff)
+        if np.mean(lsct2) ==0: continue
+        result[:, kk] = [lsct2[0],lsct2[1]]
+    return result
+
+def inv_lsct2_AATSR_v1_line(wNLine, wOLine, radNLine, radOLine, maskNLine,maskOLine, lstNLine,lstFLine, DTLine,ns = 1024):
+    wl = 10.8
+    window_size = wNLine.shape[1]
+    off = int((window_size-1)/2)
+    number_component= 2
+    result = np.zeros([number_component,ns])
+    for kk in range(off, ns-off):
+        ns1 = kk - off
+        ns2 = kk + off + 1
+        ###### w1是nadir，w2是oblique
+        maskN = np.reshape(maskNLine[:, ns1:ns2], -1)
+        maskO = np.reshape(maskOLine[:, ns1:ns2], -1)
+        if maskN[int((window_size*window_size-1)/2)]==0 or maskO[int((window_size*window_size-1)/2)]==0:
+            continue
+        id = int((window_size*window_size-1)/2)
+        lstN = np.reshape(lstNLine[:, ns1:ns2], -1)[int((window_size*window_size-1)/2)]
+        lstF = np.reshape(lstFLine[:, ns1:ns2], -1)[int((window_size*window_size-1)/2)]
+        DT = DTLine[off, kk]
+
+        w1 = wNLine[:, :, ns1:ns2]
+        w1 = np.asarray(np.reshape(w1, (number_component, -1)))
+        w2 = wOLine[:, :, ns1:ns2]
+        w2 = np.asarray(np.reshape(w2, (number_component, -1)))
+        w = np.concatenate((w1, w2), axis=1)
+
+        b1 = (np.reshape(radNLine[:, ns1:ns2], -1))
+        b2 = (np.reshape(radOLine[:, ns1:ns2], -1))
+        b = np.concatenate((b1, b2))
+
+        ind = np.concatenate((maskN, maskO))
+        num_val_point = np.sum(ind)
+
+        #不在中间则换单点结果
+        w = np.array([[w1[:, id] ], [w2[:, id]]])
+        w = np.matrix(w)
+        b = np.array([b1[id], b2[id]])
+        b = np.matrix(b).reshape((2, -1))
+        coeff = fitting_linear_2angle_2_component_point(w,b)
+        Ts, Tv = inv_planck(wl, coeff[0]), inv_planck(wl, coeff[1])
+        result[:, kk] = [Ts, Tv]
+    return result
+
+
 
 def inv_lsct2_AATSR_line_ridge(wNLine, wOLine, radNLine, radOLine, maskNLine,maskOLine, psoilLine, DTLine,ns = 1024):
     wl = 10.8

@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # 反演方法
     method_effective_emissivity = 'lai' # lai / ndvi
     method_mpl_pixel = 'winquad' # point / winconst / winquad
-    method_solve = 'none' # bayesian / nobayesian / none
+    method_solve = 'bayesian' # bayesian / nobayesian / none
 
     label = 'inv_%01dc_' % m + method_effective_emissivity + '_' + method_mpl_pixel + '_' + method_solve
 
@@ -119,6 +119,15 @@ if __name__ == '__main__':
             mask_x = indx == ref_indx
             mask_y = indy == ref_indy
             ind = np.bitwise_and(mask_x,mask_y)
+
+            # ind area 
+            radius = 1
+            min_x, max_x = ref_indx - radius, ref_indx + radius
+            min_y, max_y = ref_indy - radius, ref_indy + radius
+            mask_x = np.logical_and(indx >= min_x, indx <= max_x)
+            mask_y = np.logical_and(indy >= min_y, indy <= max_y)
+            ind = np.bitwise_and(mask_x, mask_y)
+
             if sum(ind) == 0:
                 print('no valid pixel')
                 continue
@@ -173,8 +182,8 @@ if __name__ == '__main__':
         merged_data = pd.DataFrame()
         for idx, row in inv_data.iterrows():
             local_time = row['Local_Time']
-            filtered_ground_data = ground_data[(ground_data['Time'] <= local_time + pd.Timedelta(minutes=7.5)) &
-                                            (ground_data['Time'] >= local_time - pd.Timedelta(minutes=7.5))]  # 选择30分钟内的数据
+            filtered_ground_data = ground_data[(ground_data['Time'] <= local_time + pd.Timedelta(minutes=15)) &
+                                            (ground_data['Time'] >= local_time - pd.Timedelta(minutes=0))]  # 选择30分钟内的数据
 
             if not filtered_ground_data.empty:
                 merged_row = row.to_frame().T.assign(**filtered_ground_data.iloc[0])

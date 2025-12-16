@@ -340,3 +340,49 @@ def aatsr_read_loc(infile_loc, iflonlat = 0):
         indx, indy = read_h5py_items(infile_loc, items)
         return indx, indy
     
+def aatsr_read_lai(infile_aux):
+    '''
+    读取aatsr h5 aux数据
+    :param infile_aux: aux文件地址
+    :return: LAI
+    '''
+    items = ['LAI']
+    lai = read_h5py_items(infile_aux, items)[0]
+    lai = lai / 1000.0
+    return lai
+
+def aatsr_read_angle(infile_ang,ifsun=1,ifview=1):
+    '''
+    读取aatsr h5 ang数据
+    :param infile_ang: ang文件地址
+    :return: 太阳天顶角、方位角
+    '''
+    if ifsun == 1:
+        items = ['sza','saa']
+        sza, saa = read_h5py_items(infile_ang, items)
+        sza = sza / 100.0
+        saa = saa / 100.0
+        sza[sza>89.99] = 89.99
+    if ifview == 1:
+        items = ['vzaN','vaaN','vzaF','vaaF']
+        vzaN, vaaN, vzaF, vaaF = read_h5py_items(infile_ang, items)
+        vzaN, vzaF = vzaN / 100.0, vzaF / 100.0
+        vaaN, vaaF = vaaN / 100.0, vaaF / 100.0
+
+    if ifsun == 1 and ifview == 1:
+        return sza, saa, vzaN, vzaF, vaaN, vaaF
+    if ifsun == 1 and ifview == 0:
+        return sza, saa
+    if ifsun == 0 and ifview == 1:
+        return vzaN, vzaF, vaaN, vaaF
+
+def aatsr_read_lsct(infile_lsct):
+    '''
+    读取aatsr h5 lsct数据
+    :param infile_lsct: lsct文件地址
+    :return: 两角度地表温度
+    '''
+    items = ['Ts','Tv']
+    Ts, Tv = read_h5py_items(infile_lsct, items)
+    Ts, Tv = Ts / 100.0, Tv / 100.0
+    return Ts, Tv

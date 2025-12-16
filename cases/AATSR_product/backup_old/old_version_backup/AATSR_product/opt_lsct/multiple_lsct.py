@@ -3218,8 +3218,8 @@ def doMultiple_line_inv_2(param):
     return line_inv_2((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]))
 
 
-def doMultiple_line_inv_2_s(param):
-    return line_inv_2_s((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]))
+# def doMultiple_line_inv_2_s(param):
+#     return line_inv_2_s((param[0]), (param[1]), (param[2]), (param[3]), (param[4]), (param[5]))
 
 
 ######分行计算的两组分温度结果，为多线程内部函数调用
@@ -3358,233 +3358,233 @@ def line_inv_2(wNLine, wOLine, radNLine, radOLine, maskLine,ns = 1024):
 
     return result
 
-def line_inv_2_s(wNLine, wOLine, radNLine, radOLine, maskLine,nl = 1024):
-    '''
-    this is for the sample rec
-    '''
-    wl = 10.8
-    off_ = 0
-    radiance_max_threshold = 20
-    radiance_min_threshold = 4.5
-    temperature_max_threshold = 350
-    temperature_min_threshold = 250
-    default_nan_temperature = 0
-    soil_radiance_variance = 2
-    leaf_radiance_variance = 1
-    sensor_noise = 0.05
-    pure_soil_threshold = 0.01
-    pure_leaf_threshold = 0.99
-    fvc_max_threshold = 0.99
-    fvc_min_threshold = 0.01
-    number_component = 2
-    number_angle = 2
-    number_value_threshold = 12
+# def line_inv_2_s(wNLine, wOLine, radNLine, radOLine, maskLine,nl = 1024):
+#     '''
+#     this is for the sample rec
+#     '''
+#     wl = 10.8
+#     off_ = 0
+#     radiance_max_threshold = 20
+#     radiance_min_threshold = 4.5
+#     temperature_max_threshold = 350
+#     temperature_min_threshold = 250
+#     default_nan_temperature = 0
+#     soil_radiance_variance = 2
+#     leaf_radiance_variance = 1
+#     sensor_noise = 0.05
+#     pure_soil_threshold = 0.01
+#     pure_leaf_threshold = 0.99
+#     fvc_max_threshold = 0.99
+#     fvc_min_threshold = 0.01
+#     number_component = 2
+#     number_angle = 2
+#     number_value_threshold = 12
 
-    result = np.zeros([number_component,nl])
-    result_point = np.zeros([number_component, nl])
+#     result = np.zeros([number_component,nl])
+#     result_point = np.zeros([number_component, nl])
 
-    off = 2
-    for kk in range(off, nl-off):
-        maskk = maskLine[kk,2]
-        if maskk == 0: continue
+#     off = 2
+#     for kk in range(off, nl-off):
+#         maskk = maskLine[kk,2]
+#         if maskk == 0: continue
 
-        nl1 = kk - off
-        nl2 = kk + off + 1
-        ###### w1是nadir，w2是oblique
-        w1 = wNLine[:,nl1:nl2,:]
-        w1 = np.asarray(np.reshape(w1, (number_component, -1)))
-        w2 = wOLine[:, nl1:nl2, :]
-        w2 = np.asarray(np.reshape(w2, (number_component, -1)))
+#         nl1 = kk - off
+#         nl2 = kk + off + 1
+#         ###### w1是nadir，w2是oblique
+#         w1 = wNLine[:,nl1:nl2,:]
+#         w1 = np.asarray(np.reshape(w1, (number_component, -1)))
+#         w2 = wOLine[:, nl1:nl2, :]
+#         w2 = np.asarray(np.reshape(w2, (number_component, -1)))
 
-        bb1 = (np.reshape(radNLine[nl1:nl2, :], -1))
-        bb2 = (np.reshape(radOLine[nl1:nl2, :], -1))
+#         bb1 = (np.reshape(radNLine[nl1:nl2, :], -1))
+#         bb2 = (np.reshape(radOLine[nl1:nl2, :], -1))
 
-        mask = np.reshape(maskLine[nl1:nl2, :], -1)
-        ind = (mask == 1) * (np.isnan(w1[0, :]) == 0)
+#         mask = np.reshape(maskLine[nl1:nl2, :], -1)
+#         ind = (mask == 1) * (np.isnan(w1[0, :]) == 0)
 
-        num_val_point = np.sum(ind)
-        if (num_val_point < number_value_threshold): continue
-        ns_temp = np.asarray([-2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2])
-        nl_temp = np.asarray(np.repeat([-2, -1, 0, 1, 2], 5))
-        part = 6
+#         num_val_point = np.sum(ind)
+#         if (num_val_point < number_value_threshold): continue
+#         ns_temp = np.asarray([-2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2, -2, -1, 0, 1, 2])
+#         nl_temp = np.asarray(np.repeat([-2, -1, 0, 1, 2], 5))
+#         part = 6
 
-        n0 = np.ones(len(ns_temp))
-        x = np.asarray([n0, ns_temp, nl_temp, ns_temp * nl_temp, ns_temp * ns_temp, nl_temp * nl_temp])
-        w11 = np.asarray([w1[j, :] * x[i, :] for j in range(number_component) for i in range(part)])
-        w22 = np.asarray([w2[j, :] * x[i, :] for j in range(number_component) for i in range(part)])
+#         n0 = np.ones(len(ns_temp))
+#         x = np.asarray([n0, ns_temp, nl_temp, ns_temp * nl_temp, ns_temp * ns_temp, nl_temp * nl_temp])
+#         w11 = np.asarray([w1[j, :] * x[i, :] for j in range(number_component) for i in range(part)])
+#         w22 = np.asarray([w2[j, :] * x[i, :] for j in range(number_component) for i in range(part)])
 
-        ww = np.hstack((w11[:, ind], w22[:, ind]))
-        bb = np.hstack((bb1[ind], bb2[ind]))
+#         ww = np.hstack((w11[:, ind], w22[:, ind]))
+#         bb = np.hstack((bb1[ind], bb2[ind]))
 
-        ###############################################
-        ### least-square method
-        ###############################################
-        ww = np.transpose(ww)
+#         ###############################################
+#         ### least-square method
+#         ###############################################
+#         ww = np.transpose(ww)
 
-        coeffprior = np.asarray(lstsq(ww, bb, rcond=None)[0])
+#         coeffprior = np.asarray(lstsq(ww, bb, rcond=None)[0])
 
-        ################################################
-        ### first reult with averaing information
-        ################################################
-        offcenter = np.int_(((2 * off + 1) * (2 * off + 1) - 1) / 2)
-        fd = np.asarray([[1, 4, 7, 4, 1], [4, 16, 26, 16, 4], [7, 26, 41, 26, 7], [4, 16, 26, 16, 4], [1, 4, 7, 4, 1]])
-        fd = np.reshape(fd, -1) * 1.0
+#         ################################################
+#         ### first reult with averaing information
+#         ################################################
+#         offcenter = np.int_(((2 * off + 1) * (2 * off + 1) - 1) / 2)
+#         fd = np.asarray([[1, 4, 7, 4, 1], [4, 16, 26, 16, 4], [7, 26, 41, 26, 7], [4, 16, 26, 16, 4], [1, 4, 7, 4, 1]])
+#         fd = np.reshape(fd, -1) * 1.0
 
-        coeffprior = np.asarray(coeffprior)
-        ct1 = np.asarray([np.sum(coeffprior[:part] * x[:part, j]) for j in range(25)])
-        ct2 = np.asarray([np.sum(coeffprior[part:2 * part] * x[:part, j]) for j in range(25)])
-        indnew = ind * (ct2 < radiance_max_threshold) * (ct2 > radiance_min_threshold) * \
-                 (ct1 > radiance_min_threshold) * (ct1 < radiance_max_threshold)
-        apoint = np.sum(indnew)
-        if (apoint <= 1):
-            cd1 = np.sum(coeffprior[:part] * x[:, offcenter])
-            cd2 = np.sum(coeffprior[part:] * x[:, offcenter])
-            ctprior = np.transpose(np.matrix([cd1, cd2]))
-        else:
-            fd[indnew] = fd[indnew] / np.sum(fd[indnew])
+#         coeffprior = np.asarray(coeffprior)
+#         ct1 = np.asarray([np.sum(coeffprior[:part] * x[:part, j]) for j in range(25)])
+#         ct2 = np.asarray([np.sum(coeffprior[part:2 * part] * x[:part, j]) for j in range(25)])
+#         indnew = ind * (ct2 < radiance_max_threshold) * (ct2 > radiance_min_threshold) * \
+#                  (ct1 > radiance_min_threshold) * (ct1 < radiance_max_threshold)
+#         apoint = np.sum(indnew)
+#         if (apoint <= 1):
+#             cd1 = np.sum(coeffprior[:part] * x[:, offcenter])
+#             cd2 = np.sum(coeffprior[part:] * x[:, offcenter])
+#             ctprior = np.transpose(np.matrix([cd1, cd2]))
+#         else:
+#             fd[indnew] = fd[indnew] / np.sum(fd[indnew])
 
-            cd1new = np.sum(ct1[indnew] * fd[indnew])
-            cd2new = np.sum(ct2[indnew] * fd[indnew])
-            ctprior = np.transpose(np.matrix([cd1new, cd2new]))
-        # component_temperature = inv_planck(wl, ctprior)
-        #################################################
-        ### second result by combining one-point result
-        #################################################
+#             cd1new = np.sum(ct1[indnew] * fd[indnew])
+#             cd2new = np.sum(ct2[indnew] * fd[indnew])
+#             ctprior = np.transpose(np.matrix([cd1new, cd2new]))
+#         # component_temperature = inv_planck(wl, ctprior)
+#         #################################################
+#         ### second result by combining one-point result
+#         #################################################
 
-        nl1 = kk - off_
-        nl2 = kk + off_ + 1
-        w1 = wNLine[:,nl1:nl2, 2]
-        w1 = np.asarray(np.reshape(w1, (number_component, -1)))
-        w2 = wOLine[:,nl1:nl2, 2]
-        w2 = np.asarray(np.reshape(w2, (number_component, -1)))
-        b1 = (np.reshape(radNLine[nl1:nl2,2], -1))
-        b2 = (np.reshape(radOLine[nl1:nl2,2], -1))
-        w = np.hstack((w1, w2))
-        b = np.hstack((b1, b2))
-        w = np.transpose(w)
+#         nl1 = kk - off_
+#         nl2 = kk + off_ + 1
+#         w1 = wNLine[:,nl1:nl2, 2]
+#         w1 = np.asarray(np.reshape(w1, (number_component, -1)))
+#         w2 = wOLine[:,nl1:nl2, 2]
+#         w2 = np.asarray(np.reshape(w2, (number_component, -1)))
+#         b1 = (np.reshape(radNLine[nl1:nl2,2], -1))
+#         b2 = (np.reshape(radOLine[nl1:nl2,2], -1))
+#         w = np.hstack((w1, w2))
+#         b = np.hstack((b1, b2))
+#         w = np.transpose(w)
 
-        #################################################
-        ### least-squared method
-        #################################################
-        # coeffprior = np.asarray(lstsq(w, b)[0])
-        # coeffprior_point = np.asarray(lstsq(w, b)[0])
-        # component_temperature_point = inv_planck(wl, coeffprior_point)
-        # result_point[:, kk] = [component_temperature_point[0], component_temperature_point[1]]
+#         #################################################
+#         ### least-squared method
+#         #################################################
+#         # coeffprior = np.asarray(lstsq(w, b)[0])
+#         # coeffprior_point = np.asarray(lstsq(w, b)[0])
+#         # component_temperature_point = inv_planck(wl, coeffprior_point)
+#         # result_point[:, kk] = [component_temperature_point[0], component_temperature_point[1]]
 
-        #################################################
-        ### Bayes method
-        #################################################
+#         #################################################
+#         ### Bayes method
+#         #################################################
 
-        w = np.matrix(w)
-        b = np.matrix(b)
-        b = np.transpose(b)
+#         w = np.matrix(w)
+#         b = np.matrix(b)
+#         b = np.transpose(b)
 
-        Cd = np.matrix(np.diag(np.ones(number_component)) * sensor_noise)
-        Cm = np.diag([soil_radiance_variance, leaf_radiance_variance])
-        pre = np.linalg.inv(np.transpose(w) * np.linalg.inv(Cd) * w + np.linalg.inv(Cm))
-        coeff = pre * (np.transpose(w) * np.linalg.inv(Cd) * b + np.linalg.inv(Cm) * ctprior)
-        ### another solution for using priori information
-        # coeff = ctprior + np.transpose(Cd * np.transpose(w) * pre) * (b - np.transpose(w) * ctprior)
-        component_radiance = np.asarray(coeff)
+#         Cd = np.matrix(np.diag(np.ones(number_component)) * sensor_noise)
+#         Cm = np.diag([soil_radiance_variance, leaf_radiance_variance])
+#         pre = np.linalg.inv(np.transpose(w) * np.linalg.inv(Cd) * w + np.linalg.inv(Cm))
+#         coeff = pre * (np.transpose(w) * np.linalg.inv(Cd) * b + np.linalg.inv(Cm) * ctprior)
+#         ### another solution for using priori information
+#         # coeff = ctprior + np.transpose(Cd * np.transpose(w) * pre) * (b - np.transpose(w) * ctprior)
+#         component_radiance = np.asarray(coeff)
 
-        if (np.min(component_radiance) < radiance_min_threshold): continue
-        if (np.max(component_radiance) > radiance_max_threshold): continue
+#         if (np.min(component_radiance) < radiance_min_threshold): continue
+#         if (np.max(component_radiance) > radiance_max_threshold): continue
 
-        component_temperature = inv_planck(wl, component_radiance)
+#         component_temperature = inv_planck(wl, component_radiance)
 
-        result[:, kk] = [component_temperature[0][0], component_temperature[1][0]]
+#         result[:, kk] = [component_temperature[0][0], component_temperature[1][0]]
 
-    return result
+#     return result
 
 
 ####### 多线程计算两组分
 ####### 输入：nadir和oblique两个角度的地表温度，土壤发射率、植被发射率、nadir和obliqu两个角度的植被覆盖度fvc
-def inv_mpl_agl_multiple_2(lst_n, lst_o,emis_s, emis_v, fvcN, fvcO, wl=10.8):
-    radiance_max_threshold = 20
-    radiance_min_threshold = 4.5
-    temperature_max_threshold = 350
-    temperature_min_threshold = 250
-    default_nan_temperature = 0
-    soil_radiance_variance = 2
-    leaf_radiance_variance = 1
-    # sensor_noise = 0.05
-    pure_soil_threshold = 0.01
-    pure_leaf_threshold = 0.99
-    fvc_max_threshold = 0.99
-    fvc_min_threshold = 0.01
-    fd0 = np.asarray([[1, 4, 7, 4, 1], [4, 16, 26, 16, 4], [7, 26, 41, 26, 7], [4, 16, 26, 16, 4], [1, 4, 7, 4, 1]])
-    number_component = 2
-    number_angle = 2
-    number_value_threshold = 12
-    off = 2
-    off_ = 0
+# def inv_mpl_agl_multiple_2(lst_n, lst_o,emis_s, emis_v, fvcN, fvcO, wl=10.8):
+#     radiance_max_threshold = 20
+#     radiance_min_threshold = 4.5
+#     temperature_max_threshold = 350
+#     temperature_min_threshold = 250
+#     default_nan_temperature = 0
+#     soil_radiance_variance = 2
+#     leaf_radiance_variance = 1
+#     # sensor_noise = 0.05
+#     pure_soil_threshold = 0.01
+#     pure_leaf_threshold = 0.99
+#     fvc_max_threshold = 0.99
+#     fvc_min_threshold = 0.01
+#     fd0 = np.asarray([[1, 4, 7, 4, 1], [4, 16, 26, 16, 4], [7, 26, 41, 26, 7], [4, 16, 26, 16, 4], [1, 4, 7, 4, 1]])
+#     number_component = 2
+#     number_angle = 2
+#     number_value_threshold = 12
+#     off = 2
+#     off_ = 0
 
-    start = time.time()
-    [nl, ns] = np.shape(lst_n)
-    result = np.zeros([2,nl,ns])
+#     start = time.time()
+#     [nl, ns] = np.shape(lst_n)
+#     result = np.zeros([2,nl,ns])
 
-    ###### fvc LAI 根据LAI计算得到的fvc，为此函数的输入项
-    fvc_n = fvcN * 1.0
-    fvc_n[fvc_n > fvc_max_threshold] = fvc_max_threshold
-    fvc_n[fvc_n < fvc_min_threshold] = fvc_min_threshold
+#     ###### fvc LAI 根据LAI计算得到的fvc，为此函数的输入项
+#     fvc_n = fvcN * 1.0
+#     fvc_n[fvc_n > fvc_max_threshold] = fvc_max_threshold
+#     fvc_n[fvc_n < fvc_min_threshold] = fvc_min_threshold
 
-    fvc_o = fvcO * 1.0
-    fvc_o[fvc_o > fvc_max_threshold] = fvc_max_threshold
-    fvc_o[fvc_o < fvc_min_threshold] = fvc_min_threshold
+#     fvc_o = fvcO * 1.0
+#     fvc_o[fvc_o > fvc_max_threshold] = fvc_max_threshold
+#     fvc_o[fvc_o < fvc_min_threshold] = fvc_min_threshold
 
-    ###### the radiance 根据fvc和植被土壤的发射率计算像元的有效发射率，加上反演得到的地表温度计算像元的能量
-    rad_n = planck(wl, lst_n)
-    rad_n = rad_n * (fvc_n * emis_v + (1 - fvc_n) * emis_s)
-    rad_o = planck(wl, lst_o)
-    rad_o = rad_o * (fvc_o * emis_v + (1 - fvc_o) * emis_s)
+#     ###### the radiance 根据fvc和植被土壤的发射率计算像元的有效发射率，加上反演得到的地表温度计算像元的能量
+#     rad_n = planck(wl, lst_n)
+#     rad_n = rad_n * (fvc_n * emis_v + (1 - fvc_n) * emis_s)
+#     rad_o = planck(wl, lst_o)
+#     rad_o = rad_o * (fvc_o * emis_v + (1 - fvc_o) * emis_s)
 
-    ###### component effective emissivity matrix 组分有效发射率，分别对应光土壤，植被
-    wN = np.asarray([emis_s * (1 - fvc_n) , emis_v * (fvc_n)])
-    wO = np.asarray([emis_s * (1 - fvc_o) , emis_v * (fvc_o)])
+#     ###### component effective emissivity matrix 组分有效发射率，分别对应光土壤，植被
+#     wN = np.asarray([emis_s * (1 - fvc_n) , emis_v * (fvc_n)])
+#     wO = np.asarray([emis_s * (1 - fvc_o) , emis_v * (fvc_o)])
 
-    mask = np.zeros([nl,ns])
-    ind0 = (fvc_n > pure_soil_threshold) * (fvc_n < pure_leaf_threshold) * \
-           (rad_n > radiance_min_threshold) * (rad_n < radiance_max_threshold) * \
-           (rad_o > radiance_min_threshold) * (rad_o < radiance_max_threshold)
-    mask[ind0] = 1
+#     mask = np.zeros([nl,ns])
+#     ind0 = (fvc_n > pure_soil_threshold) * (fvc_n < pure_leaf_threshold) * \
+#            (rad_n > radiance_min_threshold) * (rad_n < radiance_max_threshold) * \
+#            (rad_o > radiance_min_threshold) * (rad_o < radiance_max_threshold)
+#     mask[ind0] = 1
 
-    para = []
-    # for kn in range(off, nl-off):
-    #     ###### 取wN的所有组分的5行，列全部，进行多线程的操作, 5行为多像元反演组分温度时候所用到的
-    #     wNLine = wN[:,kn-off: kn + off + 1, :]
-    #     wOLine = wO[:, kn - off: kn + off + 1, :]
-    #     radNLine = rad_n[kn-off:kn+off+1, : ]
-    #     radOLine = rad_o[kn-off:kn+off+1, : ]
-    #     maskLine = mask[kn-off: kn + off+1, : ]
-    #     para.append([wNLine, wOLine, radNLine, radOLine, maskLine, ns])
+#     para = []
+#     # for kn in range(off, nl-off):
+#     #     ###### 取wN的所有组分的5行，列全部，进行多线程的操作, 5行为多像元反演组分温度时候所用到的
+#     #     wNLine = wN[:,kn-off: kn + off + 1, :]
+#     #     wOLine = wO[:, kn - off: kn + off + 1, :]
+#     #     radNLine = rad_n[kn-off:kn+off+1, : ]
+#     #     radOLine = rad_o[kn-off:kn+off+1, : ]
+#     #     maskLine = mask[kn-off: kn + off+1, : ]
+#     #     para.append([wNLine, wOLine, radNLine, radOLine, maskLine, ns])
 
-    for kn in range(off, ns-off):
-        ###### 取wN的所有组分的5行，列全部，进行多线程的操作, 5行为多像元反演组分温度时候所用到的
-        wNLine = wN[:,:,kn-off: kn + off + 1]
-        wOLine = wO[:,:, kn - off: kn + off + 1]
-        radNLine = rad_n[:,kn-off:kn+off+1 ]
-        radOLine = rad_o[:,kn-off:kn+off+1]
-        maskLine = mask[:,kn-off: kn + off+1 ]
-        para.append([wNLine, wOLine, radNLine, radOLine, maskLine, nl])
+#     for kn in range(off, ns-off):
+#         ###### 取wN的所有组分的5行，列全部，进行多线程的操作, 5行为多像元反演组分温度时候所用到的
+#         wNLine = wN[:,:,kn-off: kn + off + 1]
+#         wOLine = wO[:,:, kn - off: kn + off + 1]
+#         radNLine = rad_n[:,kn-off:kn+off+1 ]
+#         radOLine = rad_o[:,kn-off:kn+off+1]
+#         maskLine = mask[:,kn-off: kn + off+1 ]
+#         para.append([wNLine, wOLine, radNLine, radOLine, maskLine, nl])
 
-    tasks= []
-    pool = Pool(min(64,cpu_count()))
-    print('cpu_count',cpu_count())
-    for p in para:
-        tasks.append(pool.apply_async(doMultiple_line_inv_2_s, (p,)))
-    pool.close()
-    pool.join()
-    results = [task.get() for task in tasks]
-    end = time.time()
-    results = np.asarray(results)
-    resultForm = np.asarray([results[:,0,:], results[:,1,:]])
-    resultForm = np.transpose(resultForm)
-    print('time cost: ', end - start, 's')
-    return resultForm
+#     tasks= []
+#     pool = Pool(min(64,cpu_count()))
+#     print('cpu_count',cpu_count())
+#     for p in para:
+#         tasks.append(pool.apply_async(doMultiple_line_inv_2_s, (p,)))
+#     pool.close()
+#     pool.join()
+#     results = [task.get() for task in tasks]
+#     end = time.time()
+#     results = np.asarray(results)
+#     resultForm = np.asarray([results[:,0,:], results[:,1,:]])
+#     resultForm = np.transpose(resultForm)
+#     print('time cost: ', end - start, 's')
+#     return resultForm
 
-    # ppp = doMultiple_line_inv_2_s(para[0])
-    # ppp1 = doMultiple_line_inv_2_s(para[10])
-    # return 1
+#     # ppp = doMultiple_line_inv_2_s(para[0])
+#     # ppp1 = doMultiple_line_inv_2_s(para[10])
+#     # return 1
 
 
 
