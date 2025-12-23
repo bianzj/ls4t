@@ -49,7 +49,7 @@ site = "Faidherbia"
 
 
 # for kdoy in range(190,191):
-for kdoy in range(259, 260):
+for kdoy in range(190, 191):
 
     infile1 = indir + site + "_euro_2024_%03d.txt" % kdoy
     infile2 = indir + site + "_iodc_2024_%03d.txt" % kdoy
