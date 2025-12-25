@@ -317,7 +317,7 @@ if __name__ == '__main__':
     # emis_v_ = emis_v_[classif_, 0] / 1000
 
     '''读取数据'''
-    for kyear in range(2007, 2008):
+    for kyear in range(2006, 2007):
         indir_lai = indir_lai0+'%04d/'%kyear
 
         outdir0 = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v0.0/'
