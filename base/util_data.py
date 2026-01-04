@@ -246,8 +246,8 @@ def loc2map(lat, lon, dataset):
     '''
     ns2 = dataset.RasterXSize
     nl2 = dataset.RasterYSize
-    nb2 = dataset.RasterCount
-    data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
+    # nb2 = dataset.RasterCount
+    # data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
     temp21, temp22 = lonlat2geo(dataset, lat, lon)
     imagex, imagey = geo2imagexy(dataset, temp21, temp22)
     # imagex = np.asarray(imagex+0.5, np.int_)

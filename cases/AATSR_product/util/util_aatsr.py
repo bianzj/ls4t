@@ -308,7 +308,7 @@ def aatsr_read_clo(infile_clo):
     # 先检查文件是否存在mask数据集
     with h5py.File(infile_clo, 'r') as f:
         if 'cloN_mask' not in f:
-            print(f"Warning: Missing clo_mask in {infile_clo}")
+            # print(f"Warning: Missing clo_mask in {infile_clo}")
             items = ['cloN','cloF']
             cloN, cloF = read_h5py_items(infile_clo, items)
             cloN_mask = aatsr_clo_optimized(cloN)
