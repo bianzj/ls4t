@@ -1430,7 +1430,7 @@ def fun_DTCR(x, mea,t,fhs):
     mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
     res = mod - mea
 
-    return np.sum(res*res)
+    return np.sum(res*res)+0.0001*np.sum(x*x)
 
 def fitting_DTCR( obs,pst,fhs, x0 = np.asarray([6,16,14,6,1,0.5])):
     '''
