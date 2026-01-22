@@ -12,3 +12,13 @@ data_fluxnet
 
 3. fluxnet_lst: 根据FVC和发射率及上下行长波计算LST,发射率是用土壤和植被发射率计算出来的 
 / 筛选纯像元站点（2002-2012一共197站点，含有上下行辐射104站点，其中含有100个FVC大于95%记录的 7/104, FVC小于5% 40/104）
+
+4. fluxnet_ts5cm2ts0cm.py: 将5cm温度转换为0cm温度
+
+5. fluxnet_fvc.py: landsat ndvi -> fvc 30m
+
+6. fluxnet_fvc_30m_inerpolate.py: 时间插值（目前做法是不插值，有观测前半天和后八天填充值，剩下全部为nan）
+
+
+画图分析代码：
+1. plot_TemDif.py: 温度差分析
