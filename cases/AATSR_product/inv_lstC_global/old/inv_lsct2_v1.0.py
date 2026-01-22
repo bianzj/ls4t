@@ -1,5 +1,6 @@
 import sys
 import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
@@ -61,8 +62,8 @@ if __name__ == '__main__':
     indir_aux = r'/media/hero/lsct04/aatsr_aux/'
 
     # AATSR_dir = r"/media/hero/265047F75047CBED/T7920_backup/AATSR/%04d//" % year
-    outdir_hdf = r'/home/hero/data/AATSR/%04d' % year + "/lsct_v2_new/"
-    outdir_hdf_p = r'/home/hero/data/AATSR/%04d' % year + "/lsct_v1_new/"
+    # outdir_hdf = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v2.0(combined)/'
+    outdir_hdf_p = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v1.0/'
     # base 文件路径
     base_dir = r"/home/hero/data/base/0_base/"
     indir_emis = base_dir + r"emis/"
@@ -77,24 +78,25 @@ if __name__ == '__main__':
     # 输入 / 输出 路径
     # indir_hdf = AATSR_dir + "hdf/"
     # indir_hdf_day = indir_hdf + r"/%02d/%02d//" % (month, day)
-    outdir_hdf_day = outdir_hdf + r"/%02d/%02d//" % (month, day)
+    # outdir_hdf_day = outdir_hdf + r"/%02d/%02d//" % (month, day)
     outdir_hdf_day_p = outdir_hdf_p + r"/%02d/%02d//" % (month, day)
-    mkdir_if_not_exist(outdir_hdf_day)
+    #mkdir_if_not_exist(outdir_hdf_day)
     mkdir_if_not_exist(outdir_hdf_day_p)
     # fileNames = search_file_rej(indir_hdf_day, ['.h5'], 'enp')
     time_str = f'{year}/{month:02d}/{day:02d}/'
     fileNames = search_file_rej(indir_obs+time_str, ['h5'],'xml')
     fileNum = len(fileNames)
 
-    mkdir_if_not_exist(outdir_hdf + r"error/")
-    error_file_dir = outdir_hdf + r"error/" + r"%02d_%02d_%02d.txt" % (year, month, day)
+    #mkdir_if_not_exist(outdir_hdf + r"error/")
+    #error_file_dir = outdir_hdf + r"error/" + r"%02d_%02d_%02d.txt" % (year, month, day)
 
     error_files = []
     for i, fileName in enumerate(fileNames):
         print(i + 1, '/', fileNum , fileName)
         start = time.time()
 
-        out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
+        # 
+        # out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
         out_hdf5_p = outdir_hdf_day_p + fileName[:-3] + "_lsct.h5"
         
         # if os.path.exists(out_hdf5) and os.path.exists(out_hdf5_p): continue
@@ -215,19 +217,19 @@ if __name__ == '__main__':
         tasks = []
         pool = Pool(min(192, cpu_count()))
         for p in para:
-            tasks.append(pool.apply_async(doMultiple_line_inv_2_AATSR, (p,)))
+            tasks.append(pool.apply_async(doMultiple_line_inv_2_AATSR_v1, (p,)))
         pool.close()
         pool.join()
         results = np.array([task.get() for task in tasks])
         results = np.array(results)
         results_transposed = np.transpose(results, (1, 0, 2))
-        results = np.zeros((4, nl, ns))
+        results = np.zeros((2, nl, ns))
         results[:, 2:-2, :] = results_transposed
-        #
-        Ts_inv = results[0, :, :]
-        Tv_inv = results[1, :, :]
-        Ts_b_inv = results[2, :, :]
-        Tv_b_inv = results[3, :, :]
+        
+        # Ts_inv = results[0, :, :]
+        # Tv_inv = results[1, :, :]
+        Ts_b_inv = results[0, :, :]
+        Tv_b_inv = results[1, :, :]
 
         # '''save'''
         # outfile = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
@@ -239,35 +241,35 @@ if __name__ == '__main__':
         # print('time cost: ', end - start, 's')
 
 
+        # '''写h5文件'''
+        # out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
+        # if not os.path.exists(out_hdf5):
+        #     f = h5py.File(out_hdf5, 'w')
+        # else:
+        #     continue
+
+        # '''save'''
+        # f.attrs['Origin File'] = fileName
+        # f.attrs['Version'] = 'v1'
+        # f.attrs['Creation Date'] = str(datetime.now())
+        # f.attrs['Author'] = 'Lu Yifan / Bian Zunjian'
+        # f.attrs['Method'] = 'Ts/Tv: 2 angle 5 pixel(with weight / bounds, without)'
+
+        # datasets = {
+        #     'Ts':(Ts_inv * 100,'soil temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
+        #     'Tv': (Tv_inv * 100, 'veg temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
+        # }
+
+        # for dset_name, (data, description, dtype) in datasets.items():
+        #     if dset_name in f:
+        #         del f[dset_name]
+        #     dset = f.create_dataset(dset_name, data=data, dtype=dtype, compression='gzip')
+        #     dset.attrs['description'] = description
+
+        # f.close()
+
         '''写h5文件'''
-        out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
-        if not os.path.exists(out_hdf5):
-            f = h5py.File(out_hdf5, 'w')
-        else:
-            continue
-
-        '''save'''
-        f.attrs['Origin File'] = fileName
-        f.attrs['Version'] = 'v1'
-        f.attrs['Creation Date'] = str(datetime.now())
-        f.attrs['Author'] = 'Lu Yifan / Bian Zunjian'
-        f.attrs['Method'] = 'Ts/Tv: 2 angle 5 pixel(with weight / bounds, without)'
-
-        datasets = {
-            'Ts':(Ts_inv * 100,'soil temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
-            'Tv': (Tv_inv * 100, 'veg temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
-        }
-
-        for dset_name, (data, description, dtype) in datasets.items():
-            if dset_name in f:
-                del f[dset_name]
-            dset = f.create_dataset(dset_name, data=data, dtype=dtype, compression='gzip')
-            dset.attrs['description'] = description
-
-        f.close()
-
-        '''写h5文件'''
-        out_hdf5 = outdir_hdf_day_p + fileName[:-3] + "_lsct.h5"
+        out_hdf5 = outdir_hdf_day_p + fileName[:-7] + "_lsct_new.h5"
         if not os.path.exists(out_hdf5):
             f = h5py.File(out_hdf5, 'w')
         else:

@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
 from AATSR_product.util.util_aatsr import *
 from AATSR_product.backup_old.old_version_backup.AATSR_product.opt_lsct.multiple_lsct import *
 from AATSR_product.backup_old.old_version_backup.AATSR_product.util.old.util_lsct import *
@@ -34,7 +35,7 @@ def line_inv_2_s(wNLine, wOLine, radNLine, radOLine, maskLine,nl = 1024):
     wl = 10.8
     off_ = 0
     radiance_max_threshold = 20
-    radiance_min_threshold = 4.5
+    radiance_min_threshold = 4.0  # 4.5
     temperature_max_threshold = 350
     temperature_min_threshold = 250
     default_nan_temperature = 0
@@ -91,6 +92,7 @@ def line_inv_2_s(wNLine, wOLine, radNLine, radOLine, maskLine,nl = 1024):
         ww = np.transpose(ww)
 
         coeffprior = np.asarray(lstsq(ww, bb, rcond=None)[0])
+        # ctprior = np.transpose(np.matrix([coeffprior[0],coeffprior[6]]))
 
         ################################################
         ### first reult with averaing information
@@ -115,14 +117,16 @@ def line_inv_2_s(wNLine, wOLine, radNLine, radOLine, maskLine,nl = 1024):
             cd1new = np.sum(ct1[indnew] * fd[indnew])
             cd2new = np.sum(ct2[indnew] * fd[indnew])
             ctprior = np.transpose(np.matrix([cd1new, cd2new]))
+        
         # component_temperature = inv_planck(wl, ctprior)
+ 
         #################################################
         ### second result by combining one-point result
         #################################################
 
         nl1 = kk - off_
         nl2 = kk + off_ + 1
-        w1 = wNLine[:,nl1:nl2, 2]
+        w1 = wNLine[:,nl1:nl2, 2] # 2*1
         w1 = np.asarray(np.reshape(w1, (number_component, -1)))
         w2 = wOLine[:,nl1:nl2, 2]
         w2 = np.asarray(np.reshape(w2, (number_component, -1)))
@@ -313,15 +317,15 @@ if __name__ == '__main__':
     # emis_v_ = emis_v_[classif_, 0] / 1000
 
     '''读取数据'''
-    for kyear in range(2007, 2008):
+    for kyear in range(2006, 2007):
         indir_lai = indir_lai0+'%04d/'%kyear
 
-        outdir0 = r'/home/hero/data/AATSR/%04d' % kyear + "/lsct_v0_new/"
+        outdir0 = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v0.0/'
         outdir = outdir0 + '/%04d/'%kyear
         indir = indir0 + '/%04d'%kyear
-        for kmonth in range(1, 2):
+        for kmonth in range(7, 8):
             daynum = calendar.monthrange(kyear, kmonth)[1]
-            for day in range(1,2):
+            for day in range(2,3):
                 # time_str = "%02d//" % kmonth + "%02d//" % (day + 1)
                 # indir_tif = indir + r"/tif/" + time_str
                 # if not os.path.exists(indir_tif): continue
@@ -350,8 +354,8 @@ if __name__ == '__main__':
                     print(i + 1, '/', fileNum , fileName)
 
                     out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
-                    if os.path.exists(out_hdf5): continue
-
+                    if os.path.exists(out_hdf5): 
+                        os.remove(out_hdf5)
 
                     year = fileName[6:10]
                     doy_str = fileName[11:14]

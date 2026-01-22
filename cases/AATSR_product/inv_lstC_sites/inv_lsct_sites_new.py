@@ -23,11 +23,11 @@ if __name__ == '__main__':
     n, m, ws = 2, 3, 5 # n 角度， m组分， ws窗口大小
     ndvi_max, ndvi_min, k = 0.87, 0.15, 1 # ndvi 参数
     lst_min, lst_max = 250, 350 # 范围参数
-    hspot, wl = 0.5, 10.8 # 结构参数
+    hspot, wl = 1.0, 10.8 # 结构参数
     # 反演方法
     method_effective_emissivity = 'lai' # lai / ndvi
     method_mpl_pixel = 'winquad' # point / winconst / winquad
-    method_solve = 'none' # bayesian / nobayesian / none
+    method_solve = 'bayesian' # bayesian / nobayesian / none
     # 反演站点设置
     if_Dahra = 1 # 只反演Dahra站点
     if_PureSites = 0 # 只反演纯站点
@@ -154,19 +154,66 @@ if __name__ == '__main__':
                 if m == 2:
                     if method_solve == 'bayesian': if_bayesian = 1
                     else: if_bayesian = 0
-                    lsct = inv_lsct2_winquad(w, b, mask,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
+
+                    lsct = inv_lsct2_winquad_constraint(w, b, mask,lst,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
+
                 elif m == 3:  # 这里m=2，中间3组分
                     if method_solve == 'bayesian': if_bayesian = 1
                     else: if_bayesian = 0
 
                     if dn == 'day':
                         # lsct = inv_lsct3_winquad(w2, w, b, mask,psoil,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
-                        lsct = inv_lsct3_winquad_constraint(w2, w, b, mask,lst,psoil,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
-                        print(lsct[16,16,:])
+                        # lsct = inv_lsct3_winquad_constraint(w2, w, b, mask,lst,psoil,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
+                        
+                        ### 多线程
+                        para = []
+                        for kn in range(off, ns-off):
+                            wLine = w[:,kn-off:kn+off+1,:,:]
+                            w2Line = w2[:,kn-off:kn+off+1,:,:]
+                            bLine = b[:,kn-off:kn+off+1,:]
+                            maskLine = mask[:,kn-off:kn+off+1,:]
+                            lstLine = lst[:,kn-off:kn+off+1,:]
+                            psoilLine = psoil[:,kn-off:kn+off+1]
+                            para.append([w2Line,wLine,bLine,maskLine,lstLine,psoilLine,n,2,ws,wl,if_bayesian])
+                        
+                        tasks= []
+                        pool = Pool(min(192,cpu_count()))
+                        tasks = [pool.apply_async(inv_lsct3_winquad_constraint, tuple(p)) for p in para]
+                        pool.close()
+                        pool.join()
+                        results = [t.get() for t in tasks]
+                        lsct = np.zeros((nl, ns, 4))
+                        for idx, res in enumerate(results):
+                            kn = idx + off
+                            # 如果 res 形状是 (nl, m)，直接赋值
+                            lsct[:, kn, :] = res[:,off,:]
+                    
                     elif dn == 'night':
                         lsct = np.full((nl,ns,4),np.nan)
-                        lsct[:,:,2:] = inv_lsct2_winquad(w2, b, mask,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
+                        # lsct[:,:,2:] = inv_lsct2_winquad(w2, b, mask,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
+                        # lsct[:,:,2:] = inv_lsct2_winquad_constraint(w2, b, mask,lst,n, m=2, ws=5,wl=10.8,if_bayesian = if_bayesian)
 
+                        ### 多线程
+                        para = []
+                        for kn in range(off, ns-off):
+                            w2Line = w2[:,kn-off:kn+off+1,:,:]
+                            bLine = b[:,kn-off:kn+off+1,:]
+                            maskLine = mask[:,kn-off:kn+off+1,:]
+                            lstLine = lst[:,kn-off:kn+off+1,:]
+                            para.append([w2Line,bLine,maskLine,lstLine,n,2,ws,wl,if_bayesian])
+                            
+                        tasks= []
+                        pool = Pool(min(192,cpu_count()))
+                        tasks = [pool.apply_async(inv_lsct2_winquad_constraint, tuple(p)) for p in para]
+                        pool.close()
+                        pool.join()
+                        results = [t.get() for t in tasks]
+
+                        for idx, res in enumerate(results):
+                            kn = idx + off
+                            # 如果 res 形状是 (nl, m)，直接赋值
+                            lsct[:, kn, 2:] = res[:,off,:]
+            
             
             ### -1. 保存结果
             name_list = ['lstN','lstF','lai','indx','indy','ref_indx','ref_indy','cloN_mask','cloF_mask']

@@ -85,10 +85,14 @@ def proportion_bidirectional_crown_one(lai, std, hspot, hcr, rcr, vza, sza, vsa,
 def proportion_bidirectional_hom_one(lai,hspot,vza,sza,vsa):
     Psoil = gap_probability_hom_analytical(lai, vza)
     Pleaf = 1 - Psoil
-    Psoil_sunlit = hotspot_layer(lai, hspot, vza, sza, vsa)
-    Pleaf_sunlit = hotspot_analytical(lai, hspot, vza, sza, vsa)
-    Psoil_shaded = Psoil - Psoil_sunlit
-    Pleaf_shaded = Pleaf - Pleaf_sunlit
+    Psoil_sunlit = Psoil
+    Pleaf_sunlit = Pleaf
+    Psoil_shaded = np.full_like(Psoil,0)
+    Pleaf_shaded = np.full_like(Pleaf,0)
+    # Psoil_sunlit = hotspot_layer(lai, hspot, vza, sza, vsa)
+    # Pleaf_sunlit = hotspot_analytical(lai, hspot, vza, sza, vsa)
+    # Psoil_shaded = Psoil - Psoil_sunlit
+    # Pleaf_shaded = Pleaf - Pleaf_sunlit
     return Psoil_sunlit,Psoil_shaded,Pleaf_sunlit,Pleaf_shaded
 
 def proportion_bidirectional_row_one(lai,hspot,row_width,row_blank,row_height,vza,vaa,sza,saa,raa,G = 0.5):

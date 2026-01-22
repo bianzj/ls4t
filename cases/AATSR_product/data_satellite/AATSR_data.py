@@ -92,17 +92,17 @@ for year in years:
                 outfile_aux = outdir_aux_day + fN + 'aux.h5'
                 if os.path.exists(outfile_obs) and os.path.exists(outfile_clo): continue
 
-                # '''读取经纬度信息'''
-                # band = product.get_band('latitude')
-                # lat = band.read_as_array()
-                # band = product.get_band('longitude')
-                # lon = band.read_as_array()
-                # height, width = np.shape(lat)
-                #
-                # band = product.get_band('lat_corr_nadir')
-                # lat_corr_nadir = band.read_as_array()
-                # band = product.get_band('lon_corr_nadir')
-                # lon_corr_nadir = band.read_as_array()
+                '''读取经纬度信息'''
+                band = product.get_band('latitude')
+                lat = band.read_as_array()
+                band = product.get_band('longitude')
+                lon = band.read_as_array()
+                height, width = np.shape(lat)
+                
+                band = product.get_band('lat_corr_nadir')
+                lat_corr_nadir = band.read_as_array()
+                band = product.get_band('lon_corr_nadir')
+                lon_corr_nadir = band.read_as_array()
 
                 '''读取角度信息'''
                 try:
@@ -176,14 +176,9 @@ for year in years:
                 #     red_sr = 0
                 #     nir_sr = 0
 
-
-
-
-
-
                 metadata = {
                     'Author': 'TIRT team',
-                    'Version': '1.0',
+                    'Version': 'v 1.0',
                     'Create_time': datetime.utcnow().isoformat() + 'Z',
                     'source': fileName,
                 }
@@ -294,19 +289,19 @@ for year in years:
                     for key, value in metadata.items():
                         h5f.attrs[key] = value
 
-                # '''loc'''
-                # '''10-6 -9999999999'''
-                # lat[lat < -10000], lon[lon < -10000] = -32768, -32768
-                # lat[np.isclose(lat, -9.99e-4)], lon[np.isclose(lon, -9.99e-4)] = -32768, -32768
-                # with h5py.File(outfile_loc, 'w') as h5f:
-                #     lon_data = h5f.create_dataset('lon', data=np.rint(lon * 100).astype(int16), compression='gzip',
-                #                                   dtype=np.int16)
-                #     lon_data.attrs['scalar'] = 100
-                #     lon_data.attrs['missing_value'] = -32768
-                #     lat_data = h5f.create_dataset('lat', data=np.rint(lat * 100).astype(int16), compression='gzip',
-                #                                   dtype=np.int16)
-                #     lat_data.attrs['scalar'] = 100
-                #     lat_data.attrs['missing_value'] = -32768
-                #     for key, value in metadata.items():
-                #         h5f.attrs[key] = value
+                '''loc'''
+                '''10-6 -9999999999'''
+                lat[lat < -10000], lon[lon < -10000] = -32768, -32768
+                lat[np.isclose(lat, -9.99e-4)], lon[np.isclose(lon, -9.99e-4)] = -32768, -32768
+                with h5py.File(outfile_loc, 'w') as h5f:
+                    lon_data = h5f.create_dataset('lon', data=np.rint(lon * 100).astype(int16), compression='gzip',
+                                                  dtype=np.int16)
+                    lon_data.attrs['scalar'] = 100
+                    lon_data.attrs['missing_value'] = -32768
+                    lat_data = h5f.create_dataset('lat', data=np.rint(lat * 100).astype(int16), compression='gzip',
+                                                  dtype=np.int16)
+                    lat_data.attrs['scalar'] = 100
+                    lat_data.attrs['missing_value'] = -32768
+                    for key, value in metadata.items():
+                        h5f.attrs[key] = value
                 product.close()

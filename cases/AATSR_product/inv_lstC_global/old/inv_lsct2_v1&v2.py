@@ -1,8 +1,19 @@
 import sys
-sys.path.append('/home/hero/code/AATSR_product_new/')
-from util.old.util_lsct import *
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+# from base.util_lsct import *
+# from base.util_constant import *
+# from base.util_file import *
+# from base.util_data import *
+from util.util_aatsr import *
+from backup_old.old_version_backup.AATSR_product_new.util.util_lsct import *
+from backup_old.old_version_backup.AATSR_product_new.util.util import *
 import time
 from datetime import datetime
+from multiprocessing import Pool, freeze_support, cpu_count
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -12,24 +23,47 @@ AATSR_world 组分温度反演
 两角度，多像元
 '''
 
+def cal_effective_emissivity_hom(lai,hspot,wl,emisS,emisV,vza,sza,vaa,saa,component_number):
+    nl,ns = np.shape(vza)
+    w4 = sample_hom_Emis(lai,hspot,wl,emisS,emisV,vza,sza,np.abs(vaa-saa))
+    psoil = gap_probability_hom_analytical(lai,sza)
+    if component_number == 2:
+        w = np.zeros([2,nl,ns])
+        w[0,:,:] = w4[0,:,:] + w4[1,:,:]
+        w[1,:,:] = w4[2,:,:] + w4[3,:,:]
+    if component_number == 3:
+        w = np.zeros([3,nl,ns])
+        w[0:2,:,:] = w4[0:2,:,:]
+        w[2,:,:] = w4[2,:,:] + w4[3,:,:]
+    if component_number == 4:
+        w = w4
+    return w,psoil
+
 if __name__ == '__main__':
     # 年 月 （日）
-    # year = 2010
-    # month = 1
-    # day = 1
-    year = int(sys.argv[1])
-    month = int(sys.argv[2])
-    day = int(sys.argv[3])
+    year = 2007
+    month = 7
+    day = 2
+    # year = int(sys.argv[1])
+    # month = int(sys.argv[2])
+    # day = int(sys.argv[3])
 
     # 模式
     number_component = 2
     if_use_crown = False   # 未经过debug
 
     # hdf 路径
-    AATSR_dir = r"/media/hero/lsct04/AATSR/%04d//" % year
+    # AATSR_dir = r"/media/hero/lsct04/AATSR/%04d//" % year
+    indir_obs = r'/media/hero/lsct03/aatsr_obs/'
+    indir_clo = r'/media/hero/lsct03/aatsr_clo/'
+    indir_ang = r'/media/hero/lsct03/aatsr_ang/'
+    indir_loc = r'/media/hero/lsct04/aatsr_loc/'
+    indir_lst = r'/media/hero/lsct04/aatsr_lst/'
+    indir_aux = r'/media/hero/lsct04/aatsr_aux/'
+
     # AATSR_dir = r"/media/hero/265047F75047CBED/T7920_backup/AATSR/%04d//" % year
-    outdir_hdf = r'/home/hero/data/AATSR/%04d' % year + "/lsct_v1/"
-    outdir_hdf_p = r'/home/hero/data/AATSR/%04d' % year + "/lsct_v0/"
+    outdir_hdf = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v2.0(combined)/'
+    outdir_hdf_p = r'/home/hero/data/AATSR/global_test/aatsr_lsct_v1.0(combined)/'
     # base 文件路径
     base_dir = r"/home/hero/data/base/0_base/"
     indir_emis = base_dir + r"emis/"
@@ -42,14 +76,17 @@ if __name__ == '__main__':
         std_gl, tcc_gl, hcr_gl = aatsr_read_crown_data(indir_veg_pra)
 
     # 输入 / 输出 路径
-    indir_hdf = AATSR_dir + "hdf/"
-    indir_hdf_day = indir_hdf + r"/%02d/%02d//" % (month, day)
+    # indir_hdf = AATSR_dir + "hdf/"
+    # indir_hdf_day = indir_hdf + r"/%02d/%02d//" % (month, day)
     outdir_hdf_day = outdir_hdf + r"/%02d/%02d//" % (month, day)
     outdir_hdf_day_p = outdir_hdf_p + r"/%02d/%02d//" % (month, day)
     mkdir_if_not_exist(outdir_hdf_day)
     mkdir_if_not_exist(outdir_hdf_day_p)
-    fileNames = search_file_rej(indir_hdf_day, ['.h5'], 'enp')
-    fileNum  = len(fileNames)
+    # fileNames = search_file_rej(indir_hdf_day, ['.h5'], 'enp')
+    time_str = f'{year}/{month:02d}/{day:02d}/'
+    fileNames = search_file_rej(indir_obs+time_str, ['h5'],'xml')
+    fileNum = len(fileNames)
+
     mkdir_if_not_exist(outdir_hdf + r"error/")
     error_file_dir = outdir_hdf + r"error/" + r"%02d_%02d_%02d.txt" % (year, month, day)
 
@@ -60,23 +97,58 @@ if __name__ == '__main__':
 
         out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
         out_hdf5_p = outdir_hdf_day_p + fileName[:-3] + "_lsct.h5"
-        if os.path.exists(out_hdf5) and os.path.exists(out_hdf5_p): continue
+        
+        # if os.path.exists(out_hdf5) and os.path.exists(out_hdf5_p): continue
 
         # 读取数据
-        infile_h5 = indir_hdf_day + fileName
-        items = name_list = ["lon", 'lat', "indx", "indy", "time", "LAI", 'sza', 'saa', 'clo_N', 'clo_O', "lstN",
-                             "lstO"]
-        try:
-            lon_st, lat_st, indx, indy, time_st, lai, sza, saa, cloN, cloF, lstN, lstF = read_h5py_items(infile_h5,
-                                                                                                         items)
-        except OSError as e:
-            error_files.append(infile_h5)
-            print(f"Error reading {infile_h5}: {e}")
+        # infile_h5 = indir_hdf_day + fileName
+        # items = name_list = ["lon", 'lat', "indx", "indy", "time", "LAI", 'sza', 'saa', 'clo_N', 'clo_O', "lstN",
+        #                      "lstO"]
+        # try:
+        #     lon_st, lat_st, indx, indy, time_st, lai, sza, saa, cloN, cloF, lstN, lstF = read_h5py_items(infile_h5,
+        #                                                                                                  items)
+        # except OSError as e:
+        #     error_files.append(infile_h5)
+        #     print(f"Error reading {infile_h5}: {e}")
+        #     continue
+
+        # lstN, lstF = lstN / 100, lstF / 100
+        # sza, saa = 90 - sza / 100, saa / 100
+        # if np.average(lai[lai!=0]>10): lai = lai / 1000
+        basename = os.path.basename(fileName)
+
+        infile_obs = indir_obs + time_str + basename
+        infile_lst = indir_lst + time_str + basename.replace('obs', 'lst')
+        infile_clo = indir_clo + time_str + basename.replace('obs', 'clo')
+        infile_ang = indir_ang + time_str + basename.replace('obs', 'ang')
+        infile_loc = indir_loc + time_str + basename.replace('obs', 'loc')
+        infile_aux = indir_aux + time_str + basename.replace('obs', 'aux')
+
+
+        if not os.path.exists(infile_lst): 
+            print(f'    不存在lst文件: {infile_lst}')
+            continue
+        if not os.path.exists(infile_clo): 
+            print(f'    不存在clo文件: {infile_clo}')
+            continue
+        if not os.path.exists(infile_ang): 
+            print(f'    不存在ang文件: {infile_ang}')
+            continue
+        if not os.path.exists(infile_loc): 
+            print(f'    不存在loc文件: {infile_loc}')
             continue
 
-        lstN, lstF = lstN / 100, lstF / 100
-        sza, saa = 90 - sza / 100, saa / 100
-        if np.average(lai[lai!=0]>10): lai = lai / 1000
+        # 读取数据
+        lstN, lstF = aatsr_read_lst(infile_lst)
+        ndviN, ndviF = aatsr_read_NDVI(infile_obs)
+        cloN_mask , cloF_mask = aatsr_read_clo(infile_clo)
+        indx, indy,lon,lat = aatsr_read_loc(infile_loc, iflonlat = 1)
+        nl, ns = lstN.shape[0], lstF.shape[1] # 行列数
+        lai = read_h5py_item(infile_aux, 'LAI')/1000
+        sza, saa = read_h5py_items(infile_ang, ['sza', 'saa'])
+        sza = sza /100
+        saa = saa / 100
+
 
         # 植被参数重投影 gl - > st
         nl, ns = 43520,512
@@ -114,12 +186,12 @@ if __name__ == '__main__':
 
         # 添加 mask
         rad_th_max, rad_th_min = 20, 3.2
-        maskN = (radN > rad_th_min) * (radN < rad_th_max) * (cloN <= 100)
-        maskF = (radF > rad_th_min) * (radF < rad_th_max) * (cloF <= 100)
+        maskN = (radN > rad_th_min) * (radN < rad_th_max) * (cloN_mask == 1)
+        maskF = (radF > rad_th_min) * (radF < rad_th_max) * (cloF_mask == 1)
 
         # 给定温度限制
         DT = np.zeros([nl, ns])
-        DT = determine_DT_lat_time(DT, month, lat_st)
+        DT = determine_DT_lat_time(DT, month, lat)
 
         # 反演
         window_size = 5 # 奇数 3、5、7
@@ -142,7 +214,7 @@ if __name__ == '__main__':
             '''多线程'''
             para.append([wNLine, wOLine, radNLine, radOLine, maskNLine, maskOLine, lstNLine,lstFLine, DTLine, ns])
         tasks = []
-        pool = Pool(min(30, cpu_count()))
+        pool = Pool(min(192, cpu_count()))
         for p in para:
             tasks.append(pool.apply_async(doMultiple_line_inv_2_AATSR, (p,)))
         pool.close()
