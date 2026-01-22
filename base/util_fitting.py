@@ -86,10 +86,10 @@ def fitting_unknown_linear_sklearn(y,A,method='ridge'):
         clf = RidgeCV(alphas=alphas, fit_intercept=False)
         clf.fit(A, y)
         coeffs = clf.coef_
-    elif method =='lasso':
-        lasso = LassoCV(alphas=alphas, fit_intercept=False)
-        lasso.fit(A, y)
-        coeffs = lasso.coef_
+    elif method == 'lasso':
+        clf = Lasso(alpha=0.01, fit_intercept=False)
+        clf.fit(A, y)
+        coeffs = clf.coef_
     elif method =='bayesianridge':
         clf = BayesianRidge(fit_intercept=False)
         clf.fit(A,y)

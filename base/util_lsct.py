@@ -1,4 +1,5 @@
 import os
+from re import M
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from base.util_data import *
@@ -169,7 +170,7 @@ def cal_fvc_from_lai(thetav,lai):
     fvc[fvc<0] = 0
     return fvc
 
-def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n , m, CI=1.0):
+def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n , m):
     '''
     计算均值假设下冠层的有效发射率，既能处理单点多角度输入又能处理区域输入
     :param lai: 叶面积指数 float 或 nl*ns
@@ -183,7 +184,7 @@ def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, sa
     :param saa: 太阳方位角 (n,)/float 或 nl*ns*n(nl*ns)
     :param n: 观测角度数量
     :param m: 组分数量，2，3，4
-    :param CI: 聚集指数 float
+    :param CI: 聚集指数 (n) 每个角度给一个值，默认为1
     :return: w 有效发射率 (n,m) 或 nl*ns*n*m
     '''
     # 确保输入为numpy数组
@@ -240,6 +241,61 @@ def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, sa
         elif m == 4:
             w = w4
         return w.transpose(0, 1, 3, 2) # nl*ns*n*m
+
+def cal_effective_emissivity_hom_2_CI(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n , m = 2, CI = None):
+    '''
+    计算均值假设下冠层的有效发射率，既能处理单点多角度输入又能处理区域输入
+    :param lai: 叶面积指数 float 或 nl*ns
+    :param hspot: 热点参数 float
+    :param wl: 波长 float
+    :param emisS: 土壤发射率 float 或 nl*ns
+    :param emisV: 植被发射率 float 或 nl*ns
+    :param vza: 观测天顶角 (n,) 或 nl*ns*n
+    :param sza: 太阳天顶角 (n,)/float 或 nl*ns*n(nl*ns)
+    :param vaa: 观测方位角 (n,) 或 nl*ns*n
+    :param saa: 太阳方位角 (n,)/float 或 nl*ns*n(nl*ns)
+    :param n: 观测角度数量
+    :param m: 组分数量，2，3，4
+    :param CI: 聚集指数 (n) 每个角度给一个值，默认为1
+    :return: w 有效发射率 (n,m) 或 nl*ns*n*m
+    '''
+    # 确保输入为numpy数组
+    lai = np.asarray(lai)
+    emisS = np.asarray(emisS)
+    emisV = np.asarray(emisV)
+    vza = np.asarray(vza)
+    sza = np.asarray(sza)
+    vaa = np.asarray(vaa)
+    saa = np.asarray(saa)
+    if CI is None:
+        CI = np.ones(n)
+    sza[sza>=90] = 89.9
+    if lai.ndim == 0:  # 标量输入，转换为点输入
+        # 点输入处理
+        vza = np.atleast_1d(vza)
+        sza = np.atleast_1d(sza)
+        vaa = np.atleast_1d(vaa)
+        saa = np.atleast_1d(saa)
+        w = np.zeros([n, m])
+        for i in range(n):
+            fvc = 1 - gap_probability_hom_analytical(lai[i], vza[i], CI[i])
+            w[i, 0] = emisS * (1 - fvc)
+            w[i, 1] = emisV * fvc
+        return w
+        
+    else:  # 区域输入处理
+        nl, ns = lai.shape  # 区域大小
+        if sza.shape != vza.shape:
+            sza = np.repeat(sza[:, :, np.newaxis], n, axis=2)
+            saa = np.repeat(saa[:, :, np.newaxis], n, axis=2)
+        vsa = np.abs(vaa - saa)
+        w = np.zeros([nl, ns, n, 2])  # nl*ns*4*n
+        for ni in range(n):
+            fvc = 1 - gap_probability_hom_analytical(lai[:, :], vza[:, :, ni], CI[ni])
+            w[:, :, ni, 0] = emisS * (1 - fvc)
+            w[:, :, ni, 1] = emisV * fvc
+        return w # nl*ns*n*m
+
 
 def cal_psoil_hom(lai,sza):
     '''
