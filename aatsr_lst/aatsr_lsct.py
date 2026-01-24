@@ -23,10 +23,10 @@ n, m = 2, 2
 ws = 5
 wl = 10.8
 
-lst_min, lst_max = 250, 350
-lsct_min, lsct_max = 250, 350
+lst_min, lst_max = 230, 350
+lsct_min, lsct_max = 230, 350
 fvc_min, fvc_max = 0.03, 0.97
-rad_min, rad_max = 4.0, 20.0
+rad_min, rad_max = 2.5, 20.0
 
 soil_radiance_variance = 2.0
 leaf_radiance_variance = 1.0
