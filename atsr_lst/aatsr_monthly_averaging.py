@@ -5,7 +5,6 @@ from base.util_lsct import *
 from base.util_constant import *
 from base.util_file import *
 from base.util_data import *
-from util_aatsr import *
 
 '''
 26.1.4

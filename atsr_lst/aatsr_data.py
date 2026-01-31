@@ -22,6 +22,25 @@ aatsr_obs: redN,redF,nirN,nirF,bt8N,bt8F,bt9N,bt9F
 aatsr_clo: cloN,cloF
 aatsr_ang: sza,saa,vzaN,vzaF,vaaN,vaaF
 aatsr_loc: lon,lat,indx,indy
+for 年
+ └─ for 月
+     └─ for 日
+         ├─ 创建当日输出目录
+         ├─ 读取 LAI（4-day 合成，线性插值）
+         └─ for 每个 AATSR 轨道文件
+             ├─ 打开 EPR 产品
+             ├─ 读取经纬度
+             ├─ 读取角度（SZA / VZA / AZI）
+             ├─ 读取 TOA 反射率（red / nir）
+             ├─ 读取亮温（11 / 12 μm）
+             ├─ 读取云标志
+             ├─ 数据清洗 + 缩放 + uint16 化
+             ├─ 写 obs.h5
+             ├─ 写 clo.h5
+             ├─ 写 ang.h5
+             ├─ 写 loc.h5（含映射索引）
+             ├─ 写 tim.h5（行扫描时间）
+             └─ 写 aux.h5（LAI）
 '''
 
 base_dir = r'/home/hero/data/ls4t/aatsr/'

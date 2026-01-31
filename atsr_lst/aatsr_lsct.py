@@ -59,7 +59,7 @@ class Homnew(Hom):
         hspot = self.hspot
 
         Ecom = np.asarray([es, es, el, el])
-        
+
         # 注意：确保这些计算函数在当前文件的作用域内可用
         Pcom = proportion_bidirectional_hom_one(lai, hspot, vza, sza, vsa)
         Ecom_direct, Ecom_direct_sum = emissivity_direct(Pcom, Ecom)
@@ -152,129 +152,6 @@ def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, sa
             w = w4
         return w.transpose(0, 1, 3, 2)  # nl*ns*n*m
 
-# def inv_lsct2_v3_1(w, b, mask, lst, n, m=2, ws=5, wl=10.8, method='ls', ifcons=0):
-#     '''
-#     多角度 多组分 窗口反演 BFGS/powell/SLSQP/L-BFGS-B/TNC
-#     优化版: 移除了 np.matrix，优化了 Bayesian 矩阵运算
-#     '''
-#     off = ws // 2 # 窗口偏移量
-#     nl, ns = w.shape[0], w.shape[1]
-#     result = np.zeros([nl, ns, 8])
-    
-#     # 提前计算常量
-#     Cm_inv = np.linalg.inv(np.diag([soil_radiance_variance, leaf_radiance_variance]))
-#     inv_sensor_noise = 1.0 / sensor_noise 
-
-#     for i in range(off, nl - off):
-#         for j in range(off, ns - off):
-#             if np.sum(mask[i, j, :]) >= n:
-#                 # v0 版本 多像元异温
-#                 w_win = w[i-off:i+off+1, j-off:j+off+1, :, :]
-#                 b_win = b[i-off:i+off+1, j-off:j+off+1, :]
-#                 mask_win = mask[i-off:i+off+1, j-off:j+off+1, :]
-#                 weight = set_weights(ws)
-#                 p0 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, m, mask_win, weight, window_size=5)
-#                 result[i, j, :2] = p0
-
-#                 ### v1 版本 单像元解
-#                 w_point = w[i, j, :, :]
-#                 b_point = b[i, j, :]
-#                 mask_point = mask[i, j, :]
-#                 p1 = fitting_Nangle_Mcomponent_point(w_point[mask_point], b_point[mask_point], n, m, method)
-#                 result[i, j, 2:4] = p1
-
-#                 ### v2 版本 多像元同温解
-#                 n_win = np.sum(mask_win)
-#                 p2 = fitting_Nangle_Mcomponent_point(w_win[mask_win], b_win[mask_win], n_win, m, method='ls')
-#                 result[i, j, 4:6] = p2
-
-#                 ### v3 版本 bayesian (极速优化版)
-#                 w_arr = w_point # shape (n, m)
-#                 b_arr = b_point # shape (n,)
-#                 p2_arr = p2     # shape (m,)
-                
-#                 KT = w_arr.T
-#                 KTK = KT @ w_arr
-#                 posterior_cov_inv = KTK * inv_sensor_noise + Cm_inv
-                
-#                 KTb = KT @ b_arr
-#                 term2 = KTb * inv_sensor_noise + Cm_inv @ p2_arr
-                
-#                 try:
-#                     p3 = np.linalg.solve(posterior_cov_inv, term2)
-#                     result[i, j, 6:] = p3
-#                 except np.linalg.LinAlgError:
-#                     result[i, j, 6:] = np.nan
-#             else:
-#                 result[i, j, :] = np.nan
-                
-#     lsct = inv_planck(wl, result)
-#     return lsct
-
-
-def inv_lsct2_v3_2(w, b, mask, lst, n, m=2, ws=5, wl=10.8, method='ls', ifcons=0):
-    '''
-    多角度 多组分 窗口反演 BFGS/powell/SLSQP/L-BFGS-B/TNC
-    优化版: 移除了 np.matrix，优化了 Bayesian 矩阵运算
-    '''
-    off = ws // 2  # 窗口偏移量
-    nl, ns = w.shape[0], w.shape[1]
-    result = np.zeros([nl, ns, 2])
-
-    # 提前计算常量
-    Cm_inv = np.linalg.inv(np.diag([soil_radiance_variance, leaf_radiance_variance]))
-    inv_sensor_noise = 1.0 / sensor_noise
-
-    for i in range(off, nl - off):
-        for j in range(off, ns - off):
-            if np.sum(mask[i, j, :]) >= n:
-                # v0 版本 多像元异温
-                w_win = w[i - off:i + off + 1, j - off:j + off + 1, :, :]
-                b_win = b[i - off:i + off + 1, j - off:j + off + 1, :]
-                mask_win = mask[i - off:i + off + 1, j - off:j + off + 1, :]
-                # weight = set_weights(ws)
-                # p0 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, m, mask_win, weight, window_size=5)
-                # result[i, j, :2] = p0
-
-                ### v1 版本 单像元解
-                w_point = w[i, j, :, :]
-                b_point = b[i, j, :]
-                mask_point = mask[i, j, :]
-                # p1 = fitting_Nangle_Mcomponent_point(w_point[mask_point], b_point[mask_point], n, m, method)
-                # result[i, j, 2:4] = p1
-
-                ### v2 版本 多像元同温解
-                n_win = np.sum(mask_win)
-                p2 = fitting_Nangle_Mcomponent_point(w_win[mask_win], b_win[mask_win], n_win, m, method='ls')
-                # result[i, j, 4:6] = p2
-                # if (np.min(p2) < rad_min | np.max(p2) > rad_max): continue
-
-                ### v3 版本 bayesian (极速优化版)
-                w_arr = w_point  # shape (n, m)
-                b_arr = b_point  # shape (n,)
-                p2_arr = p2  # shape (m,)
-
-                KT = w_arr.T
-                KTK = KT @ w_arr
-                posterior_cov_inv = KTK * inv_sensor_noise + Cm_inv
-
-
-
-                KTb = KT @ b_arr
-                term2 = KTb * inv_sensor_noise + Cm_inv @ p2_arr
-
-
-
-                try:
-                    p3 = np.linalg.solve(posterior_cov_inv, term2)
-                    result[i, j, :] = p3
-                except np.linalg.LinAlgError:
-                    result[i, j, :] = np.nan
-            else:
-                result[i, j, :] = np.nan
-
-    lsct = inv_planck(wl, result)
-    return lsct
 
 
 if __name__ == '__main__':
