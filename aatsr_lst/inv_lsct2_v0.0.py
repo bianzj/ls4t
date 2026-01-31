@@ -334,15 +334,15 @@ if __name__ == '__main__':
     # emis_v_ = emis_v_[classif_, 0] / 1000
 
     '''读取数据'''
-    for kyear in range(2006, 20012):
+    for kyear in range(2006, 2007):
         indir_lai = indir_lai0+'%04d/'%kyear
 
 
         outdir = outdir0 + '/%04d/'%kyear
         indir = indir0 + '/%04d'%kyear
-        for kmonth in range(1, 13):
+        for kmonth in range(3, 11):
             daynum = calendar.monthrange(kyear, kmonth)[1]
-            for day in range(1,31):
+            for day in range(1,32):
                 # time_str = "%02d//" % kmonth + "%02d//" % (day + 1)
                 # indir_tif = indir + r"/tif/" + time_str
                 # if not os.path.exists(indir_tif): continue
@@ -352,12 +352,13 @@ if __name__ == '__main__':
 
                 year , month = kyear, kmonth
                 time_str = f'{year}/{month:02d}/{day:02d}/'
-                outdir_hdf_day = outdir0 + r"/%02d/%02d//" % (month, day)
+                outdir_hdf_day = outdir + r"/%02d/%02d//" % (month, day)
                 mkdir_if_not_exist(outdir_hdf_day)
 
                 # fileNames = search_file_rej(indir_lstN, ['lst_n'], 'enp')
                 # fileNum = np.size(fileNames)
                 # off = 9
+                if os.path.exists(indir_obs+time_str)==0: continue
                 fileNames = search_file_rej(indir_obs+time_str, ['h5'],'xml')
                 fileNum = len(fileNames)
 
@@ -372,7 +373,8 @@ if __name__ == '__main__':
 
                     out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
                     if os.path.exists(out_hdf5): 
-                        os.remove(out_hdf5)
+                        # os.remove(out_hdf5)
+                        continue
 
                     year = fileName[6:10]
                     doy_str = fileName[11:14]
@@ -527,8 +529,15 @@ if __name__ == '__main__':
                     classif = np.reshape(classif, [nl, ns])
 
                     '''反演LSCT'''
-                    print(fileName + '_lsct.tif start')
-                    lsct = inv_mpl_agl_multiple_2(lstN, lstF, emis_s, emis_v, fvc_n, fvc_o, wl=10.8)
+                    try:
+                        print(fileName + '_lsct.tif start')
+                        lsct = inv_mpl_agl_multiple_2(lstN, lstF, emis_s, emis_v, fvc_n, fvc_o, wl=10.8)
+                    except Exception as e:
+                        print(f"计算FVC时出错: {e}")
+                        # 根据需求选择处理方式
+                        # 1. 跳过当前循环
+                        continue  # 如果在循环中
+
 
 
                     [ns, nl, nb] = np.shape(lsct)

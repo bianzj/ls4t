@@ -1202,7 +1202,7 @@ def planck(wavelength, Ts):
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     else:
         Ts[Ts < temperature_threshold] = Ts[Ts < temperature_threshold] + temperature_zero
-        wavelength = np.float_(wavelength)
+        wavelength = float(wavelength)
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     return rad
 

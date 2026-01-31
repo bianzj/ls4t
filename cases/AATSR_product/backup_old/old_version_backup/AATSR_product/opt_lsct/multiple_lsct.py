@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
+
 from backup_old.old_version_backup.AATSR_product.util.old.util_old import *
 from multiprocessing import Pool,cpu_count
 from scipy.optimize import fmin
