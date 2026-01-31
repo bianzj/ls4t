@@ -275,6 +275,29 @@ def calc_azimuth(lat1, lon1, lat2, lon2):
     brng = np.arctan2(y, x) * 180 / np.pi
     return float((brng + 360.0) % 360.0)
 
+
+########################3
+###
+#########################3
+
+
+def writevrt_nadir(infile, datafile, xfile, yfile):
+    write_vrt(infile, datafile, xfile, yfile, 1500, 1200)
+    return 1
+
+def writevrt_obliq(infile, datafile, xfile, yfile):
+    write_vrt(infile, datafile, xfile, yfile, 900, 1200)
+    return 1
+
+def writevrt_v_nadir(infile, datafile, xfile, yfile):
+    write_vrt(infile, datafile, xfile, yfile, 3000, 2400)
+    return 1
+
+def writevrt_v_obliq(infile, datafile, xfile, yfile):
+    write_vrt(infile,datafile,xfile,yfile,1800,2400)
+    return 1
+
+
 def write_vrt(vrtfile, datafile, xfile, yfile, xscale, yscale, noDataValue = 65535, bandnumber = 1):
     '''
     导出用于gdal vrt的配置文件
@@ -467,3 +490,6 @@ def cal_rmse_r2(data1,data2,tshred=9):
     coef = corrcoef(data1[ind],data2[ind])
     r2 = coef[1]*coef[1]
     return bias,rmse,r2
+
+
+
