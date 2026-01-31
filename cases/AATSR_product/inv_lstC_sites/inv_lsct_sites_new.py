@@ -20,13 +20,13 @@ warnings.filterwarnings("ignore")
 
 if __name__ == '__main__':
     ###  反演参数设置
-    n, m, ws = 2, 3, 5 # n 角度， m组分， ws窗口大小
+    n, m, ws = 2, 2, 5 # n 角度， m组分， ws窗口大小
     ndvi_max, ndvi_min, k = 0.87, 0.15, 1 # ndvi 参数
     lst_min, lst_max = 250, 350 # 范围参数
     hspot, wl = 1.0, 10.8 # 结构参数
     # 反演方法
     method_effective_emissivity = 'lai' # lai / ndvi
-    method_mpl_pixel = 'winquad' # point / winconst / winquad
+    method_mpl_pixel = 'winconst' # point / winconst / winquad
     method_solve = 'bayesian' # bayesian / nobayesian / none
     # 反演站点设置
     if_Dahra = 1 # 只反演Dahra站点

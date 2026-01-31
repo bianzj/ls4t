@@ -71,8 +71,8 @@ if __name__ == '__main__':
     outdir_result = r'/home/hero/data/AATSR/aatsr_validation/sites_validation/results/' + label + '/aatsr_result/'
     mkdir_if_not_exist(outdir_result)
 
-    ifextract = 0
-    ifmerge = 0
+    ifextract = 1
+    ifmerge = 1
     ifval = 1
 
 

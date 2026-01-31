@@ -42,7 +42,7 @@ def plot_density(data1,data2,ind,label1,label2 ,dif_therhold,outfile):
     invalid_num = sum(ind * (np.abs(data2-data1)<dif_therhold))
     print(label2, ': num: %03d' % invalid_num +  ' rmse:%.2f' % rmse +' bias:%.2f' % bias + ' r2:%.2f' % r2[0])
 
-    plt.figure(figsize=(5, 4))
+    plt.figure(figsize=(4.5, 4),dpi = 300)
     plt.scatter(data1[ind], data2[ind], label=label2, color='blue')
     plt.plot([220, 370], [220, 370], color='black', linestyle='--')  # 添加1:1线
     plt.xlabel(label1)
@@ -61,14 +61,14 @@ def plot_density(data1,data2,ind,label1,label2 ,dif_therhold,outfile):
 
 if __name__ == '__main__':
     ###  反演参数设置
-    n, m, ws = 2, 3, 5 # n 角度， m组分， ws窗口大小
+    n, m, ws = 2, 2, 5 # n 角度， m组分， ws窗口大小
     ndvi_max, ndvi_min, k = 0.87, 0.15, 1 # ndvi 参数
     lst_min, lst_max = 250, 350 # 范围参数
     hspot, wl = 0.2, 10.8 # 结构参数
     # 反演方法
     method_effective_emissivity = 'lai' # lai / ndvi
-    method_mpl_pixel = 'winquad' # point / winconst / winquad
-    method_solve = 'bayesian' # bayesian / nobayesian / none
+    method_mpl_pixel = 'winconst' # point / winconst / winquad
+    method_solve = 'ls' # bayesian / nobayesian / none
 
     label = 'inv_%01dc_' % m + method_effective_emissivity + '_' + method_mpl_pixel + '_' + method_solve
 
@@ -121,12 +121,12 @@ if __name__ == '__main__':
             ind = np.bitwise_and(mask_x,mask_y)
 
             # ind area 
-            radius = 1
-            min_x, max_x = ref_indx - radius, ref_indx + radius
-            min_y, max_y = ref_indy - radius, ref_indy + radius
-            mask_x = np.logical_and(indx >= min_x, indx <= max_x)
-            mask_y = np.logical_and(indy >= min_y, indy <= max_y)
-            ind = np.bitwise_and(mask_x, mask_y)
+            # radius = 1
+            # min_x, max_x = ref_indx - radius, ref_indx + radius
+            # min_y, max_y = ref_indy - radius, ref_indy + radius
+            # mask_x = np.logical_and(indx >= min_x, indx <= max_x)
+            # mask_y = np.logical_and(indy >= min_y, indy <= max_y)
+            # ind = np.bitwise_and(mask_x, mask_y)
 
             if sum(ind) == 0:
                 print('no valid pixel')
@@ -182,8 +182,8 @@ if __name__ == '__main__':
         merged_data = pd.DataFrame()
         for idx, row in inv_data.iterrows():
             local_time = row['Local_Time']
-            filtered_ground_data = ground_data[(ground_data['Time'] <= local_time + pd.Timedelta(minutes=15)) &
-                                            (ground_data['Time'] >= local_time - pd.Timedelta(minutes=0))]  # 选择30分钟内的数据
+            filtered_ground_data = ground_data[(ground_data['Time'] <= local_time + pd.Timedelta(minutes=7.5)) &
+                                            (ground_data['Time'] >= local_time - pd.Timedelta(minutes=7.5))]  # 选择30分钟内的数据
 
             if not filtered_ground_data.empty:
                 merged_row = row.to_frame().T.assign(**filtered_ground_data.iloc[0])
@@ -310,7 +310,7 @@ if __name__ == '__main__':
 
         elif m == 3 and method_effective_emissivity == 'lai':  # 三组分 LAI
             # 总误差
-            ind = (cloN == 1) * (cloF == 1)
+            ind = (cloN == 1) * (cloF == 1)* (Ts_mea - lstN > -5)
             ind_Ts = ind * (Ts_mea.isna() == False) * (Ts_inv.isna() == False) * (np.abs(Ts_mea - Ts_inv) < 15)
             ind_Tv = ind * (Tv_mea.isna() == False) * (Tv_inv.isna() == False) * (np.abs(Tv_mea - Tv_inv) < 15)
             outfile_ts = outdir + label + '_Ts.png'

@@ -170,6 +170,9 @@ def aatsr_read_sites_lst(infile):
 def aatsr_read_sites_angle(infile):
     items_angle = ['vzaN','vzaF','vaaN','vaaF','sza','saa']
     [vzaN, vzaF, vaaN, vaaF, sza, saa] = read_h5py_items(infile, items_angle)
+    vaaN[vaaN > 36000] = vaaN[vaaN > 36000] -65536+36000
+    vaaF[vaaF > 36000] = vaaF[vaaF > 36000] -65536+36000
+    saa[saa > 36000] = saa[saa > 36000] -65536+36000
     vzaN,vzaF,vaaN,vaaF,sza,saa = vzaN / 100,vzaF/100,vaaN/100,vaaF/100,sza/100,saa/100
     sza[sza >= 90] = 89.99
     return vzaN,vzaF,vaaN,vaaF,sza,saa
