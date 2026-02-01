@@ -8,8 +8,8 @@ from base.util_file import *
 import h5py
 import seaborn as sns
 import seaborn_image as isns
+import pandas as pd
 from pvlib import atmosphere
-#from pvlib.tools import datetime_to_djd, djd_to_datetime
 import pvlib
 from pvlib.location import Location
 from osgeo import gdal
@@ -17,205 +17,165 @@ from osgeo import osr
 import os
 import pyresample as pr
 from satpy import Scene
+import satpy
 
 
-deg2rad = 3.1415926/180
-NS_PER_HR = 1.e9 * 3600.  # nanoseconds per hour
+def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, path, imageType='GTiff',
+                     nodata_value=None):
+    # 处理输入参数冲突
+    if len(im_data.shape) == 3:
+        im_bands, im_height, im_width = im_data.shape
+    elif len(im_data.shape) == 2:
+        im_data = np.array([im_data])
+        im_bands = 1
+    else:
+        im_data = np.array([im_data])
+        im_bands = 1
+        im_height, im_width = im_data.shape[1], im_data.shape[2] if im_data.ndim > 2 else im_data.shape[1]
+
+    # 自动检测数据类型
+    im_bands = int(im_bands)
+    im_height = int(im_height)
+    im_width = int(im_width)
+    dtype_name = im_data.dtype.name.lower()  # 统一转小写判断
+
+    if 'uint8' in dtype_name or 'int8' in dtype_name:
+        datatype = gdal.GDT_Byte
+        default_nodata = 255
+    elif 'uint16' in dtype_name:  # 修正大小写
+        datatype = gdal.GDT_UInt16
+        default_nodata = 0
+    elif 'int16' in dtype_name:
+        datatype = gdal.GDT_Int16
+        default_nodata = -32768
+    elif 'uint32' in dtype_name:
+        datatype = gdal.GDT_UInt32
+        default_nodata = 0
+    elif 'int32' in dtype_name:
+        datatype = gdal.GDT_Int32
+        default_nodata = -2147483648
+    elif 'float32' in dtype_name:
+        datatype = gdal.GDT_Float32
+        default_nodata = np.nan
+    elif 'float64' in dtype_name:
+        datatype = gdal.GDT_Float64
+        default_nodata = np.nan
+    else:
+        datatype = gdal.GDT_Float32
+        default_nodata = np.nan
+
+    if nodata_value is None:
+        nodata_value = default_nodata
+
+    driver = gdal.GetDriverByName(imageType)
+    dataset = driver.Create(path, im_width, im_height, im_bands, datatype
+                            ,options=['COMPRESS=LZW', 'PREDICTOR=2', 'TILED=YES'])
+
+    if dataset is not None:
+        if im_trans is not None and im_trans != '':
+            dataset.SetGeoTransform(im_trans)
+        if im_proj is not None and im_proj != '':
+            dataset.SetProjection(im_proj)
+
+        for i in range(im_bands):
+            band = dataset.GetRasterBand(i + 1)
+            band.WriteArray(im_data[i])
+            if not (isinstance(nodata_value, float) and np.isnan(nodata_value)):
+                band.SetNoDataValue(nodata_value)
+            else:
+                band.SetNoDataValue(-9999)  # 对于NaN，TIFF通常建议设置一个物理掩码值
+            band.FlushCache()
+            band.ComputeStatistics(False)
+    del dataset
+    return 1
+
+
+deg2rad = np.pi / 180
+NS_PER_HR = 1.e9 * 3600.
 elev = 0
 altitude = 0
-pressure = 101325 / 100  # pressure must be in millibars for calculation
+pressure = 1013.25  # 单位：mb
 atmos_refract = 0.5667
-line1 = 3712  # 1rst line (start reading from south)
-lineN = 0  # last line (northwards)
 
-indir_raw = r"/Users/bianzj/Downloads/data/msg_raw/"
-indir_tif = r"/Users/bianzj/Downloads/data/msg_tif/"
+indir_raw = r"/Users/bianzj/Downloads/data/msg/euro_raw/"
+indir_tif = r"/Users/bianzj/Downloads/data/msg/euro_tif/"
+indir_lst = r"/Users/bianzj/Downloads/data/msg/euro_lst/"
+indir_base = "/Users/bianzj/Downloads/data/msg/Static/"
 
+# 读取经纬度
+infile = os.path.join(indir_base, "EURO_lat.tif")
+lat0_, ns, nl, nb, geog, proj = read_image_gdal(infile)
+infile = os.path.join(indir_base, "EURO_lon.tif")
+lon0_, ns, nl, nb, geog, proj = read_image_gdal(infile)
 
+lat0_ = lat0_ / 100.0
+lon0_ = lon0_ / 100.0
+ns_short = np.int16(ns / 20)
+nl_short = np.int16(nl / 20)
+lat_ = resize_data(lat0_, nl_short, ns_short)
+lon_ = resize_data(lon0_, nl_short, ns_short)
 
-for kyear in range(2017, 2018, 1):
-    for kmonth in range(1, 13):
-        for kday in range(1, 32):
+# 修正 NaN 报错
+ind = (lat_ < -90) | (lat_ > 90)
+lat_[ind] = np.nan
+lon_[ind] = np.nan
 
-            indir_temp = indir_raw + '%04d'%(kyear) + '%02d'%(kmonth) + '%02d'%(kday)
-            files = search_file(indir_temp,"nat")
-            infiles = np.asarray([indir_temp+file for file in files])
-            reader = "seviri_l1b_native"
+for kyear in range(2017, 2018):
+    for kmonth in range(7, 8):
+        for kday in range(1, 2):
+            day_str_path = f'{kyear:04d}/{kmonth:02d}/{kday:02d}/'
+            indir_temp = os.path.join(indir_raw, day_str_path)
+            outdir_temp = os.path.join(indir_tif, day_str_path)
 
-            doy0 = 0
-            file = files[0]
-            date_str = file[-32:-24]
-            year_str = file[-32:-28]
-            month_str = file[-28:-26]
-            day_str = file[-26:-24]
-            hh_str = file[-24:-22]
-            mn_str = file[-22:-20]
-            year_int = np.int_(year_str)
-            month_int = np.int_(month_str)
-            day_int = np.int_(day_str)
-            hh_int = np.int_(hh_str)
-            doy_int = date2DOY(year_int, month_int, day_int)
-            doy0 = doy_int
+            files = search_file(indir_temp, "nat")
+            if len(files) == 0: continue
 
-            if month_int< 10:continue
-
-            outfile = outdir + site_name[0] +"_euro_2024_%03d"%doy0+".txt"
-            if os.path.exists(outfile):
-                continue
+            mkdir_if_not_exist(outdir_temp)
 
             for kfile in range(len(files)):
-            # for k in range(5):
                 file = files[kfile]
-                infile = indir_temp + r"//"+ file
-                print(infile)
+                infile = os.path.join(indir_temp, file)
+                print(f"Processing: {infile}")
 
+                # 解析时间
                 date_str = file[-32:-24]
-                year_str = file[-32:-28]
-                month_str = file[-28:-26]
-                day_str = file[-26:-24]
-                hh_str = file[-24:-22]
-                mn_str = file[-22:-20]
-                year_int = np.int_(year_str)
-                month_int = np.int_(month_str)
-                day_int = np.int_(day_str)
-                hh_int = np.int_(hh_str)
+                hh_int = int(file[-24:-22])
+                mn_int = int(file[-22:-20])
 
+                # if hh_int <= 3 or hh_int >= 20: continue
 
+                # 优化 Satpy 读取：只实例化一次并批量 load
+                scn = Scene(filenames={"seviri_l1b_native": [infile]}, reader_kwargs={'fill_disk': True})
 
-                if(hh_int <= 3): continue
-                if(hh_int >= 20): continue
-                #scn = Scene(filenames=filenames, reader="seviri_l1b_native", reader_kwargs={'fill_disk': True})
-                scn = Scene(filenames={reader: [infile]},reader_kwargs={'fill_disk': True})
-                # extract data set names
-                dataset_names = scn.all_dataset_names()
-                # print available datasets
+                # 一次性加载所有需要的通道
+                channels = ['VIS006', 'VIS008', 'IR_016', 'IR_108', 'IR_120']
+                scn.load(['IR_108', 'IR_120'], calibration='brightness_temperature')
+                IR108_bt = np.uint16(scn['IR_108'].values * 100)
+                IR120_bt = np.uint16(scn['IR_120'].values * 100)
 
+                # 计算太阳角度
 
-                dataset = "VIS006"
-                # we need to load the data, different calibration can be chosen
-                scn.load([dataset])
-                # let us extract the longitude and latitude data
+                # 保存结果
+                write_image_gdal(IR108_bt, ns, nl, 1, "", "", os.path.join(outdir_temp, file + "_bt8.tif"))
+                write_image_gdal(IR120_bt, ns, nl, 1, "", "", os.path.join(outdir_temp, file + "_bt9.tif"))
+                if (hh_int > 7) & (hh_int < 19):
+                    scn.load(['VIS006', 'VIS008', 'IR_016'], calibration='reflectance')
+                    VIS006_ref = np.uint16(scn['VIS006'].values * 100)
+                    VIS008_ref = np.uint16(scn['VIS008'].values * 100)
+                    # IR016_ref = np.uint16(scn['IR_016'].values*100)
+                    time_val = pd.to_datetime(f"{date_str} {hh_int:02d}:{mn_int:02d}:00").tz_localize('UTC')
+                    site_temp = Location(lat_.flatten(), lon_.flatten(), 'Etc/GMT', altitude, 'None')
+                    nloc = len(lat_.flatten())
+                    solpos_temp = pvlib.solarposition.get_solarposition(np.repeat(time_val, nloc), site_temp.latitude,
+                                                                        site_temp.longitude, site_temp.altitude,
+                                                                        method='nrel_numpy')
+                    sza_temp = solpos_temp['zenith'].to_numpy().reshape(lat_.shape).astype(np.float32)
+                    saa_temp = solpos_temp['azimuth'].to_numpy().reshape(lat_.shape).astype(np.float32)
 
-
-
-                if isloc == 0:
-                    lon, lat = scn[dataset].area.get_lonlats()
-                    for k in range(len(site_name)):
-                        lon_temp = lon_[k]
-                        lat_temp = lat_[k]
-                        distance = np.power((lon - lon_temp), 2) + np.power((lat - lat_temp), 2)
-                        tempx, tempy = np.where(distance == np.min(distance))
-                        lin_[k] = tempx[0]
-                        col_[k] = tempy[0]
-                    time_bias_ = 12 * (np.int_(lin_) - line1) / (line1 - lineN) + 3  # in minutes
-                    isloc = 1
-                    vza_ = vza[lin_, col_] / 100.0
-                    vaa_ = vaa[lin_, col_] / 100.0
-
-                    # outfile = indir + "/sample/others/EURO_lat_bad.tif"
-                    # write_image_gdal(lat,3712,3712,1,"","",outfile)
-                    # outfile = indir + "/sample/others/EURO_lon_bad.tif"
-                    # write_image_gdal(lon, 3712, 3712, 1, "", "", outfile)
-                    # A = 10
-
-
-                doy_int = date2DOY(year_int, month_int, day_int)
-                doy0 = doy_int
-                hh_int_ = np.repeat(hh_int, num_site)
-                mn_int_ = np.int_(mn_str) - time_bias_
-                mn_int_ = np.int_(mn_int_)
-                ind = mn_int_ < 0
-                if np.sum(ind) > 0:
-                    mn_int_[ind] = 0
-                ind = mn_int_ > 59
-                if np.sum(ind) > 0:
-                    mn_int_[ind] = 59
-
-                # and finally we also extract the data
-                values = scn[dataset].values
-                dataset_obj = scn[dataset]
-                VIS006_ = values[lin_,col_]
-
-
-
-
-                dataset = "VIS008"
-                # we need to load the data, different calibration can be chosen
-                scn.load([dataset])
-                values = scn[dataset].values
-                VIS008_ = values[lin_,col_]
-
-                dataset = "IR_016"
-                # we need to load the data, different calibration can be chosen
-                scn.load([dataset])
-                values = scn[dataset].values
-                IR016_ = values[lin_, col_]
-
-                dataset = "IR_108"
-                # we need to load the data, different calibration can be chosen
-                scn.load([dataset])
-                values = scn[dataset].values
-                IR108_ = values[lin_,col_]
-
-                dataset = "IR_120"
-                # we need to load the data, different calibration can be chosen
-                scn.load([dataset])
-                values = scn[dataset].values
-                IR120_ = values[lin_,col_]
-
-                # plt.imshow(values)
-                # plt.show()
-
-                a = 10
-                # date_str = file[-52:-44]
-                # year_str = file[-52:-48]
-                # month_str = file[-48:-46]
-                # day_str = file[-46:-44]
-                # hh_str = file[-44:-42]
-                # mn_str = file[-42:-40]
-
-
-                sza_ = np.zeros(num_site)
-                saa_ = np.zeros(num_site)
-                for ksite in range(num_site):
-                    time_temp = pd.date_range(date_str + ' ' + np.str_(hh_int_[ksite] )+ ':' + np.str_(mn_int_[ksite]) + ':00',date_str + ' ' + np.str_(hh_int_[ksite] ) + ':' + np.str_(mn_int_[ksite] ) + ':00',freq='0.25h', tz='UTC')
-                    site_temp = Location(lat_[ksite], lon_[ksite], 'Etc/GMT', altitude, 'None')
-                    solpos_temp = pvlib.solarposition.get_solarposition(time_temp, site_temp.latitude, site_temp.longitude, site_temp.altitude, method='nrel_numpy')
-                    sza_temp = solpos_temp['zenith'].to_numpy()
-                    sza_temp = np.int_(sza_temp * 100) / 100
-                    saa_temp = solpos_temp['azimuth'].to_numpy()
-                    saa_temp = np.int_(saa_temp * 100) / 100
-                    sza_[ksite] = sza_temp[0]
-                    saa_[ksite] = saa_temp[0]
-                    lat_temp = lat_[ksite]
-                    lon_temp = lon_[ksite]
-                    vza_temp = vza_[ksite]
-                    vaa_temp = vaa_[ksite]
-                    VIS006_temp = VIS006_[ksite]
-                    VIS008_temp = VIS008_[ksite]
-                    IR016_temp = IR016_[ksite]
-                    IR108_temp = IR108_[ksite]
-                    IR120_temp = IR120_[ksite]
-                    line = np.asarray([lat_temp,lon_temp,year_int,month_int,day_int,hh_int_[ksite],mn_int_[ksite],doy_int,sza_temp[0],saa_temp[0],vza_temp,vaa_temp,VIS006_temp,VIS008_temp,IR016_temp,IR108_temp,IR120_temp])
-                    if(kstart == 1):
-                        line_[ksite] = line
-                    else:
-                        line_[ksite] = np.vstack([line_[ksite],line])
-                kstart = 0
-
-            for ksite in range(len(site_name)):
-                line = np.asarray(line_[ksite])
-                ind = np.argsort(line[:,5]/24+line[:,6]/60/24+line[:,7])
-                line = line[ind,:]
-                outfile = outdir + site_name[ksite] +"_euro_2024_%03d"%doy0+".txt"
-                np.savetxt(outfile,line,fmt='%10.4f')
-
-
-
-
-
-
-
-
-
+                    write_image_gdal(sza_temp, ns_short, nl_short, 1, "", "",
+                                     os.path.join(outdir_temp, file + "_sza.tif"))
+                    write_image_gdal(saa_temp, ns_short, nl_short, 1, "", "",
+                                     os.path.join(outdir_temp, file + "_saa.tif"))
+                    write_image_gdal(VIS006_ref, ns, nl, 1, "", "", os.path.join(outdir_temp, file + "_red.tif"))
+                    write_image_gdal(VIS008_ref, ns, nl, 1, "", "", os.path.join(outdir_temp, file + "_nir.tif"))
 
