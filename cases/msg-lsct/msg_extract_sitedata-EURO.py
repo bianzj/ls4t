@@ -112,20 +112,20 @@ for ksite in range(num_sites):
 
 # ================= 4. 循环提取动态数据 =================
 for kyear in range(2017, 2018):
-    for kmonth in range(8, 13):
+    for kmonth in range(11, 13):
         for kday in range(1, 32):
             date_str = "%04d%02d%02d" % (kyear, kmonth, kday)
 
             # --- 4.1 处理 LAI (每天提取一次) ---
             kdoy = date2DOY(kyear, kmonth, kday)
             kkdoy = int(kdoy / 4) * 4 + 1
-            infile_lai = os.path.join(indir0_lai, "%04d" % kyear, "lai_%04d%03d.tif" % (kyear, kkdoy))
+            infile_lai = os.path.join(indir0_lai, "%04d" % kyear, "MODIS_LAI_Global_0.01_A%04d%03d.tif" % (kyear, kkdoy))
 
             lai_full = None
             if os.path.exists(infile_lai):
                 lai_raw, _, _, _, _, _ = read_image_gdal(infile_lai)
-                lai_full = lai_raw[indx, indy] / 1000.0
-                lai_full[lai_full > 30] = np.nan
+                lai_full = lai_raw[indx, indy]
+                lai_full[lai_full > 20] = np.nan
                 lai_full[lai_full < 0] = 0
 
             # --- 4.2 处理逐小时 LST 及太阳角度 ---
@@ -170,23 +170,23 @@ for kyear in range(2017, 2018):
                         write_image_gdal(lai_full[l1:l2, c1:c2], nl_s, ns_s, 1, "", "",
                                          os.path.join(outdir, f"LAI_{date_str}.tif"))
 
-                    # 保存 LST
-                    write_image_gdal(raw_data_clean[l1:l2, c1:c2], nl_s, ns_s, 1, "", "",
-                                     os.path.join(outdir, f"LST_{file_id}_e.tif"))
-
-                    if (khour > 7) & (khour < 18):
-                        # 计算并保存太阳角度 (5x5 切片)
-                        lat_patch = lat[l1:l2, c1:c2]
-                        lon_patch = lon[l1:l2, c1:c2]
-                        time_val = repeat( pd.to_datetime(f"{date_str} {khour:02d}:00:00").tz_localize('UTC'),num_s)
-
-                        solpos = pvlib.solarposition.get_solarposition(
-                            time_val, lat_patch.flatten(), lon_patch.flatten(), altitude=altitude
-                        )
-                        sza_patch = solpos['zenith'].to_numpy().reshape(nl_s, ns_s).astype(np.float32)
-                        saa_patch = solpos['azimuth'].to_numpy().reshape(nl_s, ns_s).astype(np.float32)
-
-                        write_image_gdal(sza_patch, nl_s, ns_s, 1, "", "", os.path.join(outdir, f"SZA_{file_id}.tif"))
-                        write_image_gdal(saa_patch, nl_s, ns_s, 1, "", "", os.path.join(outdir, f"SAA_{file_id}.tif"))
+                    # # 保存 LST
+                    # write_image_gdal(raw_data_clean[l1:l2, c1:c2], nl_s, ns_s, 1, "", "",
+                    #                  os.path.join(outdir, f"LST_{file_id}_e.tif"))
+                    #
+                    # if (khour > 7) & (khour < 18):
+                    #     # 计算并保存太阳角度 (5x5 切片)
+                    #     lat_patch = lat[l1:l2, c1:c2]
+                    #     lon_patch = lon[l1:l2, c1:c2]
+                    #     time_val = repeat( pd.to_datetime(f"{date_str} {khour:02d}:00:00").tz_localize('UTC'),num_s)
+                    #
+                    #     solpos = pvlib.solarposition.get_solarposition(
+                    #         time_val, lat_patch.flatten(), lon_patch.flatten(), altitude=altitude
+                    #     )
+                    #     sza_patch = solpos['zenith'].to_numpy().reshape(nl_s, ns_s).astype(np.float32)
+                    #     saa_patch = solpos['azimuth'].to_numpy().reshape(nl_s, ns_s).astype(np.float32)
+                    #
+                    #     write_image_gdal(sza_patch, nl_s, ns_s, 1, "", "", os.path.join(outdir, f"SZA_{file_id}.tif"))
+                    #     write_image_gdal(saa_patch, nl_s, ns_s, 1, "", "", os.path.join(outdir, f"SAA_{file_id}.tif"))
 
 print("站点周边数据 TIF 提取任务全部完成。")

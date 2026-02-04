@@ -295,7 +295,9 @@ indir0_iodc = indir + '/PRODUCTS/MSG-IODC/MLST/GEOTIFF'
 indir0_lai = indir + '/lai/'
 outdir_root = indir + '/PRODUCTS/LSCT/MLST_COMPONENT/'
 altitude = 0
-
+lambda_val = 100.0
+dif = 3
+hspot_val = 0.2
 # ================= 读取静态数据 =================
 print("正在读取静态数据及坐标映射...")
 infile_source = indir + "/map/MCD12C1_2011_0.01.tif"
@@ -354,12 +356,12 @@ for kyear in range(2017, 2018):
             # --- 1. 处理 LAI 和 权重 w ---
             kdoy = date2DOY(kyear, kmonth, kday)
             kkdoy = int(kdoy / 4) * 4 + 1
-            infile_lai = os.path.join(indir0_lai, "%04d" % kyear, "lai_%04d%03d.tif" % (kyear, kkdoy))
+            infile_lai = os.path.join(indir0_lai, "%04d" % kyear, "MODIS_LAI_Global_0.01_A%04d%03d.tif" % (kyear, kkdoy))
 
             if isfirst or (kkdoy == kdoy):
                 if os.path.exists(infile_lai):
                     lai, _, _, _, _, _ = read_image_gdal(infile_lai)
-                    lai = lai[indx, indy] / 1000.0
+                    lai = lai[indx, indy]
                     lai[lai > 30] = np.nan
                     lai[lai < 0] = 0
 
@@ -412,9 +414,9 @@ for kyear in range(2017, 2018):
                     vsa_iodc[vsa_iodc > 180] = 360 - vsa_iodc[vsa_iodc > 180]
 
                     b1 = gap_probability_hom_analytical(lai, vza_euro)
-                    w1,b1 = hotspot_layer(lai, 0.1, vza_euro, sza, vsa_euro)
+                    w1,b1 = hotspot_layer(lai, hspot_val, vza_euro, sza, vsa_euro)
                     b2 = gap_probability_hom_analytical(lai, vza_iodc)
-                    w2,b2 = hotspot_layer(lai, 0.1, vza_iodc, sza, vsa_iodc)
+                    w2,b2 = hotspot_layer(lai, hspot_val, vza_iodc, sza, vsa_iodc)
 
                     w = np.zeros([nll, nss, 6])
                     w[:, :, 0] = emis_s * (w1)  # Soil Euro
@@ -451,7 +453,7 @@ for kyear in range(2017, 2018):
                     # 求解光照土壤辐射 (bs1_rad) 和 混合分量辐射 (b_comb_rad)
                     bs1_rad, b_comb_rad = solve_2x2_system_5x5(rad_e, rad_i,
                                                            w_s1_e, w_comb_e,
-                                                           w_s1_i, w_comb_i, size=5)
+                                                           w_s1_i, w_comb_i, size=3)
                     # ---------------------------------------------------------
                     # 步骤 B: 第二阶段求解 - 在残差中分离 [阴影土壤] 和 [植被]
                     # ---------------------------------------------------------
@@ -479,7 +481,7 @@ for kyear in range(2017, 2018):
                     x_prior = np.stack([bs1_rad, bs2_rad, bv_rad], axis=-1)
                     print(f"正在进行联合平差修正...")
                     bs1_final, bs2_final, bv_final = solve_joint_vectorized_with_prior(
-                        rad_e, rad_i, w, x_prior, lmbda=0.5
+                        rad_e, rad_i, w, x_prior, lmbda=lambda_val
                     )
                     # ---------------------------------------------------------
                     # 步骤 C: 反演温度
