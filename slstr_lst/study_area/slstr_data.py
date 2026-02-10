@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
 import netCDF4
 import time
 from base.util_constant import *
@@ -27,13 +27,14 @@ slstr_data.py
 '''
 
 # 数据输入
-indir_raw = r'/home/hero/data/SLSTR_heihe/raw/'
-indir_med = r'/home/hero/data/SLSTR_heihe/med/'
-indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
+year = 2017
+indir_raw = r'/media/hero/slstr_heihe/SLSTR_heihe/%04d/raw/' % year
+indir_med = r'/media/hero/slstr_heihe/SLSTR_heihe/%04d/med/' % year
+indir_tif = r'/media/hero/slstr_heihe/SLSTR_heihe/%04d/tif/' % year
 mkdir_if_not_exist(indir_med)
 mkdir_if_not_exist(indir_tif)
 
-targetArea = r'/home/hero/data/type/type_heihe_1000_utm47N.tif'
+targetArea = r'/media/hero/slstr_heihe/base/type/type_heihe_1000_utm47N.tif'
 
 s = 'S3'  # 同时处理S3A和S3B数据
 day_start_hour = 22  # 研究区白天开始的utm小时（不含）24小时制
@@ -119,18 +120,18 @@ for k in range(fileNum):
         else:
             dayNight = 'nig'
 
-    if dayNight == 'nig':
-        print("Pass nig!")
-        continue  # 不输入晚上的结果
+    # if dayNight == 'nig':
+    #     print("Pass nig!")
+    #     continue  # 不输入晚上的结果
 
     # 判断文件是否齐全
     c1 = os.path.exists(fileDir + r'/S2_radiance_an.nc')
     c2 = os.path.exists(fileDir + r'/S3_radiance_an.nc')
     c3 = os.path.exists(fileDir + r'/geodetic_in.nc')
     c4 = os.path.exists(fileDir + r'/met_tx.nc')
-    c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
+    # c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
     c6 = os.path.exists(fileDir + r'/S8_BT_in.nc')
-    if c1*c2*c3*c4*c5*c6 == 0:
+    if c1*c2*c3*c4*c6 == 0:
         print("File damaged!")
         continue
 
@@ -391,10 +392,10 @@ for k in range(fileNum):
         outfile3 = indir_tif + outfile0 + dayNight +'_red_nadir.tif'
         outfile4 = indir_tif + outfile0 + dayNight +'_nir_nadir.tif'
         outfile5 = indir_tif + outfile0 + dayNight +'_vza_nadir.tif'
-        outfile6 = indir_tif + outfile0 + dayNight +'_sza_nadir.tif'
+        outfile6 = indir_tif + outfile0 + dayNight +'_sza.tif'
         outfile8 = indir_tif + outfile0 + dayNight +'_time.tif'
         outfile9 = indir_tif + outfile0 + dayNight +'_vaa_nadir.tif'
-        outfile10 = indir_tif + outfile0 + dayNight +'_saa_nadir.tif'
+        outfile10 = indir_tif + outfile0 + dayNight +'_saa.tif'
         outfile11 = indir_tif + outfile0 + dayNight +'_cloud_nadir.tif'
 
         if os.path.exists(outfile1) == 1:
@@ -438,7 +439,7 @@ for k in range(fileNum):
         im_proj = dataset.GetProjection()
         temp1, temp2 = lonlat2geo(dataset, lon_type, lat_type)
         imagex, imagey = geo2imagexy(dataset, temp1, temp2)
-        print(imagex,imagey)
+        # print(imagex,imagey)
         dataset = None
 
         imagex = np.asarray(imagex, int)
@@ -700,23 +701,23 @@ for k in range(fileNum):
 
     if ifproj_o:
         if dayNight == "day":
-            file = 'sza_obliq'
-            datafile = indir_med + file + '.tif'
-            xfile = indir_med + 'lon_obliq.tif'
-            yfile = indir_med + 'lat_obliq.tif'
-            vrtfile = indir_med + file + '.vrt'
-            write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
-            outfile = indir_med + file + '_proj.tif'
-            dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
+            # file = 'sza_obliq'
+            # datafile = indir_med + file + '.tif'
+            # xfile = indir_med + 'lon_obliq.tif'
+            # yfile = indir_med + 'lat_obliq.tif'
+            # vrtfile = indir_med + file + '.vrt'
+            # write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
+            # outfile = indir_med + file + '_proj.tif'
+            # dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
 
-            file = 'saa_obliq'
-            datafile = indir_med + file + '.tif'
-            xfile = indir_med + 'lon_obliq.tif'
-            yfile = indir_med + 'lat_obliq.tif'
-            vrtfile = indir_med + file + '.vrt'
-            write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
-            outfile = indir_med + file + '_proj.tif'
-            dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
+            # file = 'saa_obliq'
+            # datafile = indir_med + file + '.tif'
+            # xfile = indir_med + 'lon_obliq.tif'
+            # yfile = indir_med + 'lat_obliq.tif'
+            # vrtfile = indir_med + file + '.vrt'
+            # write_vrt(vrtfile, datafile, xfile, yfile, 1500, 1200)
+            # outfile = indir_med + file + '_proj.tif'
+            # dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
 
             '''VNIR'''
             file = 'red_obliq'
@@ -941,32 +942,32 @@ for k in range(fileNum):
             data4[data4 < 0] = 0
             data4[data4 > 500] = 0
 
-            # sza
-            infile = indir_med + r'sza_obliq_proj.tif'
-            [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
-            temp = data[imagex, imagey]
-            indnew = (temp < 500) * (temp > 0) * ind
-            data6 = np.reshape(data6, [-1])
-            data6[indnew] = temp[indnew]
-            data6 = np.reshape(data6, [nl, ns])
-            data6[data6 < 0] = 0
-            data6[data6 > 500] = 0
+            # # sza
+            # infile = indir_med + r'sza_obliq_proj.tif'
+            # [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
+            # temp = data[imagex, imagey]
+            # indnew = (temp < 500) * (temp > 0) * ind
+            # data6 = np.reshape(data6, [-1])
+            # data6[indnew] = temp[indnew]
+            # data6 = np.reshape(data6, [nl, ns])
+            # data6[data6 < 0] = 0
+            # data6[data6 > 500] = 0
 
-            # saa
-            infile = indir_med + r'saa_obliq_proj.tif'
-            [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
-            temp = data[imagex, imagey]
-            indnew = (temp < 500) * (temp > 0) * ind
-            data10 = np.reshape(data10, [-1])
-            data10[indnew] = temp[indnew]
-            data10 = np.reshape(data10, [nl, ns])
-            data10[data10 < 0] = 0
-            data10[data10 > 500] = 0
+            # # saa
+            # infile = indir_med + r'saa_obliq_proj.tif'
+            # [data, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile)
+            # temp = data[imagex, imagey]
+            # indnew = (temp < 500) * (temp > 0) * ind
+            # data10 = np.reshape(data10, [-1])
+            # data10[indnew] = temp[indnew]
+            # data10 = np.reshape(data10, [nl, ns])
+            # data10[data10 < 0] = 0
+            # data10[data10 > 500] = 0
 
             write_image_gdal(data3, ns, nl, 1, geog, proj, outfile3)
             write_image_gdal(data4, ns, nl, 1, geog, proj, outfile4)
-            write_image_gdal(data6, ns, nl, 1, geog, proj, outfile6)
-            write_image_gdal(data10, ns, nl, 1, geog, proj, outfile10)
+            # write_image_gdal(data6, ns, nl, 1, geog, proj, outfile6)
+            # write_image_gdal(data10, ns, nl, 1, geog, proj, outfile10)
 
 
         write_image_gdal(data1, ns, nl, 1, geog, proj, outfile1)
