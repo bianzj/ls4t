@@ -12,9 +12,10 @@ import math
 import warnings
 import shutil
 import numpy as np
-
+os.environ['PROJ_LIB'] =  r"/home/hero/anaconda3/envs/env_311/share/proj/"
 warnings.filterwarnings("ignore")
 
+'''2026.2.10 fix vaa saa & year '''
 '''2025.10.12 ls4t case: （注意python版本不同lonlat2geo输入顺序)'''
 '''2023.10.04 增加倾斜方向日夜提取'''
 '''2023.7.22 增加垂直方向夜晚提取的部分用于定标'''
@@ -67,7 +68,7 @@ def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, 
     if 'uint8' in dtype_name or 'int8' in dtype_name:
         datatype = gdal.GDT_Byte
         default_nodata = 255
-    elif 'Uint16' in dtype_name:
+    elif 'Uint16' in dtype_name or 'uint16' in dtype_name:  # 大小写
         datatype = gdal.GDT_UInt16
         default_nodata = 0
     elif 'int16' in dtype_name:
@@ -228,10 +229,10 @@ def scale_and_convert_to_uint16(data, scale_factor, clip_range=(0, 65535)):
 
 
 # 数据输入
-indir_raw = r'/Users/bianzj/Downloads/data/slstr_raw/'
-indir_tif = r'/Users/bianzj/Downloads/data/slstr_tif/'
+year = 2023
+indir_raw = r'/media/hero/新加卷1//SLSTR_China/%04d/raw/' % year
+indir_tif = r'/media/hero/slstr_heihe/SLSTR_China/%04d/tif' % year
 mkdir_if_not_exist(indir_tif)
-
 s = 'S3'  # 同时处理S3A和S3B数据
 day_start_hour = 22  # 研究区白天开始的utm小时（不含）24小时制
 day_end_hour = 10  # 研究区白天开始的utm小时（不含）
@@ -266,7 +267,7 @@ for k in range(fileNum):
     year = int(uint(date_str[:4]))
     month = int(fileName[20:22])
     day = int(fileName[22:24])
-    doy = date2DOY(2019, month, day)
+    doy = date2DOY(year, month, day)
     dayNight = "day"
 
     ### 测试只处理某一天的数据
@@ -287,6 +288,7 @@ for k in range(fileNum):
     # 创建输出文件夹
     output_folder = os.path.join(indir_tif, fileName)
     mkdir_if_not_exist(output_folder)
+    if os.path.exists(output_folder + r'/bt8_nadir_proj.tif'): continue
 
     # 创建临时文件夹用于中间文件
     temp_folder = os.path.join(output_folder, 'temp')
@@ -297,9 +299,9 @@ for k in range(fileNum):
     c2 = os.path.exists(fileDir + r'/S3_radiance_an.nc')
     c3 = os.path.exists(fileDir + r'/geodetic_in.nc')
     c4 = os.path.exists(fileDir + r'/met_tx.nc')
-    c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
+    # c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
     c6 = os.path.exists(fileDir + r'/S8_BT_in.nc')
-    if c1 * c2 * c3 * c4 * c5 * c6 == 0:
+    if c1 * c2 * c3 * c4  * c6 == 0:
         print("File damaged!")
         continue
 
@@ -333,6 +335,9 @@ for k in range(fileNum):
         sza = getDatafromNc(fileName_nc, objectName)
         objectName = r'solar_azimuth_tn'
         saa = getDatafromNc(fileName_nc, objectName)
+
+        saa[saa<0] = saa[saa<0] + 360
+        saa[saa>360] = saa[saa>360] - 360
 
         sza = cv2.resize(sza[:, adjust_xmin_n_g:adjust_xmax_n_g],
                          (ns, nl), cv2.INTER_NEAREST)
@@ -416,6 +421,8 @@ for k in range(fileNum):
 
         objectName = r'sat_azimuth_tn'
         vaa = getDatafromNc(fileName_nc, objectName)
+        vaa[vaa<0] = vaa[vaa<0] + 360
+        vaa[vaa>360] = vaa[vaa>360] - 360
 
         vza = cv2.resize(vza[:, adjust_xmin_n_g:adjust_xmax_n_g],
                          (ns, nl), cv2.INTER_NEAREST)
@@ -594,6 +601,8 @@ for k in range(fileNum):
             saa = cv2.resize(saa[:, adjust_xmin_o_g:adjust_xmax_o_g],
                              (ns_obliq_g, nl_obliq_g), cv2.INTER_NEAREST)
 
+            saa[saa < 0] = saa[saa < 0] + 360
+            saa[saa > 360] = saa[saa > 360] - 360
             # 角度数据*100并转换为UInt16
             sza_uint16 = scale_and_convert_to_uint16(sza[:nl, :ns], 100)
             saa_uint16 = scale_and_convert_to_uint16(saa[:nl, :ns], 100)
@@ -634,6 +643,8 @@ for k in range(fileNum):
         vza = getDatafromNc(fileName_nc, objectName)
         objectName = r'sat_azimuth_to'
         vaa = getDatafromNc(fileName_nc, objectName)
+        vaa[vaa<0] = vaa[vaa<0] + 360
+        vaa[vaa>360] = vaa[vaa>360] - 360
 
         vza = cv2.resize(vza[:, adjust_xmin_o_g:adjust_xmax_o_g],
                          (ns_obliq_g, nl_obliq_g), cv2.INTER_NEAREST)
