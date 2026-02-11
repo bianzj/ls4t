@@ -71,39 +71,6 @@ def calculate_scattering_angle(sza, saa, vza, vaa):
 
     return scattering_angle
 
-def planck(wavelength, Ts):
-    '''
-    基于planck公式，计算某个波长时候，从温度到辐射的转换
-    :param wavelength: 波长，10.5
-    :param Ts: 温度，可以是亮温，也可以是摄氏度
-    :return: 辐射
-    '''
-    c1 = planck_c1
-    c2 = planck_c2
-    if np.isscalar(Ts):
-        if Ts < temperature_threshold:
-            Ts = Ts + temperature_zero
-        wavelength = np.float64(wavelength)
-        Ts = float(Ts)
-        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
-    else:
-        Ts = np.array(Ts, dtype=np.float64)
-        Ts[Ts < temperature_threshold] = Ts[Ts < temperature_threshold] + temperature_zero
-        wavelength = float(wavelength)
-        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
-    return rad
-
-def inv_planck(wavelength, rad):
-    c1 = planck_c1 * 10000
-    c2 = planck_c2
-    # 过滤掉非正值辐射
-    with np.errstate(invalid='ignore', divide='ignore'):
-        temp = c1 / (rad * np.power(wavelength, 5)) + 1
-        # 只有在 temp > 1 时 log 才有意义
-        Ts = np.where(temp > 1, c2 / (wavelength * np.log(temp)), np.nan)
-    return Ts
-
-
 
 import numpy as np
 from scipy.ndimage import uniform_filter

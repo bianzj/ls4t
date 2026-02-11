@@ -4,11 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy import stats
 import math
+from base.util_phys import *
 
 # ================= 配置参数 =================
-file_inferred = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Site_Results.csv"
+file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
 file_measured = "/Users/bianzj/Downloads/data/stations/Evo-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
+output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
 
 # --- 新增：时间选择设定 ---
 START_DATE = '2017-08-01'  # 开始日期 (包含)
@@ -18,6 +19,9 @@ SELECT_HOURS = [11, 12, 13, 14, 15] # 只选 10:00 到 16:00 的数据
 # 设定残差阈值（单位：K）
 DIFF_THRESHOLD = 10.0
 target_site = "Evora"
+Tsky = 250
+emis_v = 0.975
+emis_s = 0.975
 
 tasks = [
     ('T_Sunlit_Soil', 'Ts', 'Sunlit Soil vs Ts'),
@@ -63,6 +67,14 @@ if df_merge.empty:
     exit()
 
 print(f"过滤后剩余有效样本数: {len(df_merge)}")
+
+
+bg = planck(10.5,df_merge['Ts'])
+bv = planck(10.5,df_merge['Tcrown'])
+bsky = planck(10.5,250)
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+
 
 # ================= 4. 统计与绘图 =================
 stats_list = []
