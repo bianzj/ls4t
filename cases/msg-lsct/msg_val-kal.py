@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy import stats
 import math
-
+from base.util_phys import *
 # ================= 配置参数 =================
-file_inferred = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Site_Results.csv"
+file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
 file_measured = "/Users/bianzj/Downloads/data/stations/Kal-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Validation_Stats_KAL.csv"
+output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_KAL.csv"
 
 # --- 新增：时间选择设定 ---
 START_DATE = '2017-08-01'       # 设定起始日期 (包含)
@@ -18,6 +18,9 @@ SELECT_HOURS = [11, 12, 13, 14, 15]  # 设定小时区间 (如只看白天)
 # 设定残差阈值（单位：K）
 DIFF_THRESHOLD = 10.0
 target_site = "KAL"
+Tsky = 250
+emis_v = 0.975
+emis_s = 0.975
 
 # 格式：(反演列名, 实测列名, 显示标题)
 tasks = [
@@ -67,6 +70,13 @@ if df_merge.empty:
     exit()
 
 print(f"时间过滤完成，剩余样本数: {len(df_merge)}")
+
+bg = planck(10.5,df_merge['bt_s'])
+bv = planck(10.5,df_merge['bt_v'])
+bsky = planck(10.5,250)
+df_merge['bt_s'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
+df_merge['bt_v'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+
 
 # ================= 4. 统计与绘图 =================
 stats_list = []

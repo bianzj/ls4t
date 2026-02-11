@@ -9,9 +9,9 @@ from rasterio.transform import from_bounds
 
 # ================= 配置区域 =================
 
-input_root = "/Users/bianzj/Downloads/data/PRODUCTS/MSG/MLST/HDF5/2017/08"
-output_root = "/Users/bianzj/Downloads/data/PRODUCTS/MSG/MLST/GEOTIFF/2017/08"
-
+input_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/HDF5/"
+output_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/GEOTIFF/"
+target_var = 'LAI'
 # input_root = "/Users/bianzj/Downloads/"
 # output_root = "/Users/bianzj/Downloads/"
 
@@ -22,7 +22,7 @@ output_root = "/Users/bianzj/Downloads/data/PRODUCTS/MSG/MLST/GEOTIFF/2017/08"
 lat_path = "/Users/bianzj/Downloads/data/msg/Static/EURO_lat.tif"
 lon_path = "/Users/bianzj/Downloads/data/msg/Static/EURO_lon.tif"
 
-targevar = 'LST'
+
 
 # 目标区域 (WGS84)
 res = 0.03
@@ -95,8 +95,14 @@ def load_static_latlon(lat_p, lon_p):
     return lat, lon
 
 
-def process_monthly_hdf5_to_tif():
+def process_monthly_hdf5_to_tif(input_root, output_root):
     # 1. 设置目标区域几何信息
+
+    # 3. 递归遍历 HDF5 文件
+    # 匹配所有 HDF5 开头的文件
+    h5_files = sorted(glob.glob(os.path.join(input_root, "HDF5*"), recursive=False))
+    print(f"找到 {len(h5_files)} 个 HDF5 文件，开始处理整点数据...")
+
     width = int((area_extent[2] - area_extent[0]) / res)
     height = int((area_extent[3] - area_extent[1]) / res)
     target_area = geometry.AreaDefinition(
@@ -112,10 +118,7 @@ def process_monthly_hdf5_to_tif():
     src_swath = geometry.SwathDefinition(lons=src_lon, lats=src_lat)
     print(f"源经纬度加载完成，形状: {src_lat.shape}")
 
-    # 3. 递归遍历 HDF5 文件
-    # 匹配所有 HDF5 开头的文件
-    h5_files = sorted(glob.glob(os.path.join(input_root, "HDF5*"), recursive=False))
-    print(f"找到 {len(h5_files)} 个 HDF5 文件，开始处理整点数据...")
+
 
     for h5_path in h5_files:
         filename = os.path.basename(h5_path)
@@ -144,11 +147,11 @@ def process_monthly_hdf5_to_tif():
         try:
             with h5py.File(h5_path, 'r') as f:
                 # 获取 LST 变量
-                if targevar not in f:
+                if target_var not in f:
                     print(f"跳过 {filename}: 未找到 LST 变量")
                     continue
 
-                ds_lst = f[targevar]
+                ds_lst = f[target_var]
                 raw_data = ds_lst[:]  # 原始数据通常是 int16
 
                 # 获取元数据 (LSA SAF 规范)
@@ -202,4 +205,10 @@ def process_monthly_hdf5_to_tif():
 
 if __name__ == "__main__":
 
-    process_monthly_hdf5_to_tif()
+    for kyear in range(2019, 2020):
+        for kmonth in range(1, 13):
+            for kday in range(1, 32):
+                input_root = input_root0 + "/%04d/" % kyear + "/%02d/" % kmonth + "/%02d/" % kday
+                output_root = output_root0 + "/%04d/" % kyear + "/%02d/" % kmonth + "/%02d/" % kday
+                print(input_root)
+                process_monthly_hdf5_to_tif(input_root,output_root)

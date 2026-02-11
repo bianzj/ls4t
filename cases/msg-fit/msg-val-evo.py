@@ -3,18 +3,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from scipy import stats
+from base.util_lst import *
+from base.util_phys import *
 import math
 import os
 
 # ================= 配置参数 =================
-file_fitting = "/Users/bianzj/Downloads/data/PRODUCTS/SITE/ALL_SITES_LST_FITTING_RESULTS.csv"
+file_fitting = "/Users/bianzj/Downloads/data/msg/PRODUCTS/SITE/ALL_SITES_LST_FITTING_RESULTS.csv"
 file_measured = "/Users/bianzj/Downloads/data/stations/Evo-2017.csv"
 output_stats = "Validation_Stats_Nadir_vs_Obs.csv"
 
 target_site = "Evora"
 START_DATE = '2017-08-01'
 END_DATE = '2017-12-31'
-DIFF_THRESHOLD = 15.0  # 剔除异常值的阈值
+SELECT_HOURS = [h for h in range(9, 16)]
+DIFF_THRESHOLD = 10.0  # 剔除异常值的阈值
+Tsky = 250
+emis_v = 0.985
+emis_s = 0.975
 
 # 定义验证任务：(反演列名, 标题)
 # 我们要验证：两个卫星的原始观测、以及三种模型的天底(Nadir)预测
@@ -51,11 +57,22 @@ df_merge = pd.merge(df_inf, df_mea, on='DateTime')
 # 根据 LAI 计算植被覆盖度 fc，合成参考 LST (LST_Ref)
 # 如果不想用 fc，可以直接 (Ts + Tcrown)/2，但用 fc 更科学
 df_merge['fc'] = 1 - np.exp(-0.5 * df_merge['LAI'])
+
+bg = planck(10.5,df_merge['Ts'])
+bv = planck(10.5,df_merge['Tcrown'])
+bsky = planck(10.5,250)
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+
+
+
 df_merge['LST_Ref'] = df_merge['fc'] * df_merge['Tcrown'] + (1 - df_merge['fc']) * df_merge['Tgrass']
 # df_merge['LST_Ref'] = df_merge['Ts']
 
+
 # 时间过滤
 df_merge = df_merge[(df_merge['DateTime'] >= START_DATE) & (df_merge['DateTime'] <= END_DATE)]
+df_merge = df_merge[df_merge['DateTime'].dt.hour.isin(SELECT_HOURS)]
 
 if df_merge.empty:
     print("没有匹配到有效数据，请检查日期范围或 DateTime 格式。")

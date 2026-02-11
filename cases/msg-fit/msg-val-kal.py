@@ -4,17 +4,22 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 from scipy import stats
 import math
+from base.util_phys import *
 
 # ================= 1. 配置参数 =================
-file_fitting = "/Users/bianzj/Downloads/data/PRODUCTS/SITE/ALL_SITES_LST_FITTING_RESULTS.csv"
+file_fitting = "/Users/bianzj/Downloads/data/msg/PRODUCTS/SITE/ALL_SITES_LST_FITTING_RESULTS.csv"
 file_measured = "/Users/bianzj/Downloads/data/stations/Kal-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/PRODUCTS/Validation_Stats_KAL_Nadir.csv"
+output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/Validation_Stats_KAL_Nadir.csv"
 
 target_site = "KAL"
 START_DATE = '2017-08-01'
 END_DATE = '2017-12-31'
-SELECT_HOURS = [h for h in range(11, 16)]
+SELECT_HOURS = [h for h in range(9, 16)]
 DIFF_THRESHOLD = 5.0  # 剔除异常残差的阈值
+Tsky = 270
+emis_v = 0.985
+emis_s = 0.975
+
 
 # 验证任务列表
 tasks = [
@@ -46,6 +51,14 @@ for col in ['bt_s', 'bt_v']:
 
 # ================= 4. 合并与计算参考 LST =================
 df_merge = pd.merge(df_inf, df_mea, on='DateTime')
+
+bg = planck(10.5,df_merge['bt_s'])
+bv = planck(10.5,df_merge['bt_v'])
+bsky = planck(10.5,250)
+df_merge['bt_S'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
+df_merge['bt_v'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+
+
 
 # 使用 LAI 计算植被覆盖度 fc，合成参考 LST
 df_merge['fc'] = 1 - np.exp(-0.5 * df_merge['LAI'])

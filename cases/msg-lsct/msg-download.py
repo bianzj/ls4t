@@ -6,14 +6,14 @@ import calendar
 USER = "bianzj"
 PASS = "123457Abc"
 # 基础 URL 根路径
-BASE_URL_ROOT = "https://datalsasaf.lsasvcs.ipma.pt/PRODUCTS/MSG-IODC/MLST/HDF5"
+BASE_URL_ROOT = "https://datalsasaf.lsasvcs.ipma.pt/PRODUCTS/MSG-IODC/MDLAI/HDF5"
 # 本地保存根路径
-LOCAL_ROOT = "/Users/bianzj/Downloads/data/PRODUCTS/MSG-IODC/MLST/HDF5"
+LOCAL_ROOT = "/Users/bianzj/Downloads/data/PRODUCTS/MSG-IODC/MLAI/HDF5"
 
 # 设定需要下载的时间范围
-YEARS = [2018,2019,2020,2021]
-MONTHS = range(9, 13)  # 示例：只下载 8 月。如果要全年，改为 range(1, 13)
-
+YEARS = [2019]
+MONTHS = range(3,4)  # 示例：只下载 8 月。如果要全年，改为 range(1, 13)
+DAYS = range(21,22)
 print(f"任务启动：准备下载整点数据 (排除 15, 30, 45 分)...")
 
 for year in YEARS:
@@ -21,7 +21,8 @@ for year in YEARS:
         # 获取该月的天数 (例如 8月返回 31)
         _, last_day = calendar.monthrange(year, month)
 
-        for d in range(1, last_day + 1):
+        # for d in range(1, last_day + 1):
+        for d in DAYS:
             day_str = f"{d:02d}"
             month_str = f"{month:02d}"
 
