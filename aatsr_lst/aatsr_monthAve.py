@@ -10,17 +10,17 @@ from cases.AATSR_product.util.util_aatsr import *
 indir0 = r'/home/hero/data/ls4t/aatsr/'
 outdir00 = r'/home/hero/data/ls4t/aatsr/'
 
-# indir0 = r'/mnt/g//'
-# outdir0 = r'/mnt/g//'
+indir0 = r"g:/"
+outdir0 = r"g:/"
 
 indir_lst0 =  indir0 + r"/aatsr_lst//"
-indir_lsct0 =indir0 + r"/aatsr_lsct_v3.2/"
+indir_lsct0 =indir0 + r"/aatsr_lsct_v0.0/"
 indir_clo0 = indir0 + r"/aatsr_clo/"
 indir_ang0 = indir0 + r"/aatsr_ang//"
 indir_loc0 = indir0 + r"/aatsr_loc//"
 indir_aux0 = indir0 + r"/aatsr_aux//"
 
-outdir0 = outdir00 + r"/aatsr_lsct_month_v3.2//"
+outdir0 = outdir00 + r"/aatsr_lsct_month_v0.0//"
 mkdir_if_not_exist(outdir0)
 error_file = outdir0 + 'error.txt'
 
@@ -33,13 +33,13 @@ error_file = outdir0 + 'error.txt'
 '''
 
 
-infile_ref =  r'/home/hero/data/ls4t/aatsr/base/type/ref_world_0.05.tif'
+infile_ref =  indir0 + r'/base/ref_world_0.05.tif'
 ref0,ns0,nl0,nb0,geog0,proj0 = read_image_gdal(infile_ref)
 Tmin_threshold = 25300
 Tmax_threshold = 35000
 
-for kyear in range(2006, 2007):
-    for kmonth in range(1, 8):
+for kyear in range(2003, 2012):
+    for kmonth in range(1, 13):
 
         lstN_day_all = np.zeros([nl0,ns0],dtype=np.float32)
         Ts_day_all = np.zeros([nl0,ns0],dtype=np.float32)
@@ -53,7 +53,7 @@ for kyear in range(2006, 2007):
         Tv_night_all = np.zeros([nl0, ns0],dtype=np.float32)
         count_night_all = np.zeros([nl0,ns0],dtype=np.float32)
 
-        outfile1 = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "ts_day.tif"
+        outfile1 = outdir0 + "aatsr_%04d_" % kyear + "%02d" % kmonth + "_day.tif"
         if os.path.exists(outfile1):continue
 
         for kday in range(1, 32):
@@ -71,7 +71,7 @@ for kyear in range(2006, 2007):
             for i, fileName in enumerate(fileNames):
 
                 infile_lsct = indir_lsct + fileName
-                offsy = 13  ### 8/13
+                offsy = 12  ### 8/13
                 infile_lst = indir_lst + fileName[:-offsy]+"_lst.h5"
                 infile_loc = indir_loc + fileName[:-offsy]+"_loc.h5"
                 infile_ang = indir_ang + fileName[:-offsy]+"_ang.h5"
@@ -180,29 +180,29 @@ for kyear in range(2006, 2007):
             # write_image_gdal(lstN_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
             # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "lsto_day.tif"
             # write_image_gdal(lstO_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "ts_day.tif"
-            write_image_gdal(Ts_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "tv_day.tif"
-            write_image_gdal(Tv_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            # outfile1 = outdir0 + "aatsr_%04d_" % kyear + "%02d" % kmonth + "_day.tif"
-            # name_list = ['Ts', 'Tv', 'Tnadir', 'Tobliq']
-            # data_list = [Ts_day_all, Tv_day_all, lstN_day_all , lstO_day_all ]
-            # dtype_list = ['uint16', 'uint16', 'uint16', 'uint16']
-            # write_h5py_file(outfile1, name_list, data_list, dtype_list, compression='gzip', ifcover=1)
+            # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "ts_day.tif"
+            # write_image_gdal(Ts_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
+            # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "tv_day.tif"
+            # write_image_gdal(Tv_day_all,ns0,nl0,nb0,geog0,proj0,outfile)
+            outfile1 = outdir0 + "aatsr_%04d_" % kyear + "%02d" % kmonth + "_day.tif"
+            name_list = ['Ts', 'Tv', 'Tnadir', 'Tobliq']
+            data_list = [Ts_day_all, Tv_day_all, lstN_day_all , lstO_day_all ]
+            dtype_list = ['uint16', 'uint16', 'uint16', 'uint16']
+            write_h5py_file(outfile1, name_list, data_list, dtype_list, compression='gzip', ifcover=1)
 
         if(np.sum(lstN_night_all)>3):
             # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "lstn_night.tif"
             # write_image_gdal(lstN_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
             # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "lsto_night.tif"
             # write_image_gdal(lstO_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "ts_night.tif"
-            write_image_gdal(Ts_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "tv_night.tif"
-            write_image_gdal(Tv_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
-            # outfile2 = outdir0 + "aatsr_%04d_" % kyear + "%02d" % kmonth + "_night.tif"
-            # name_list = ['Ts', 'Tv', 'Tnadir', 'Tobliq']
-            # data_list = [Ts_night_all, Tv_night_all, lstN_night_all, lstO_night_all]
-            # dtype_list = ['uint16', 'uint16', 'uint16', 'uint16']
-            # write_h5py_file(outfile2, name_list, data_list, dtype_list, compression='gzip', ifcover=1)
+            # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "ts_night.tif"
+            # write_image_gdal(Ts_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
+            # outfile = outdir0 + "aatsr_%04d_" % kyear + "%02d_" % kmonth + "tv_night.tif"
+            # write_image_gdal(Tv_night_all,ns0,nl0,nb0,geog0,proj0,outfile)
+            outfile2 = outdir0 + "aatsr_%04d_" % kyear + "%02d" % kmonth + "_night.tif"
+            name_list = ['Ts', 'Tv', 'Tnadir', 'Tobliq']
+            data_list = [Ts_night_all, Tv_night_all, lstN_night_all, lstO_night_all]
+            dtype_list = ['uint16', 'uint16', 'uint16', 'uint16']
+            write_h5py_file(outfile2, name_list, data_list, dtype_list, compression='gzip', ifcover=1)
 
 
