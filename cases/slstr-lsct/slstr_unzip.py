@@ -54,6 +54,10 @@ def unzip_file_SLSTR(zipfilename, outdir):
     '''
     mkdir_if_not_exist(outdir)
 
+
+    if os.path.exists(outdir + '/flags_io.nc'):
+        return 1
+
     # 使用上下文管理器打开，无需手动close
     with zipfile.ZipFile(zipfilename, 'r') as zip_file:
         # 遍历压缩包内的所有文件
@@ -68,10 +72,10 @@ def unzip_file_SLSTR(zipfilename, outdir):
 
 
 # --- 主逻辑 ---
-
-indir_zip = r'/media/hero/slstr_heihe/S3_heihe_2023-2025/'
-outdir_unzip = r'/media/hero/MSG//SLSTR_heihe/'
-start_year, end_year = 2023, 2025
+#\\wsl.localhost\Ubuntu\mnt\wsl\PHYSICALDRIVE2\S3A_Euro_2022-2024
+indir_zip = r'/mnt/wsl/PHYSICALDRIVE2/S3A_Euro_2022-2024/2024/'
+outdir_unzip = r'/mnt/d/s3a//'
+start_year, end_year = 2022, 2025
 start_month, end_month = 1, 13
 
 mkdir_if_not_exist(outdir_unzip)
@@ -79,7 +83,7 @@ mkdir_if_not_exist(outdir_unzip)
 fileNames = search_file_rej(indir_zip, ['.zip'], 'aux')
 fileNames.sort()  # 确保文件按顺序处理
 fileNum = len(fileNames)
-
+print(fileNum)
 for i, fileName in enumerate(fileNames):
     # 处理文件名前缀逻辑
     fileName0 = fileName
@@ -108,4 +112,8 @@ for i, fileName in enumerate(fileNames):
     if os.path.exists(outdir + fileName[:-4] + '.SEN3'):
         continue
     else:
-        unzip_file_SLSTR(indir_zip + fileName0, outdir)
+        try:
+            unzip_file_SLSTR(indir_zip + fileName0, outdir)
+        except Exception as e:
+            print(f"Skipping {fileName}: {e}")
+            continue

@@ -12,7 +12,7 @@ import math
 import warnings
 import shutil
 import numpy as np
-os.environ['PROJ_LIB'] =  r"/home/hero/anaconda3/envs/env_311/share/proj/"
+# os.environ['PROJ_LIB'] =  r"/home/hero/anaconda3/envs/env_311/share/proj/"
 warnings.filterwarnings("ignore")
 
 '''2026.2.10 fix vaa saa & year '''
@@ -229,9 +229,9 @@ def scale_and_convert_to_uint16(data, scale_factor, clip_range=(0, 65535)):
 
 
 # 数据输入
-year = 2023
-indir_raw = r'/media/hero/新加卷1//SLSTR_China/%04d/raw/' % year
-indir_tif = r'/media/hero/slstr_heihe/SLSTR_China/%04d/tif' % year
+year = 2022
+indir_raw = r'/mnt/d/s3a/%04d/raw/' % year
+indir_tif = r'/mnt/d/s3a/%04d/tif/' % year
 mkdir_if_not_exist(indir_tif)
 s = 'S3'  # 同时处理S3A和S3B数据
 day_start_hour = 22  # 研究区白天开始的utm小时（不含）24小时制
