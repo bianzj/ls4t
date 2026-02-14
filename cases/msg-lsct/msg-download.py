@@ -6,10 +6,10 @@ import calendar
 USER = "bianzj"
 PASS = "123457Abc"
 # 基础 URL 根路径
-BASE_URL_ROOT = "https://datalsasaf.lsasvcs.ipma.pt/PRODUCTS/MSG/MDLAI/HDF5"
+BASE_URL_ROOT = "https://datalsasaf.lsasvcs.ipma.pt/PRODUCTS/MSG-IODC/MDLAI/HDF5"
 # 本地保存根路径
 #LOCAL_ROOT = "/Users/bianzj/Downloads/data/PRODUCTS/MSG-IODC/MLST/HDF5"
-LOCAL_ROOT = "/mnt/h/PRODUCTS/MSG/MDLAI/HDF5"
+LOCAL_ROOT = "/mnt/h/PRODUCTS/MSG-IODC/MDLAI/HDF5"
 
 # 设定需要下载的时间范围
 YEARS = [2017,2018,2019,2020,2021,2022,2023,2024,2025]

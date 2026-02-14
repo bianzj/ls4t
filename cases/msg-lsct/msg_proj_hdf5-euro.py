@@ -11,18 +11,30 @@ from rasterio.transform import from_bounds
 
 input_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/HDF5/"
 output_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/GEOTIFF/"
-target_var = 'LAI'
-# input_root = "/Users/bianzj/Downloads/"
-# output_root = "/Users/bianzj/Downloads/"
+target_var = 'LST'
+input_root0 = "/mnt/h/PRODUCTS/MSG/MLST/HDF5/"
+output_root0 = "/mnt/h/PRODUCTS/MSG/MLST/GEOTIFF/"
 
 
 # ！！！重要提示：
 # 如果 HDF5 是全圆盘 (3712x3712)，这两个 TIF 也必须是 3712x3712。
 # 如果 TIF 是 3201 大小，请更换为全圆盘对应的经纬度文件。
-lat_path = "/Users/bianzj/Downloads/data/msg/Static/EURO_lat.tif"
-lon_path = "/Users/bianzj/Downloads/data/msg/Static/EURO_lon.tif"
+lat_path = "/mnt/h/msg/Static/EURO_lat.tif"
+lon_path = "/mnt/h/msg/Static/EURO_lon.tif"
 
+def load_static_latlon(lat_p, lon_p):
+    """读取静态经纬度并处理翻转"""
+    with rasterio.open(lat_p) as src:
+        lat = src.read(1).astype(np.float32)
+        if np.nanmax(lat) > 90: lat /= 100.0
+    with rasterio.open(lon_p) as src:
+        lon = src.read(1).astype(np.float32)
+        if np.nanmax(lon) > 180: lon /= 100.0
+    # 根据用户经验进行上下翻转
+    lat = np.flipud(lat)
+    return lat, lon
 
+src_lat, src_lon = load_static_latlon(lat_path, lon_path)
 
 # 目标区域 (WGS84)
 res = 0.03
@@ -82,17 +94,6 @@ def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, 
     return 1
 
 
-def load_static_latlon(lat_p, lon_p):
-    """读取静态经纬度并处理翻转"""
-    with rasterio.open(lat_p) as src:
-        lat = src.read(1).astype(np.float32)
-        if np.nanmax(lat) > 90: lat /= 100.0
-    with rasterio.open(lon_p) as src:
-        lon = src.read(1).astype(np.float32)
-        if np.nanmax(lon) > 180: lon /= 100.0
-    # 根据用户经验进行上下翻转
-    lat = np.flipud(lat)
-    return lat, lon
 
 
 def process_monthly_hdf5_to_tif(input_root, output_root):
@@ -114,7 +115,7 @@ def process_monthly_hdf5_to_tif(input_root, output_root):
     proj_wgs84 = 'EPSG:4326'
 
     # 2. 加载源经纬度
-    src_lat, src_lon = load_static_latlon(lat_path, lon_path)
+
     src_swath = geometry.SwathDefinition(lons=src_lon, lats=src_lat)
     print(f"源经纬度加载完成，形状: {src_lat.shape}")
 
@@ -136,7 +137,7 @@ def process_monthly_hdf5_to_tif(input_root, output_root):
         except:
             continue
 
-        out_folder = os.path.join(output_root, day_str)
+        out_folder = os.path.join(output_root)
         os.makedirs(out_folder, exist_ok=True)
         out_tif_path = os.path.join(out_folder, name_part + ".tif")
 
@@ -205,8 +206,8 @@ def process_monthly_hdf5_to_tif(input_root, output_root):
 
 if __name__ == "__main__":
 
-    for kyear in range(2019, 2020):
-        for kmonth in range(1, 13):
+    for kyear in range(2025, 2026):
+        for kmonth in range(11, 13):
             for kday in range(1, 32):
                 input_root = input_root0 + "/%04d/" % kyear + "/%02d/" % kmonth + "/%02d/" % kday
                 output_root = output_root0 + "/%04d/" % kyear + "/%02d/" % kmonth + "/%02d/" % kday
