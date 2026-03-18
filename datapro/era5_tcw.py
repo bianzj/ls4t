@@ -76,7 +76,7 @@ def grib_to_daily_h5(input_grib, output_root):
 # --- 运行配置 ---
 if __name__ == "__main__":
     # 你的文件路径
-    grib_file = "/mnt/d/9c21ea110dacd5387251b71e96c220fb.grib"
+    grib_file = "/mnt/d/79c04d6f8667cf7ab5317b4526015ab.grib"
     # 保存结果的根目录
     output_folder = "/mnt/d/ERA5_Daily_H5"
 

@@ -391,7 +391,7 @@ emis_v = emis_v_table[land_type, 0] / 1000.0
 
 # ================= 循环处理 =================
 isfirst = True
-for kyear in range(2020, 2026):
+for kyear in range(2025, 2026):
     for kmonth in range(1, 13):
         for kday in range(1, 32):
 

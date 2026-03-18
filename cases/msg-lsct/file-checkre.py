@@ -44,13 +44,14 @@ def extract_and_filter_urls(source_sh, target_dir, output_txt):
     print(f"处理完成！")
     print(f"从 {source_sh} 中共提取到网址: {total_found} 条")
     print(f"本地文件夹 {target_dir} 已存在文件，已过滤掉: {total_found - len(missing_urls)} 条")
-    print(f"最终保存到 {output_txt} 的待处理网址: {len(missing_urls)} 条")
+    # print(f"最终保存到 {output_txt} 的待处理网址: {len(missing_urls)} 条")
 
 
 # --- 执行设置 ---
 if __name__ == "__main__":
-    SOURCE_FILE = "/mnt/d/3304604747-download.sh"  # 原始脚本文件
-    TARGET_DIR = "/mnt/d/downloads/gcb2025/"  # 存放已下载文件的文件夹
-    OUTPUT_FILE = "/mnt/d/3304604747-download.txt"  # 结果输出文件
+    SOURCE_FILE = "/mnt/d/5635445483-download.sh"  # 原始脚本文件
+    # TARGET_DIR = "/mnt/d/downloads/gcb2025/"  # 存放已下载文件的文件夹
+    TARGET_DIR = "/mnt/d/S3A_SL_1_RBT_1-20260201_130106/"
+    OUTPUT_FILE = "/mnt/d/5635445483-download.txt"  # 结果输出文件
 
     extract_and_filter_urls(SOURCE_FILE, TARGET_DIR, OUTPUT_FILE)
