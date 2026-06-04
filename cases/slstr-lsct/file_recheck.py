@@ -103,6 +103,10 @@ if __name__ == '__main__':
     TIF_PATH = rf'/mnt/d/s3a/{YEAR_STR}/tif/'
     RAW_PATH = rf'/mnt/d/s3a/{YEAR_STR}/raw/'
 
+    YEAR_STR = 2021
+    TIF_PATH = r'//media/hero/SLSTR_download3/S3A_Euro/2021_tif/%04d/raw/' % YEAR_STR
+    RAW_PATH = r'//media/hero/SLSTR_download3/S3A_Euro/2021_tif/%04d/tif/' % YEAR_STR
+
     # --- 开关说明 ---
     # delete_bad_tif: 设置为 True 会删除生成失败的 tif 文件夹
     # delete_raw: 设置为 True 会将 raw 文件夹里对应的原始 .SEN3 数据也删掉
@@ -113,5 +117,5 @@ if __name__ == '__main__':
         indir_tif=TIF_PATH,
         indir_raw=RAW_PATH,
         delete_bad_tif=True,  # 执行 TIF 清理
-        delete_raw=True  # 是否删除对应的原始 raw 数据 (根据需求开关)
+        delete_raw=False  # 是否删除对应的原始 raw 数据 (根据需求开关)
     )

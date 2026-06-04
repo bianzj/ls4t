@@ -228,8 +228,8 @@ def scale_and_convert_to_uint16(data, scale_factor, clip_range=(0, 65535)):
 
 
 # 数据输入
-indir_raw = r'/Users/bianzj/Downloads/data/slstr_raw/'
-indir_tif = r'/Users/bianzj/Downloads/data/slstr_tif/'
+indir_raw = r'/media/hero/slstr-euro/2025-raw/2025/raw/'
+indir_tif = r'/media/hero/slstr-euro/2025-raw/2025/tif/'
 mkdir_if_not_exist(indir_tif)
 
 s = 'S3'  # 同时处理S3A和S3B数据
@@ -292,12 +292,18 @@ for k in range(fileNum):
     temp_folder = os.path.join(output_folder, 'temp')
     mkdir_if_not_exist(temp_folder)
 
+    file = 'vaa_obliq'
+    outfile = os.path.join(output_folder, file + '_proj.tif')
+    if os.path.exists(outfile):
+        print('finished\n')
+        continue
+
     # 判断文件是否齐全
     c1 = os.path.exists(fileDir + r'/S2_radiance_an.nc')
     c2 = os.path.exists(fileDir + r'/S3_radiance_an.nc')
     c3 = os.path.exists(fileDir + r'/geodetic_in.nc')
     c4 = os.path.exists(fileDir + r'/met_tx.nc')
-    c5 = os.path.exists(fileDir + r'/S6_radiance_an.nc')
+    c5 = os.path.exists(fileDir + r'/S2_radiance_an.nc')
     c6 = os.path.exists(fileDir + r'/S8_BT_in.nc')
     if c1 * c2 * c3 * c4 * c5 * c6 == 0:
         print("File damaged!")

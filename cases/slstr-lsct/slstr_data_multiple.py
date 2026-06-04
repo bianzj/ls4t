@@ -354,9 +354,9 @@ def process_single_scene(k, fileName, indir_raw, indir_tif, cfg):
 
 if __name__ == '__main__':
     # 配置
-    year = 2023
-    indir_raw = r'/mnt/d/s3a/%04d/raw/' % year
-    indir_tif = r'/mnt/d/s3a/%04d/tif/' % year
+    year = 2021
+    indir_raw = r'/media/hero/SLSTR_download3/S3A_Euro/2021_tif/%04d/raw/' % year
+    indir_tif = r'/media/hero/SLSTR_download3/S3A_Euro/2021_tif/%04d/tif/' % year
     mkdir_if_not_exist(indir_tif)
 
     config_params = {
@@ -369,16 +369,17 @@ if __name__ == '__main__':
 
     # 扫描文件
     fileNames = search_dir_rej(indir_raw, ['S3'], 'zip')
+    # fileNames = fileNames[1:5]
     fileNames.sort()
     fileNum = len(fileNames)
 
     print(f"WSL2 + Threadripper 并行启动...")
     print(f"待处理总景数: {fileNum}")
-    print(f"使用进程数: 48")
+    print(f"使用进程数: 128")
 
     # 开启 48 核并行池
     # 256GB 内存完全足以支撑 48 个子进程并行读写 Sentinel-3 数据
-    with ProcessPoolExecutor(max_workers=32) as executor:
+    with ProcessPoolExecutor(max_workers=64) as executor:
         # 提交所有任务
         future_to_file = {
             executor.submit(process_single_scene, k, fileNames[k], indir_raw, indir_tif, config_params): fileNames[k]

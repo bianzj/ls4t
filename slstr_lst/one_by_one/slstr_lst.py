@@ -11,10 +11,9 @@ warnings.filterwarnings("ignore")
 
 '''
 SLSTR lst反演
-1. 裁剪对应的type，作为参考 （abc.py）
-2. 算fvc （fvc-ndvi， fvc-lai）
-3. 算对应的emis，tcw
-4. 算lst，（***）
+1. determine the study area for each image;
+2. obtian the emis, type, tcwv, and lai;
+3. calculate the lst
 '''
 
 # os.environ['PROJ_LIB'] = r'C:\Users\zzz\anaconda3\envs\patrol\Library\share\proj'
@@ -41,23 +40,23 @@ ndvi_max = ndvi_max_g
 # infile14 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Day.txt'
 # infile15 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Night.txt'
 
-indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
-indir_lst = r'/home/hero/data/SLSTR_heihe/lst/'
+indir_tif = r'/media/hero/slstr-euro/2025/tif/'
+indir_lst = r'/media/hero/slstr-euro/2025/lst/'
 mkdir_if_not_exist(indir_lst)
 
 # indir_fvc = r"D:\data\lai\MCD_TIF\fvc\\"
 
-indir_emis = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/emis/'
-indir_type =r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/type/'
-indir_split = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/base/'
+indir_emis = r'/media/hero/slstr-euro/0_base/emis/'
+indir_type =r'/media/hero/slstr-euro/0_base/type/'
+indir_split = r'/media/hero/slstr-euro/0_base/base/'
 
-indir_tcw = r'/home/hero/data/SLSTR_heihe/tcwv/tif/'
+indir_tcw = r'/media/hero/earth/ERA5_Daily_H5/2025/'
 # indir_fvc = r'/home/hero/data/LSCT3/LSCT_dm_2022/2_fvc(lai)/'
 
-infile10 = indir_emis + 'emis1_heihe_utm47N_1000.tif'
-infile11 = indir_emis + 'emis2_heihe_utm47N_1000.tif'
+infile10 = indir_emis + 'AG1km.v003.SoilEmi.MODIS.Global.001D_LSE11.tif'
+infile11 = indir_emis + 'AG1km.v003.SoilEmi.MODIS.Global.001D_LSE11.tif'
 infile13 = indir_emis + r'IGBP_Emi.txt'
-infile12 = indir_type + 'type_heihe_1000_utm47N.tif'
+infile12 = indir_type + 'type_world_1000.tif'
 infile14 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Day.txt'
 infile15 = indir_split + 'Sentinel3A_SLSTR_SW_Seebor_Coef_Night.txt'
 
@@ -77,21 +76,9 @@ emis_v = read_txt_array(infile13, 0, 2)
 ifnadir = 1
 ifobliq = 1
 
-# 查找水汽对应坐标
-dataset = gdal.Open(infile12)
-[data, ns, nl, nb, geog_type, proj_type] = read_image_gdal(infile12)
-nsi = np.zeros([nl, ns])
-nli = np.zeros([nl, ns])
-for k in range(nl):
-    nli[k, :] = k
-    nsi[k, :] = np.linspace(0, ns - 1, ns)
-nli = np.reshape(nli,-1)
-nsi = np.reshape(nsi,-1)
-dataset = gdal.Open(infile12)
-temp1, temp2 = imagexy2geo(dataset, nli, nsi)
-lon, lat = geo2lonlat(dataset, temp1, temp2)
-lon = np.reshape(lon,[nl,ns])
-lat = np.reshape(lat,[nl, ns])
+# 查找对应坐标
+dataset_emis = gdal.Open(infile10)
+dataset_lai = gdal.Open(infile10)
 tcw_dir_0 = r"/home/hero/data/SLSTR_heihe/tcwv/tif/180/ERA5_tcw_2022_180_00.tif"
 dataset = gdal.Open(tcw_dir_0)
 indx, indy = loc2map(lat, lon, dataset)
