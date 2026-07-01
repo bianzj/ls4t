@@ -1,512 +1,304 @@
 import sys
 import os
-import traceback # 用于获取详细报错信息
-from multiprocessing import Pool, cpu_count 
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+from base.util_lsct import *
+
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
-from base.util_lsct import *
+import calendar
+import multiprocessing
+from functools import partial
+import warnings
+
+warnings.filterwarnings("ignore")
 from base.util_constant import *
 from base.util_file import *
 from base.util_data import *
-from util_aatsr import *
-from datetime import datetime, timezone
-import calendar
 import time
-import warnings
-warnings.filterwarnings("ignore")
 
-n, m = 2, 2
-ws = 5
-wl = 10.8
+"""
+AATSR 两组分温度反演 注意版本python37
+"""
+from sklearn.linear_model import Ridge
+def fitting_with_ridge(bb, ww):
+    # alpha 是正则化强度，需要根据数据噪声调优，通常尝试 0.01, 0.1, 1.0
+    reg = Ridge(alpha=0.01, fit_intercept=False)
+    reg.fit(ww.T, bb.T)  # 注意你的维度是 (3, N) 还是 (N, 3)，需要保持一致
+    return reg.coef_
 
-lst_min, lst_max = 230, 350
-lsct_min, lsct_max = 230, 350
-fvc_min, fvc_max = 0.03, 0.97
-rad_min, rad_max = 2.5, 20.0
 
-soil_radiance_variance = 2.0
-leaf_radiance_variance = 1.0
-sensor_noise = 0.05
 
-'''2025.12.14'''
-'''补充了异常值的限制'''
-'''2025.12.12'''
-'''两角度 多像元同温 + bayesian'''
-'''要求是要输出v1和v2、v3'''
+def cal_fvc_from_lai(thetav, lai):
+    G = 0.5
+    rd = np.pi / 180.0
+    costhetanv = np.cos(thetav * rd)
+    fvc = 1 - exp(-G * lai / costhetanv)
+    fvc[fvc > 1] = 1
+    fvc[fvc < 0] = 0
+    return fvc
 
-class Homnew(Hom):
+
+def inv_mpl_agl_multiple_2(lst_n, lst_o, emis_s, emis_v, fvcN, fvcO, wl=10.8):
+
+
+
+
+    return resultT
+
+def aatsr_read_aux_data(indir_emis, indir_type):
     '''
-    继承 hom 类，并添加无散射计算功能
+    aatsr 读取辅助数据
+    :param indir_emis: 发射率
+    :param indir_type:  地表类型
+    :return: 土壤发射率、植被发射率、分类、密度、树覆盖比例、树冠高度，观测天顶角、方位角
     '''
-    def run_emis_noscatter(self, ifradiance=0):
-        # 这里直接复制你的代码
-        el = self.emissivity_leaf
-        es = self.emissivity_soil
-
-        vza = self.viewing_zenith_angle
-        sza = self.solar_zenith_angle
-        vsa = self.relative_azimuth_angle
-        lai = self.leaf_area_index
-        hspot = self.hspot
-
-        Ecom = np.asarray([es, es, el, el])
-        
-        # 注意：确保这些计算函数在当前文件的作用域内可用
-        Pcom = proportion_bidirectional_hom_one(lai, hspot, vza, sza, vsa)
-        Ecom_direct, Ecom_direct_sum = emissivity_direct(Pcom, Ecom)
-
-        emis = Ecom_direct
-        emis = np.nan_to_num(emis)
-        return emis
-
-def sample_hom_Emis(lai, hspot, wavelength, emissivity_soil, emissivity_leaf, vza, sza, raa):
-    '''1.initial'''
-    hom = Homnew()
-    '''2.set variables'''
-    hom.set_structure(lai, hspot)
-    hom.set_optical(wavelength, emissivity_soil, emissivity_leaf)
-    hom.set_angle(vza, sza, raa)
-    ''''3.run'''
-    print('no scatter')
-    emis = hom.run_emis_noscatter()
-    vza[raa == 180] = vza[raa == 180] * -1
-    return emis
-
-
-def cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n, m, CI=1.0):
-    '''
-    计算均值假设下冠层的有效发射率，既能处理单点多角度输入又能处理区域输入
-    :param lai: 叶面积指数 float 或 nl*ns
-    :param hspot: 热点参数 float
-    :param wl: 波长 float
-    :param emisS: 土壤发射率 float 或 nl*ns
-    :param emisV: 植被发射率 float 或 nl*ns
-    :param vza: 观测天顶角 (n,) 或 nl*ns*n
-    :param sza: 太阳天顶角 (n,)/float 或 nl*ns*n(nl*ns)
-    :param vaa: 观测方位角 (n,) 或 nl*ns*n
-    :param saa: 太阳方位角 (n,)/float 或 nl*ns*n(nl*ns)
-    :param n: 观测角度数量
-    :param m: 组分数量，2，3，4
-    :param CI: 聚集指数 float
-    :return: w 有效发射率 (n,m) 或 nl*ns*n*m
-    '''
-    # 确保输入为numpy数组
-    lai = np.asarray(lai)
-    emisS = np.asarray(emisS)
-    emisV = np.asarray(emisV)
-    vza = np.asarray(vza)
-    sza = np.asarray(sza)
-    vaa = np.asarray(vaa)
-    saa = np.asarray(saa)
-    sza[sza >= 90] = 89.9
-    soil_radiance_variance = 2.0
-    if lai.ndim == 0:  # 标量输入，转换为点输入
-        # 点输入处理
-        vza = np.atleast_1d(vza)
-        sza = np.atleast_1d(sza)
-        vaa = np.atleast_1d(vaa)
-        saa = np.atleast_1d(saa)
-        w4 = sample_hom_Emis(lai, hspot, wl, emisS, emisV, vza, sza, np.abs(vaa - saa))
-        w4 = w4.reshape((4, n))  # 4*n
-        w = np.zeros([m, n])  # m*n 后面再转置
-        if m == 2:
-            w[0, :] = w4[0, :] + w4[1, :]
-            w[1, :] = w4[2, :] + w4[3, :]
-        elif m == 3:
-            w[0:2, :] = w4[0:2, :]
-            w[2, :] = w4[2, :] + w4[3, :]
-        elif m == 4:
-            w = w4
-        return w.T
-
-    else:  # 区域输入处理
-        nl, ns = lai.shape  # 区域大小
-        if sza.shape != vza.shape:
-            sza = np.repeat(sza[:, :, np.newaxis], n, axis=2)
-            saa = np.repeat(saa[:, :, np.newaxis], n, axis=2)
-        vsa = np.abs(vaa - saa)
-        w4 = np.zeros([nl, ns, 4, n])  # nl*ns*4*n
-        for ni in range(n):
-            result = sample_hom_Emis(lai, hspot, wl, emisS, emisV,
-                                     vza[:, :, ni], sza[:, :, ni], vsa[:, :, ni])
-            w4[:, :, :, ni] = result.transpose(1, 2, 0)
-
-        w = np.zeros([nl, ns, m, n])  # nl*ns*m*n
-
-        if m == 2:
-            w[:, :, 0, :] = w4[:, :, 0, :] + w4[:, :, 1, :]
-            w[:, :, 1, :] = w4[:, :, 2, :] + w4[:, :, 3, :]
-        elif m == 3:
-            w[:, :, 0:2, :] = w4[:, :, 0:2, :]
-            w[:, :, 2, :] = w4[:, :, 2, :] + w4[:, :, 3, :]
-        elif m == 4:
-            w = w4
-        return w.transpose(0, 1, 3, 2)  # nl*ns*n*m
-
-def inv_lsct2_v3_1(w, b, mask, lst, n, m=2, ws=5, wl=10.8, method='ls', ifcons=0):
-    '''
-    多角度 多组分 窗口反演 BFGS/powell/SLSQP/L-BFGS-B/TNC
-    优化版: 移除了 np.matrix，优化了 Bayesian 矩阵运算
-    '''
-    off = ws // 2 # 窗口偏移量
-    nl, ns = w.shape[0], w.shape[1]
-    result = np.zeros([nl, ns, 8])
-    
-    # 提前计算常量
-    Cm_inv = np.linalg.inv(np.diag([soil_radiance_variance, leaf_radiance_variance]))
-    inv_sensor_noise = 1.0 / sensor_noise 
-
-    for i in range(off, nl - off):
-        for j in range(off, ns - off):
-            if np.sum(mask[i, j, :]) >= n:
-                # v0 版本 多像元异温
-                w_win = w[i-off:i+off+1, j-off:j+off+1, :, :]
-                b_win = b[i-off:i+off+1, j-off:j+off+1, :]
-                mask_win = mask[i-off:i+off+1, j-off:j+off+1, :]
-                weight = set_weights(ws)
-                p0 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, m, mask_win, weight, window_size=5)
-                result[i, j, :2] = p0
-
-                ### v1 版本 单像元解
-                w_point = w[i, j, :, :]
-                b_point = b[i, j, :]
-                mask_point = mask[i, j, :]
-                p1 = fitting_Nangle_Mcomponent_point(w_point[mask_point], b_point[mask_point], n, m, method)
-                result[i, j, 2:4] = p1
-
-                ### v2 版本 多像元同温解
-                n_win = np.sum(mask_win)
-                p2 = fitting_Nangle_Mcomponent_point(w_win[mask_win], b_win[mask_win], n_win, m, method='ls')
-                result[i, j, 4:6] = p2
-
-                ### v3 版本 bayesian (极速优化版)
-                w_arr = w_point # shape (n, m)
-                b_arr = b_point # shape (n,)
-                p2_arr = p2     # shape (m,)
-                
-                KT = w_arr.T
-                KTK = KT @ w_arr
-                posterior_cov_inv = KTK * inv_sensor_noise + Cm_inv
-                
-                KTb = KT @ b_arr
-                term2 = KTb * inv_sensor_noise + Cm_inv @ p2_arr
-                
-                try:
-                    p3 = np.linalg.solve(posterior_cov_inv, term2)
-                    result[i, j, 6:] = p3
-                except np.linalg.LinAlgError:
-                    result[i, j, 6:] = np.nan
-            else:
-                result[i, j, :] = np.nan
-                
-    lsct = inv_planck(wl, result)
-    return lsct
-
-
-def inv_lsct2_v3_2(w, b, mask, lst, n, m=2, ws=5, wl=10.8, method='ls', ifcons=0):
-    '''
-    多角度 多组分 窗口反演 BFGS/powell/SLSQP/L-BFGS-B/TNC
-    优化版: 移除了 np.matrix，优化了 Bayesian 矩阵运算
-    '''
-    off = ws // 2  # 窗口偏移量
-    nl, ns = w.shape[0], w.shape[1]
-    result = np.zeros([nl, ns, 2])
-
-    # 提前计算常量
-    Cm_inv = np.linalg.inv(np.diag([soil_radiance_variance, leaf_radiance_variance]))
-    inv_sensor_noise = 1.0 / sensor_noise
-
-    for i in range(off, nl - off):
-        for j in range(off, ns - off):
-            if np.sum(mask[i, j, :]) >= n:
-                # v0 版本 多像元异温
-                w_win = w[i - off:i + off + 1, j - off:j + off + 1, :, :]
-                b_win = b[i - off:i + off + 1, j - off:j + off + 1, :]
-                mask_win = mask[i - off:i + off + 1, j - off:j + off + 1, :]
-                # weight = set_weights(ws)
-                # p0 = fitting_Nangle_Mcomponent_window_quadratic(w_win, b_win, n, m, mask_win, weight, window_size=5)
-                # result[i, j, :2] = p0
-
-                ### v1 版本 单像元解
-                w_point = w[i, j, :, :]
-                b_point = b[i, j, :]
-                mask_point = mask[i, j, :]
-                # p1 = fitting_Nangle_Mcomponent_point(w_point[mask_point], b_point[mask_point], n, m, method)
-                # result[i, j, 2:4] = p1
-
-                ### v2 版本 多像元同温解
-                n_win = np.sum(mask_win)
-                p2 = fitting_Nangle_Mcomponent_point(w_win[mask_win], b_win[mask_win], n_win, m, method='ls')
-                # result[i, j, 4:6] = p2
-                # if (np.min(p2) < rad_min | np.max(p2) > rad_max): continue
-
-                ### v3 版本 bayesian (极速优化版)
-                w_arr = w_point  # shape (n, m)
-                b_arr = b_point  # shape (n,)
-                p2_arr = p2  # shape (m,)
-
-                KT = w_arr.T
-                KTK = KT @ w_arr
-                posterior_cov_inv = KTK * inv_sensor_noise + Cm_inv
-
-
-
-                KTb = KT @ b_arr
-                term2 = KTb * inv_sensor_noise + Cm_inv @ p2_arr
-
-
-
-                try:
-                    p3 = np.linalg.solve(posterior_cov_inv, term2)
-                    result[i, j, :] = p3
-                except np.linalg.LinAlgError:
-                    result[i, j, :] = np.nan
-            else:
-                result[i, j, :] = np.nan
-
-    lsct = inv_planck(wl, result)
-    return lsct
+    # 读取type emis std hcr rcr
+    infile_type = indir_type + 'type_world_1000.tif'
+    infile_soil_emis = indir_emis + r'AG1km.v003.SoilEmi.MODIS.Global.001D_LSE11.tif'
+    infile_veg_emis = indir_emis + 'IGBP_Emi.txt'
+    infile_vzaN = indir_type + r"vza_n.tif"
+    infile_vaaN = indir_type + r"vaa_n.tif"
+    infile_vzaO = indir_type + r"vza_f.tif"
+    infile_vaaO = indir_type + r"vaa_f.tif"
+    [emis_s, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_soil_emis)
+    [classif, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_type)
+    [vzaN, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_vzaN)
+    [vaaN, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_vaaN)
+    [vzaO, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_vzaO)
+    [vaaO, temp1, temp2, temp3, temp4, temp5] = read_image_gdal(infile_vaaO)
+    vzaN, vzaO, vaaN, vaaO = 90 - vzaN / 100, 90 - vzaO / 100, vaaN / 100, vaaO / 100
+    emis_s = emis_s / 1000
+    classif = np.asarray(classif, np.int_)
+    classif[classif == 255] = 17
+    emis_v = read_txt_array(infile_veg_emis, 0, 2)
+    emis_v = emis_v[classif, 0] / 1000
+    return emis_s, emis_v, classif, vzaN, vzaO, vaaN, vaaO
 
 
 if __name__ == '__main__':
-    # 定义错误日志路径
 
-    years = np.arange(2006, 2007)
-    months = np.arange(1, 13)
-    method = 'ls'
 
-    indir = "/home/hero/data/ls4t/aatsr/"
-    ERROR_LOG_FILE = indir + r'/inv_aatsr_v3.2_errorlog2.txt'
+    indir0 = r"e://"
+    outdir0 = r"e://aatsr_lsct_v2/"
 
-    indir_obs = indir + r'/aatsr_obs/'
-    indir_clo =  indir +r'/aatsr_clo/'
-    indir_ang =  indir +r'/aatsr_ang/'
-    indir_loc = indir + r'/aatsr_loc/'
-    indir_lst =  indir +r'/aatsr_lst/'
-    indir_aux =  indir +r'/aatsr_aux/'
+    indir_type = indir0 + r'/0_base/type/'
+    indir_emis = indir0 + r'/0_base/emis/'
+    indir_base = indir0 + r'/0_base/base/'
+    indir_lai0 = indir0 + r'/lai/'
 
-    outdir_lsct_v3_1 =  indir + r'/aatsr_lsct_v3.2/'
+    indir_lst = indir0 + "/aatsr_lst/"
+    indir_loc = indir0 + "/aatsr_loc/"
+    indir_clo = indir0 + "/aatsr_clo/"
+    indir_ang = indir0 + "/aatsr_ang/"
+    indir_aux = indir0 + "/aatsr_aux/"
 
-    n, m = 2, 2 
-    ws = 5 
+
+    radiance_max_threshold = 20
+    radiance_min_threshold = 5.0
+    pure_soil_threshold = 0.05
+    pure_leaf_threshold = 0.95
+    fvc_max_threshold = 0.99
+    fvc_min_threshold = 0.01
+    fd0 = np.asarray([[1, 4, 7, 4, 1], [4, 16, 26, 16, 4], [7, 26, 41, 26, 7], [4, 16, 26, 16, 4], [1, 4, 7, 4, 1]])
+    number_component = 2
+    number_angle = 2
+    number_value_threshold = 12
+    off = 2
+    off_ = 0
     wl = 10.8
 
-    lst_min, lst_max = 250, 350
-    lsct_min ,lsct_max = 250, 350
-    fvc_min, fvc_max = 0.03, 0.97
-    rad_min, rad_max = 4.0, 20.0
 
-    soil_radiance_variance = 2.0
-    leaf_radiance_variance = 1.0
-    sensor_noise = 0.05
+    infile_soil_emis = indir_emis + r'AG1km.v003.SoilEmi.MODIS.Global.001D_LSE11.tif'
+    infile_type = indir_type + 'type_world_1000.tif'
+    infile_veg_emis = indir_emis + 'IGBP_Emi.txt'
 
-    emis_s_arr, emis_v_arr, classif_arr, vzaN_arr, vzaO_arr, vaaN_arr, vaaO_arr = aatsr_read_aux_data()
+    '''读取发射率'''
+    print(os.path.exists(infile_soil_emis))
+    emis_s_, emis_v_, classif_, vzaN, vzaF, vaaN, vaaF = aatsr_read_aux_data(
+        indir_emis, indir_type)
 
-    print(min(64, cpu_count()))
-    pool = Pool(min(64, cpu_count()))
+    '''读取数据'''
+    for kyear in range(2006, 2007):
+        indir_lai = indir_lai0 + '%04d/' % kyear
 
-    try:
-        for year in years:
-            for month in months:
-                daynum = calendar.monthrange(year, month)[1]
-                for day in range(1, daynum + 1):
-                    time_str = f'{year}/{month:02d}/{day:02d}/'
-                    if not os.path.exists(indir_lst+time_str): continue
-                    print(f'{year}-{month:02d}-{day:02d}')
-                    fileNames = search_file_rej(indir_obs+time_str, ['h5'],'xml')
-                    fileNum = len(fileNames)
-                    
-                    for i, fileName in enumerate(fileNames):
-                        # 【新增】单文件错误捕获开始
-                        try:
-                            print(f'  {i+1}/{fileNum}: {fileName}')
-                            start_time = time.time()
-                            basename = os.path.basename(fileName)
-                            infile_obs = indir_obs + time_str + basename
-                            infile_lst = indir_lst + time_str + basename.replace('obs', 'lst')
-                            infile_clo = indir_clo + time_str + basename.replace('obs', 'clo')
-                            infile_ang = indir_ang + time_str + basename.replace('obs', 'ang')
-                            infile_loc = indir_loc + time_str + basename.replace('obs', 'loc')
-                            infile_aux = indir_aux + time_str + basename.replace('obs', 'aux')
+        outdir = outdir0 + '/%04d/' % kyear
+        indir = indir0 + '/%04d' % kyear
+        for kmonth in range(3, 11):
+            daynum = calendar.monthrange(kyear, kmonth)[1]
+            for day in range(1, 32):
 
-                            outfile_lsct_v3_1 = outdir_lsct_v3_1 + time_str + basename.replace('obs', 'lsct_v3.2')
 
-                            if os.path.exists(outfile_lsct_v3_1):
-                                print(f'    已存在lsct文件: {outfile_lsct_v3_1}')
-                                continue
+                year, month = kyear, kmonth
+                time_str = f'{year}/{month:02d}/{day:02d}/'
+                outdir_hdf_day = outdir + r"/%02d/%02d//" % (month, day)
+                mkdir_if_not_exist(outdir_hdf_day)
 
-                            if not os.path.exists(infile_lst): 
-                                print(f'    不存在lst文件: {infile_lst}')
-                                continue
-                            if not os.path.exists(infile_clo): 
-                                print(f'    不存在clo文件: {infile_clo}')
-                                continue
-                            if not os.path.exists(infile_ang): 
-                                print(f'    不存在ang文件: {infile_ang}')
-                                continue
-                            if not os.path.exists(infile_loc): 
-                                print(f'    不存在loc文件: {infile_loc}')
-                                continue
 
-                            # 读取数据
-                            lstN, lstF = aatsr_read_lst(infile_lst)
-                            nl, ns = lstN.shape[0], lstF.shape[1]
-                            # cloN_mask , cloF_mask = aatsr_read_clo(infile_clo)
-                            cloN_mask, cloF_mask = np.ones_like(lstN,bool), np.ones_like(lstN,bool)
-                            indx, indy = aatsr_read_loc(infile_loc, iflonlat = 0)
-                            lai = aatsr_read_lai(infile_aux)
-                            sza, saa, vzaN, vzaF, vaaN, vaaF = aatsr_read_angle(infile_ang,ifsun = 1, ifview = 1)
+                if os.path.exists(indir_lst + time_str) == 0: continue
+                fileNames = search_file_rej(indir_lst + time_str, ['h5'], 'xml')
+                fileNum = len(fileNames)
 
-                            # 1. 计算有效发射率矩阵
-                            hspot = 0.2
-                            emisS, emisV = emis_s_arr[indx, indy], emis_v_arr[indx, indy]
-                            classif = classif_arr[indx, indy]
-                            vza = np.stack((vzaN, vzaF), axis=2)
-                            vaa = np.stack((vaaN, vaaF), axis=2)
 
-                            w = cal_effective_emissivity_hom(lai, hspot, wl, emisS, emisV, vza, sza, vaa, saa, n , m)
 
-                            # 2.计算观测亮度矩阵 b
-                            bN = cal_rad_from_lst(lstN,wl,lai,vzaN,emisS,emisV)
-                            bF = cal_rad_from_lst(lstF,wl,lai,vzaF,emisS,emisV)
-                            b = np.concatenate([bN[:,:,np.newaxis], bF[:,:,np.newaxis]], axis=2)
+                for i, fileName in enumerate(fileNames):
+                    print(i + 1, '/', fileNum, fileName)
 
-                            # 3. 多线程求解
-                            inv_start_time = time.time()
-                            fvcN = cal_fvc_from_lai(vzaN, lai)
-                            cloN_mask = cloN_mask * (fvcN>fvc_min)*(fvcN<fvc_max)
-                            lst = np.concatenate([lstN[:,:,np.newaxis], lstF[:,:,np.newaxis]], axis=2)
-                            mask = np.concatenate([cloN_mask[:,:,np.newaxis], cloF_mask[:,:,np.newaxis]], axis=2)
-                            mask = mask * (lst>lst_min)*(lst<lst_max)
+                    out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
+                    if os.path.exists(out_hdf5):
+                        # os.remove(out_hdf5)
+                        continue
 
-                            off = ws // 2
-                            para = []
-                            for kn in range(off, ns-off):
-                                wLine = w[:,kn-off:kn+off+1,:,:]
-                                bLine = b[:,kn-off:kn+off+1,:]
-                                maskLine = mask[:,kn-off:kn+off+1,:]
-                                lstLine = lst[:,kn-off:kn+off+1,:]
-                                para.append([wLine,bLine,maskLine,lstLine,n,m,ws,wl,method])
-                            
-                            tasks = [pool.apply_async(inv_lsct2_v3_2, tuple(p)) for p in para]
-                            results = [t.get() for t in tasks]
+                    year = fileName[6:10]
+                    doy_str = fileName[11:14]
+                    fileName_str = fileName[0:22]
+                    doy = int(doy_str)
 
-                            # 【重要修正】移除了重复的初始化，只保留一次赋值
-                            lsct = np.zeros((nl, ns, 2))
-                            for idx, res in enumerate(results):
-                                kn = idx + off
-                                lsct[:, kn, :] = res[:,off,:]
+                    basename = os.path.basename(fileName)
 
-                            end_time = time.time()
-                            print(f"    反演完成，耗时: {end_time - inv_start_time:.4f}秒")
+                    infile_lst = indir_lst + time_str +basename
+                    infile_clo = indir_clo + time_str + basename.replace('lst', 'clo')
+                    infile_ang = indir_ang + time_str + basename.replace('lst', 'ang')
+                    infile_loc = indir_loc + time_str + basename.replace('lst', 'loc')
+                    infile_aux = indir_aux + time_str + basename.replace('lst', 'aux')
 
-                            # ### v0.1 保存结果
-                            # Ts = lsct[:,:,0]
-                            # Tv = lsct[:,:,1]
-                            # ind = (Ts<lsct_min)+(Ts>lsct_max)+(Tv<lsct_min)+(Tv>lsct_max)
-                            # Ts[ind] = np.nan; Tv[ind] = np.nan
-                            # Ts = Ts * 100; Tv = Tv * 100
-                            # mkdir_if_not_exist(outdir_lsct_v0_1+time_str)
-                            # if os.path.exists(outfile_lsct_v0_1): os.remove(outfile_lsct_v0_1)
-                            #
-                            # metadata = {
-                            #     'Author': 'Yifan Lu',
-                            #     'Supervisor': 'Zunjian Bian, Qing Xiao',
-                            #     'Version': 'v0.1',
-                            #     'Create_time': datetime.now(timezone.utc).isoformat() + 'Z',
-                            #     'Description': 'AATSR v0 product:inv_lsct2_lai_winquad_noconstraint',
-                            #     'Solve method': method,
-                            #     'Window size': ws
-                            # }
-                            # with h5py.File(outfile_lsct_v0_1, 'w') as h5f:
-                            #     for key, value in metadata.items(): h5f.attrs[key] = value
-                            #     Ts_data = h5f.create_dataset('Ts', data=Ts, dtype='uint16', compression='gzip')
-                            #     Ts_data.attrs['scalar'] = '0.01'
-                            #     Tv_data = h5f.create_dataset('Tv', data=Tv, dtype='uint16', compression='gzip')
-                            #     Tv_data.attrs['scalar'] = '0.01'
-                            #
-                            # ### v1.1 保存结果
-                            # Ts = lsct[:,:,2]
-                            # Tv = lsct[:,:,3]
-                            # ind = (Ts<lsct_min)+(Ts>lsct_max)+(Tv<lsct_min)+(Tv>lsct_max)
-                            # Ts[ind] = np.nan; Tv[ind] = np.nan
-                            # Ts = Ts * 100; Tv = Tv * 100
-                            # mkdir_if_not_exist(outdir_lsct_v1_1+time_str)
-                            # if os.path.exists(outfile_lsct_v1_1): os.remove(outfile_lsct_v1_1)
-                            #
-                            # metadata['Version'] = 'v1.1'
-                            # metadata['Description'] = 'AATSR v1 product:inv_lsct2_lai_pixel_noconstraint'
-                            # with h5py.File(outfile_lsct_v1_1, 'w') as h5f:
-                            #     for key, value in metadata.items(): h5f.attrs[key] = value
-                            #     Ts_data = h5f.create_dataset('Ts', data=Ts, dtype='uint16', compression='gzip')
-                            #     Tv_data = h5f.create_dataset('Tv', data=Tv, dtype='uint16', compression='gzip')
-                            #
-                            # ### v2.1 保存结果
-                            # Ts = lsct[:,:,4]
-                            # Tv = lsct[:,:,5]
-                            # ind = (Ts<lsct_min)+(Ts>lsct_max)+(Tv<lsct_min)+(Tv>lsct_max)
-                            # Ts[ind] = np.nan; Tv[ind] = np.nan
-                            # Ts = Ts * 100; Tv = Tv * 100
-                            # mkdir_if_not_exist(outdir_lsct_v2_1+time_str)
-                            # if os.path.exists(outfile_lsct_v2_1): os.remove(outfile_lsct_v2_1)
-                            #
-                            # metadata['Version'] = 'v2.1'
-                            # metadata['Description'] = 'AATSR v2 product:inv_lsct2_lai_wincons_noconstraint'
-                            # with h5py.File(outfile_lsct_v2_1, 'w') as h5f:
-                            #     for key, value in metadata.items(): h5f.attrs[key] = value
-                            #     Ts_data = h5f.create_dataset('Ts', data=Ts, dtype='uint16', compression='gzip')
-                            #     Tv_data = h5f.create_dataset('Tv', data=Tv, dtype='uint16', compression='gzip')
+                    if not os.path.exists(infile_lst):
+                        print(f'    不存在lst文件: {infile_lst}')
+                        continue
+                    if not os.path.exists(infile_clo):
+                        print(f'    不存在clo文件: {infile_clo}')
+                        continue
+                    if not os.path.exists(infile_ang):
+                        print(f'    不存在ang文件: {infile_ang}')
+                        continue
+                    if not os.path.exists(infile_loc):
+                        print(f'    不存在loc文件: {infile_loc}')
+                        continue
 
-                            ### v3.2 保存结果
-                            Ts = lsct[:,:,0]
-                            Tv = lsct[:,:,1]
-                            ind = (Ts<lsct_min)+(Ts>lsct_max)+(Tv<lsct_min)+(Tv>lsct_max) + np.isnan(Ts) + np.isnan(Tv)
-                            Ts[ind] = np.nan; Tv[ind] = np.nan
-                            Ts = Ts * 100; Tv = Tv * 100
-                            mkdir_if_not_exist(outdir_lsct_v3_1+time_str)
-                            if os.path.exists(outfile_lsct_v3_1): os.remove(outfile_lsct_v3_1)
-                            metadata = {
-                                'Author': 'Yifan Lu',
-                                'Supervisor': 'Zunjian Bian, Qing Xiao',
-                                'Version': 'v0.1',
-                                'Create_time': datetime.now(timezone.utc).isoformat() + 'Z',
-                                'Solve method': method,
-                                'Window size': ws
-                            }
+                    # 读取数据
+                    lst_n, lst_o = aatsr_read_lst(infile_lst)
 
-                            metadata['Version'] = 'v3.2'
-                            metadata['Description'] = 'AATSR v3 product:inv_lsct2_lai_wincons_noconstraint_bayesian,no cloud, no scatter'
-                            metadata['Sensor noise & soil/leaf variance'] = '%.2f, %.2f, %.2f' %(sensor_noise,soil_radiance_variance,leaf_radiance_variance)
-                            
-                            with h5py.File(outfile_lsct_v3_1, 'w') as h5f:
-                                for key, value in metadata.items(): h5f.attrs[key] = value
-                                Ts_data = h5f.create_dataset('Ts', data=Ts, dtype='uint16', compression='gzip')
-                                Ts_data.attrs['scalar'] = '0.01'
-                                Tv_data = h5f.create_dataset('Tv', data=Tv, dtype='uint16', compression='gzip')
-                                Tv_data.attrs['scalar'] = '0.01'
-                                
-                            print(f"    完成: {time.time() - start_time:.2f}秒")
+                    cloN_mask, cloF_mask = aatsr_read_clo(infile_clo)
+                    indx, indy, lon, lat = aatsr_read_loc(infile_loc, iflonlat=1)
+                    nl, ns = lst_n.shape[0], lst_n.shape[1]  # 行列数
+                    lai = read_h5py_item(infile_aux, 'LAI') / 1000
 
-                        except Exception as e:
-                            # 【错误日志记录】
-                            print(f"    处理文件 {fileName} 时发生错误，已跳过。请查看日志。")
-                            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                            error_msg = traceback.format_exc()
-                            
-                            with open(ERROR_LOG_FILE, 'a', encoding='utf-8') as f:
-                                f.write("="*60 + "\n")
-                                f.write(f"Time: {current_time}\n")
-                                f.write(f"File: {fileName}\n")
-                                f.write(f"Error Type: {type(e).__name__}\n")
-                                f.write(f"Error Message: {str(e)}\n")
-                                f.write("Traceback:\n")
-                                f.write(error_msg)
-                                f.write("\n")
-                            continue # 继续下一个文件
-    finally:
-        pool.close()
-        pool.join()
+
+
+                    fvc_n = cal_fvc_from_lai(vzaN, lai)
+                    fvc_o = cal_fvc_from_lai(vzaF, lai)
+
+
+
+                    '''根据lon、lat调整emis'''
+                    indx[indx == 18000] = 0
+                    indy[indy == 36000] = 0
+                    emis_s = emis_s_[indx, indy]
+                    emis_v = emis_v_[indx, indy]
+                    classif = classif_[indx, indy]
+                    emis_s = np.reshape(emis_s, [nl, ns])
+                    emis_v = np.reshape(emis_v, [nl, ns])
+                    classif = np.reshape(classif, [nl, ns])
+
+                    '''反演LSCT'''
+
+                    start = time.time()
+                    [nl, ns] = np.shape(lst_n)
+
+                    ###### fvc LAI 根据LAI计算得到的fvc，为此函数的输入项
+
+                    fvc_n[fvc_n > fvc_max_threshold] = fvc_max_threshold
+                    fvc_n[fvc_n < fvc_min_threshold] = fvc_min_threshold
+                    fvc_o[fvc_o > fvc_max_threshold] = fvc_max_threshold
+                    fvc_o[fvc_o < fvc_min_threshold] = fvc_min_threshold
+
+
+                    lst_n[lst_n < 101] = np.nan
+                    lst_o[lst_o < 101] = np.nan
+                    ###### the radiance 根据fvc和植被土壤的发射率计算像元的有效发射率，加上反演得到的地表温度计算像元的能量
+                    rad_n = planck(wl, lst_n)
+                    rad_n = rad_n * (fvc_n * emis_v + (1 - fvc_n) * emis_s)
+                    rad_o = planck(wl, lst_o)
+                    rad_o = rad_o * (fvc_o * emis_v + (1 - fvc_o) * emis_s)
+                    ###### component effective emissivity matrix 组分有效发射率，分别对应光土壤，植被
+                    wV = np.asarray([emis_v * (fvc_n), emis_v * fvc_o])
+                    wS = np.asarray([emis_s * (1 - fvc_n), emis_s * (1 - fvc_o)])
+
+
+                    mask0 = (fvc_n > pure_soil_threshold) * (fvc_n < pure_leaf_threshold) * \
+                            (rad_n > radiance_min_threshold) * (rad_n < radiance_max_threshold) * \
+                            (rad_o > radiance_min_threshold) * (rad_o < radiance_max_threshold) * \
+                            (cloF_mask == 0) *(cloN_mask == 0)
+
+                    lsct_save = np.zeros([2, nl, ns])
+                    indx, indy = np.where(mask0)
+                    nump = len(indx)
+                    off = 2
+                    for kp in range(nump):
+                        kl = indx[kp]
+                        ks = indy[kp]
+                        if kl < off: continue
+                        if ks < off: continue
+                        if kl > nl - off - 1: continue
+                        if ks > ns - off - 1: continue
+                        kl1 = kl - off
+                        kl2 = kl + off + 1
+                        ks1 = ks - off
+                        ks2 = ks + off + 1
+                        eeV = np.reshape(wV[:, kl1:kl2, ks1:ks2], -1)
+                        eeS = np.reshape(wS[:, kl1:kl2, ks1:ks2], -1)
+                        bN = np.reshape(rad_n[kl1:kl2, ks1:ks2], -1)
+                        bO = np.reshape(rad_o[kl1:kl2, ks1:ks2], -1)
+                        mask1 = np.reshape(mask0[kl1:kl2, ks1:ks2], -1)
+                        mask2 = np.hstack([mask1, mask1])
+
+                        ind2 = (eeS > 0.1) * mask2 * (eeS < 0.9)
+                        if (np.sum(ind2) <= 5): continue
+                        bb = np.hstack([bN, bO])
+                        ww = np.stack([eeS[ind2], eeV[ind2]])
+                        bb = bb[ind2]
+                        # coeffs = np.asarray(lstsq(np.transpose(ww), np.transpose(bb))[0])
+                        # temp = inv_planck(wl, coeffs)
+
+                        coeffs = np.asarray(fitting_with_ridge(bb, ww))
+                        temp = inv_planck(wl, coeffs)
+                        lsct_save[:, kl, ks] = temp
+
+
+
+
+                    # break
+                    '''写h5文件'''
+                    out_hdf5 = outdir_hdf_day + fileName[:-3] + "_lsct.h5"
+                    if not os.path.exists(out_hdf5):
+                        f = h5py.File(out_hdf5, 'w')
+                    else:
+                        continue
+
+                    '''save'''
+                    f.attrs['Origin File'] = fileName
+                    f.attrs['Version'] = 'v0'
+                    from datetime import datetime
+
+                    f.attrs['Creation Date'] = str(datetime.now())
+                    f.attrs['Author'] = 'tirtlab'
+                    f.attrs['Method'] = 'Ts/Tv: 2 angle 5 pixel(bayesian)'
+
+                    datasets = {
+                        'Ts': (
+                        lsct_save[0, :, :] * 100, 'soil temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
+                        'Tv': (
+                        lsct_save[1, :, :] * 100, 'veg temperature(in K,*100),Scale = 100, type = uint16', np.uint16),
+                    }
+
+                    for dset_name, (data, description, dtype) in datasets.items():
+                        if dset_name in f:
+                            del f[dset_name]
+                        dset = f.create_dataset(dset_name, data=data, dtype=dtype, compression='gzip')
+                        dset.attrs['description'] = description
+
+                    f.close()
+

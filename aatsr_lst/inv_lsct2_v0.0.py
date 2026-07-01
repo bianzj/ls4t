@@ -300,7 +300,7 @@ if __name__ == '__main__':
     indir_clo = r'G:\aatsr_clo/'
     indir_ang = r'G:\aatsr_ang/'
     indir_loc = r'G:\aatsr_loc/'
-    indir_lst = r'G:\aatsr_lst/'
+    indir_lst = r'G:\aatsr2_lst/'
     indir_aux = r'G:\aatsr_aux/'
     outdir0 = r'G:\aatsr_lsct_v0.0/'
     indir0 = r"G:\base/"
