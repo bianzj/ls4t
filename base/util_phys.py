@@ -20,16 +20,14 @@ def planck(wavelength, Ts):
     '''
     c1 = planck_c1
     c2 = planck_c2
-    if np.isscalar(Ts):
-        if Ts < temperature_threshold:
-            Ts = Ts + temperature_zero
-        wavelength = np.float64(wavelength)
-        Ts = float(Ts)
+    if isinstance(Ts * 1.0, float):
+        if (Ts < temperature_threshold): Ts = Ts + temperature_zero
+        wavelength = np.float_(wavelength)
+        Ts = np.float_(Ts)
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     else:
-        Ts = np.array(Ts, dtype=np.float64)
         Ts[Ts < temperature_threshold] = Ts[Ts < temperature_threshold] + temperature_zero
-        wavelength = float(wavelength)
+        wavelength = np.float_(wavelength)
         rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
     return rad
 
