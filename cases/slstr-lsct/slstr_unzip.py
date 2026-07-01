@@ -73,9 +73,9 @@ def unzip_file_SLSTR(zipfilename, outdir):
 
 # --- 主逻辑 ---
 #\\wsl.localhost\Ubuntu\mnt\wsl\PHYSICALDRIVE2\S3A_Euro_2022-2024
-indir_zip = r'/mnt/wsl/PHYSICALDRIVE2/S3A_Euro_2022-2024/2023/'
-outdir_unzip = r'/mnt/d/s3a//'
-start_year, end_year = 2022,2023
+indir_zip = r'/mnt/h/S3_heihe_2017-2019/'
+outdir_unzip = r'/mnt/d/s3a-heihe//'
+start_year, end_year = 2017,2019
 start_month, end_month = 1, 13
 
 mkdir_if_not_exist(outdir_unzip)

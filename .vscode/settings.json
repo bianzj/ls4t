@@ -1,5 +1,14 @@
 {
-    "python.analysis.extraPaths": ["./"],
-    "python.autoComplete.extraPaths": ["./"],
-    "python.analysis.autoImportCompletions": true
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+    "python.analysis.autoImportCompletions": true,
+    "python.terminal.executeInFileDir": false,
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}"
+    },
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.languageServer": "Pylance",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda"
 }
