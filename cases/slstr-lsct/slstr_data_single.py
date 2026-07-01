@@ -85,17 +85,20 @@ def scale_and_convert_to_uint16(data, scale_factor, clip_range=(0, 65535)):
 # ==========================================
 # 数据配置
 # ==========================================
-year_val = 2022
-indir_raw = rf'/mnt/d/s3a/{year_val}/raw/'
-indir_tif = rf'/mnt/d/s3a/{year_val}/tif/'
+kyear = 2020
+indir_raw = r'/media/hero/SLSTR_download3/S3A_Euro/2020_tif/%04d/raw/' % kyear
+indir_tif = r'/media/hero/SLSTR_download3/S3A_Euro/2020_tif/%04d/tif/' % kyear
 mkdir_if_not_exist(indir_tif)
+
 
 # 几何校正参数
 adj_xn_min, adj_xn_max = 0, 96
 adj_xo_min, adj_xo_max = 36, 95
 
 # 查找待处理数据
-fileNames = sorted(search_dir_rej(indir_raw, ['S3'], 'zip'))
+fileNames = search_dir_rej(indir_raw, ['S3'], 'zip')
+fileNames = fileNames[:5]
+fileNames = sorted(fileNames)
 fileNum = len(fileNames)
 print(f"Total folders to check: {fileNum}")
 
