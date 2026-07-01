@@ -127,7 +127,6 @@ lat[ind] = np.nan
 lon[ind] = np.nan
 
 
-
 tcw_dir_0 = r"/home/hero/data/SLSTR_heihe/tcwv/tif/180/ERA5_tcw_2022_180_00.tif"
 dataset = gdal.Open(tcw_dir_0)
 indx, indy = loc2map(lat0, lon0, dataset)

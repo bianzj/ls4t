@@ -1070,11 +1070,80 @@ def model_RPV(coeffs,sza,vza,raa):
 
 
 
+def cost_DTCRL(x,y,t,fhs,fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm)) + a * kRL
+    res = mod - y
+
+
+    return np.sum(res * res)
 
 
 
+def model_DTCRL(x,t,fhs,fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    a = x[4]
+    k = x[5]
+
+    omg = 4/3.0*(tm-tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta*np.cos(np.pi/omg*(t-tm)) + a*kRL
+
+
+    return mod
+
+
+def model_DTC(x,t):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm))
+
+    return mod
 
 
 
+def cost_DTCLSFRL(x,y,t,kLSF,fhs,fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    b = x[4]
+    a = x[5]
+    k = x[6]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm)) + b*kLSF + a * kRL
+    res = mod - y
+    return np.sum(res * res) + 0.00000001*np.sum(x*x)
 
 
+def model_DTCLSFRL(x, t, kLSF, fhs, fn):
+    T0 = x[0]
+    Ta = x[1]
+    tm = x[2]
+    tsr = x[3]
+    b = x[4]
+    a = x[5]
+    k = x[6]
+
+    omg = 4 / 3.0 * (tm - tsr)
+    kRL = (np.exp(-k * fhs) - np.exp(-k * fn)) / (1.0001 - np.exp(-k * fn))
+    mod = T0 + Ta * np.cos(np.pi / omg * (t - tm)) + b * kLSF + a * kRL
+
+    return mod
