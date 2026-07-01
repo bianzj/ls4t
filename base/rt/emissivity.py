@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 def emissivity_direct(Pcom,Ecom):
-    if np.size(Pcom) == 4:
+    if len(np.array(Pcom).shape) ==1:
         number_component = np.size(Ecom)
         number_angle = np.size(Pcom[0])
         # Pcomnew = np.zeros([number_component,number_angle])
@@ -21,14 +21,23 @@ def emissivity_direct(Pcom,Ecom):
             else:
                 Pcomnew_sum_temp = Pcomtemp * Ecom[k]
             Pcomnew_sum = Pcomnew_sum + Pcomnew_sum_temp
-    else:
+    elif len(np.array(Pcom).shape) ==2: # 4 * n
         Pcom = np.array(Pcom)
         Pcom[Pcom<0] = 0
         Pcom = np.nan_to_num(Pcom)
         Ecom = np.nan_to_num(Ecom)
         # 对应元素相乘
-
-        Pcomnew = Pcom.reshape(4,-1) * Ecom.reshape(-1,1)
+        Pcomnew = Pcom.reshape(4,-1) * Ecom.reshape(4,-1)
+        # Pcomnew = Pcom * Ecom
+        Pcomnew_sum = np.sum(Pcomnew, axis=0)
+    elif len(np.array(Pcom).shape) ==3: # nl*ns *4
+        Pcom = np.array(Pcom)
+        Pcom[Pcom<0] = 0
+        Pcom = np.nan_to_num(Pcom)
+        Ecom = np.nan_to_num(Ecom)
+        # 对应元素相乘
+        # Pcomnew = Pcom.reshape(4,-1) * Ecom.reshape(4,-1)
+        Pcomnew = Pcom * Ecom
         Pcomnew_sum = np.sum(Pcomnew, axis=0)
     return Pcomnew,np.asarray(Pcomnew_sum)
 

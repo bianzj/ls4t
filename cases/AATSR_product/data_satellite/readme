@@ -1,0 +1,10 @@
+data_satellite
+AATSR数据处理
+
+AATSR_unzip: 批量解压
+
+AATSR_data: 提取数据到hdf(python37)
+    aatsr_obs: redN,redF,nirN,nirF,bt1N,bt1F,bt2N,bt2F
+    aatsr_clo: cloN,cloF
+    aatsr_ang: sza,saa,(vzaN,vzaF,vaaN,vaaF)
+    aatsr_loc: lon,lat,indx,indy

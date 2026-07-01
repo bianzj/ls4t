@@ -99,6 +99,28 @@ class Hom():
         emis = Ecom_direct + Ecom_scatter
         emis = np.nan_to_num(emis)
         return emis
+    
+    def run_emis2(self,ifradiance = 0):   # 两组分加速
+        el = self.emissivity_leaf
+        es = self.emissivity_soil
+
+        vza = self.viewing_zenith_angle
+        sza = self.solar_zenith_angle
+        vsa = self.relative_azimuth_angle
+        lai = self.leaf_area_index
+        hspot = self.hspot
+
+        ### Pleaf 和 Psoil 是植被和土壤组分的可视比例
+        ### Ksoil 和 Kleaf 是植被和土壤组分的可视比例的光照比例 K = Psunlitvisible / Pvisible
+
+        Ecom = np.asarray([es,es,el,el])
+        # 四组分比例
+        Pcom = proportion_bidirectional_hom_one(lai,hspot,vza,sza,vsa)
+        Ecom_direct,Ecom_direct_sum = emissivity_direct(Pcom,Ecom)
+        Ecom_scatter,Ecom_scatter_sum = emissivity_scatter_analytical(lai, el, es, vza, sza)
+        emis = Ecom_direct + Ecom_scatter
+        emis = np.nan_to_num(emis)
+        return emis
 
     def run(self,ifradiance = 0):
 

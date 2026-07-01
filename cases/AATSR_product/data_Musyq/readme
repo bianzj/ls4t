@@ -1,0 +1,6 @@
+data_musyq
+
+代码说明：
+1. lai_data_musyq: 将modis类sin投影tile数据拼接(1km)，然后重投影到WGS84，最后输出到h5
+
+2. fvc_data_musyq: 将modis类sin投影tile数据拼接(500m)，然后重投影到WGS84，最后输出到h5

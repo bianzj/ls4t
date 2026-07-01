@@ -1,0 +1,2 @@
+/media/hero/lsct03/aatsr_obs/2002/11/03/AATSR_2002_307_015017_obs.h5
+    NDVI与LST行列数不匹配，跳过
