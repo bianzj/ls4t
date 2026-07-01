@@ -146,6 +146,8 @@ def imagexy2geo(dataset, row,col):
     py = trans[3] + col * trans[4] + row * trans[5]
     return px, py
 
+
+
 def reproj_image_gdal(dataset_destination, dataset_source):
     '''
     源数据集重投影，提取与目标数据集对应的数据，数据来自源数据，结果的坐标与投影与目标数据一致
@@ -255,6 +257,8 @@ def loc2map(lat, lon, dataset):
     imagex = np.asarray(imagex, np.int_)
     imagey = np.asarray(imagey, np.int_)
     return imagex,imagey
+
+
 
 def calc_azimuth(lat1, lon1, lat2, lon2):
     '''
