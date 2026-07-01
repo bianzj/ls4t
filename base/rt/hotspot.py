@@ -67,6 +67,59 @@ def hotspot_layer(lai, hspot, vza, sza, vsa, CIs=1, CIv = 1, G = 0.5):
     gapvs = np.exp(-( pls + plv - overlapping) * lai)
     return gapvs
 
+def hotspot_layer_bs(lai, hspot, vza, sza, vsa, CIs=1, CIv = 1, G = 0.5):
+    '''
+    热点函数，用于土壤热点计算
+    :param lai: 叶面积指数
+    :param hspot: 热点系数
+    :param vza:  观测天顶角
+    :param sza:  太阳天顶角
+    :param vsa:  观测-太阳方位角
+    :param CIi:  聚集指数
+    :param CIv:  聚集指数
+    :param G:  投影系数
+    :return: 双向透过率
+    '''
+
+    cthetv = np.cos(np.deg2rad(vza))
+    cthets = np.cos(np.deg2rad(sza))
+    sthets = np.sin(np.deg2rad(sza))
+    sthetv = np.sin(np.deg2rad(vza))
+    cphivs = np.cos(np.deg2rad(vsa))
+
+    ### correction 是SAIL 采纳的系数
+    kv = G/cthetv
+    ks = G/cthets
+    correction = 2.0 / (kv + ks)
+
+    H = 1.0
+    d = H * hspot / correction
+    delta = np.power(cthets, -2) + np.power(cthetv, -2) - 2 * (cthets * cthetv + sthets * sthetv * cphivs) / (cthets * cthetv)
+    # delta = np.array(delta)
+
+    # delta = 1.0 * np.sqrt(delta)
+    if type(delta) == numpy.float64:
+        if delta<0: delta=0
+        alpha = H * np.sqrt(delta) / d
+        w = (1 - np.exp(- alpha)) / alpha
+    else:
+        delta[delta < 0] = 0
+        w = delta*1.0
+        ind0 = np.where(delta < 0.0001)
+        ind1 = np.where(delta > 0.0001)
+        if np.size(ind0)>0:
+            w[ind0] = 1
+        if np.size(ind1)>0:
+            alpha = H * np.sqrt(delta[ind1]) / d[ind1]
+            w[ind1] = (1 - np.exp(- alpha)) / alpha
+
+    pls = CIs * G / cthets
+    plv = CIv * G / cthetv
+    overlapping = np.sqrt(plv * pls)*w
+    gapvs = np.exp(-( pls + plv - overlapping) * lai)/(np.exp(-plv * lai))
+    return gapvs
+
+
 def hotspot_analytical(lai, hspot, vza, sza, vsa, CIi = 1, CIv = 1, G = 0.5):
     '''
     多层植被热点的累计策略，假设为上下两层，上层可视假设全部被光照，下层可视认为层间独立
