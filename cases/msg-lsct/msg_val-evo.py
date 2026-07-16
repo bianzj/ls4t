@@ -8,28 +8,26 @@ from base.util_phys import *
 
 # ================= 配置参数 =================
 file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
-file_measured = "/Users/bianzj/Downloads/data/stations/Evo-2017.csv"
+file_measured = "/Users/bianzj/Downloads/data/msg/field/Evo-2017.csv"
 output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
 
 # --- 新增：时间选择设定 ---
 START_DATE = '2017-08-01'  # 开始日期 (包含)
 END_DATE   = '2017-12-31'  # 结束日期 (包含)
-SELECT_HOURS = [11, 12, 13, 14, 15] # 只选 10:00 到 16:00 的数据
+SELECT_HOURS = [9, 10, 11, 12, 13, 14, 15] # 只选 10:00 到 16:00 的数据
 
 # 设定残差阈值（单位：K）
-DIFF_THRESHOLD = 10.0
+DIFF_THRESHOLD = 12.0
 target_site = "Evora"
 Tsky = 250
 emis_v = 0.975
 emis_s = 0.975
 
 tasks = [
-    ('T_Sunlit_Soil', 'Ts', 'Sunlit Soil vs Ts'),
-    ('T_Shaded_Soil', 'Tgrass', 'Shaded Soil vs Tgrass'), # 修正了之前的标题笔误
-    ('T_Vegetation', 'Tcrown', 'Vegetation vs Tcrown'),
-    ('LST_Euro', 'Ts', 'LST Euro vs Ts'),
-    ('LST_Euro', 'Tcrown', 'LST Euro vs Tcrown'),
-    ('LST_IODC', 'Ts', 'LST IODC vs Ts')
+    ('T_Sunlit_Soil', 'Ts', 'Soil'),
+    ('T_Vegetation', 'Tcrown', 'Vegetation'),
+    ('LST_Euro', 'Ts', 'LST vs Ts'),
+    ('LST_Euro', 'Tcrown', 'LST vs Vegetation')
 ]
 
 # ================= 1. 处理反演数据 (Inferred) =================
@@ -78,7 +76,7 @@ df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
 
 # ================= 4. 统计与绘图 =================
 stats_list = []
-cols_plot = 3
+cols_plot = 2
 rows_plot = math.ceil(len(tasks) / cols_plot)
 plt.figure(figsize=(10, 5 * rows_plot))
 
@@ -117,7 +115,7 @@ for i, (inf_col, mea_col, title_name) in enumerate(tasks):
 
     ax.set_title(f'{title_name}')
     ax.set_xlabel('Measured (K)')
-    ax.set_ylabel('Inferred (K)')
+    ax.set_ylabel('Inverted (K)')
 
     res_txt = f"N: {len(y_true)}\nRMSE: {rmse:.2f}K\nBias: {bias:.2f}K\nR: {r_val:.2f}\nExcluded: {removed_count}"
     ax.text(0.05, 0.65, res_txt, transform=ax.transAxes, fontsize=9, bbox=dict(facecolor='white', alpha=0.8))

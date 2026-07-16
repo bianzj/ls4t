@@ -1,0 +1,364 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from sklearn.metrics import mean_squared_error, r2_score
+from scipy import stats
+import math
+from base.util_phys import *
+
+# ================= 全局绘图风格设置 (Publication Ready) =================
+mpl.rcParams['font.family'] = 'sans-serif'
+mpl.rcParams['font.sans-serif'] = ['Arial', 'Helvetica', 'DejaVu Sans']
+mpl.rcParams['font.size'] = 12
+mpl.rcParams['axes.titlesize'] = 14
+mpl.rcParams['axes.labelsize'] = 13
+mpl.rcParams['xtick.labelsize'] = 11
+mpl.rcParams['ytick.labelsize'] = 11
+mpl.rcParams['legend.fontsize'] = 11
+mpl.rcParams['axes.linewidth'] = 1.2
+mpl.rcParams['lines.linewidth'] = 1.5
+
+# ================= 配置参数 =================
+file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
+file_measured = "/Users/bianzj/Downloads/data/msg/field/Evo-2017.csv"
+output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
+output_fig = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Diurnal_Validation_Evora.png"
+output_rmse_fig = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_RMSE_Bar_Evora.png"  # 新增RMSE柱状图输出路径
+
+# --- 时间选择设定 ---
+START_DATE = '2017-07-01'
+END_DATE = '2017-12-30'
+
+# 【新增】：设定只提取特定的小时 (如 11点 到 15点)
+# 如果想看全天，可以写成 np.arange(0, 24).tolist()
+SELECT_HOURS = [11, 12, 13, 14, 15]
+
+# 设定残差阈值（单位：K）
+DIFF_THRESHOLD = 10.0
+target_site = "Evora"
+Tsky = 250
+emis_v = 0.975
+emis_s = 0.975
+
+# 修改Title名称以适应学术风格
+tasks = [
+    ('T_Sunlit_Soil', 'Ts', '(a) Sunlit Soil Temperature'),
+    ('T_Vegetation', 'Tcrown', '(b) Vegetation Canopy Temperature')
+]
+
+# ================= 1. 处理反演数据 (Inferred) =================
+df_inf = pd.read_csv(file_inferred)
+df_inf = df_inf[df_inf['Site'] == target_site].copy()
+
+
+def parse_inf_time(val):
+    s = "{:.0f}".format(float(val))
+    return pd.to_datetime(s, format='%Y%m%d%H%M')
+
+
+df_inf['DateTime'] = df_inf['DateTime'].apply(parse_inf_time)
+
+# ================= 2. 处理实测数据 (Measured) =================
+df_mea = pd.read_csv(file_measured)
+df_mea['DateTime'] = pd.to_datetime(df_mea['Time'], dayfirst=True)
+
+measured_cols = list(set([t[1] for t in tasks]))
+for col in measured_cols:
+    if col in df_mea.columns:
+        if df_mea[col].mean() < 150:
+            df_mea[col] = df_mea[col] + 273.15
+
+# ================= 3. 数据匹配与日期过滤 =================
+df_merge = pd.merge(df_inf, df_mea, on='DateTime', suffixes=('_inf', '_mea'))
+df_merge = df_merge[(df_merge['DateTime'] >= START_DATE) & (df_merge['DateTime'] <= END_DATE)]
+
+# 【核心新增】：过滤特定小时
+if SELECT_HOURS is not None and len(SELECT_HOURS) > 0:
+    df_merge = df_merge[df_merge['DateTime'].dt.hour.isin(SELECT_HOURS)]
+
+if df_merge.empty:
+    print(f"未能匹配到数据！请检查日期范围 {START_DATE} ~ {END_DATE} 或 小时设定 {SELECT_HOURS}")
+    exit()
+
+print(f"经过日期和指定小时过滤后，剩余有效样本数: {len(df_merge)}")
+
+# ================= 4. 辐射校正 =================
+bg = planck(10.5, df_merge['Ts'])
+bv = planck(10.5, df_merge['Tcrown'])
+bsky = planck(10.5, 250)
+df_merge['Ts'] = inv_planck(10.5, (bg - (1 - emis_s) * bsky) / emis_s)
+df_merge['Tcrown'] = inv_planck(10.5, (bv - (1 - emis_v) * bsky) / emis_v)
+
+# ================= 5. 计算RMSE和变化（按小时平均） =================
+df_merge['Hour'] = df_merge['DateTime'].dt.hour
+hourly_stats = {}
+hourly_rmse = {}  # 新增：存储每小时RMSE
+
+for inf_col, mea_col, title_name in tasks:
+    mask = (df_merge[inf_col].notna()) & (df_merge[mea_col].notna())
+    abs_diff = np.abs(df_merge[inf_col] - df_merge[mea_col])
+    valid_mask = mask & (abs_diff <= DIFF_THRESHOLD)
+
+    df_temp = df_merge[valid_mask].copy()
+
+    if len(df_temp) == 0:
+        continue
+
+    # 计算每小时的平均值和标准差
+    hourly_mean_inf = df_temp.groupby('Hour')[inf_col].agg(['mean', 'std', 'count'])
+    hourly_mean_mea = df_temp.groupby('Hour')[mea_col].agg(['mean', 'std', 'count'])
+
+    hourly_mean = pd.DataFrame({
+        'Hour': hourly_mean_inf.index,
+        f'{inf_col}_mean': hourly_mean_inf['mean'],
+        f'{inf_col}_std': hourly_mean_inf['std'],
+        f'{mea_col}_mean': hourly_mean_mea['mean'],
+        f'{mea_col}_std': hourly_mean_mea['std'],
+        'count': hourly_mean_inf['count']
+    })
+
+    # 修复同名索引问题与数据稀少导致的 NaN 标准差
+    hourly_mean = hourly_mean.reset_index(drop=True)
+    hourly_mean = hourly_mean.sort_values('Hour').dropna(subset=[f'{inf_col}_mean', f'{mea_col}_mean'])
+    hourly_mean[f'{inf_col}_std'] = hourly_mean[f'{inf_col}_std'].fillna(0)
+    hourly_mean[f'{mea_col}_std'] = hourly_mean[f'{mea_col}_std'].fillna(0)
+
+    hourly_stats[title_name] = hourly_mean
+
+    # 【新增】：计算每小时的RMSE
+    rmse_by_hour = {}
+    for hour in SELECT_HOURS:
+        hour_data = df_temp[df_temp['Hour'] == hour]
+        if len(hour_data) > 0:
+            rmse = np.sqrt(mean_squared_error(hour_data[mea_col], hour_data[inf_col]))
+            rmse_by_hour[hour] = rmse
+        else:
+            rmse_by_hour[hour] = np.nan
+
+    hourly_rmse[title_name] = rmse_by_hour
+
+# ================= 6. 打印各个时刻的RMSE =================
+print("\n" + "=" * 60)
+print("各个时刻的RMSE统计")
+print("=" * 60)
+
+for title_name in hourly_rmse.keys():
+    print(f"\n{title_name}:")
+    print("-" * 40)
+    print(f"{'时刻':<10} {'RMSE (K)':<12} {'样本数':<10}")
+    print("-" * 40)
+
+    for hour in SELECT_HOURS:
+        rmse_val = hourly_rmse[title_name].get(hour, np.nan)
+
+        # 获取该小时对应的样本数
+        if title_name in hourly_stats:
+            df_hourly = hourly_stats[title_name]
+            hour_data = df_hourly[df_hourly['Hour'] == hour]
+            if len(hour_data) > 0:
+                count = int(hour_data['count'].values[0])
+            else:
+                count = 0
+        else:
+            count = 0
+
+        if not np.isnan(rmse_val):
+            print(f"{hour}:00{'':<6} {rmse_val:<12.3f} {count:<10}")
+        else:
+            print(f"{hour}:00{'':<6} {'N/A':<12} {count:<10}")
+
+# 打印总体RMSE
+print("\n" + "-" * 40)
+print("总体统计:")
+print("-" * 40)
+for inf_col, mea_col, title_name in tasks:
+    mask = (df_merge[inf_col].notna()) & (df_merge[mea_col].notna())
+    abs_diff = np.abs(df_merge[inf_col] - df_merge[mea_col])
+    valid_mask = mask & (abs_diff <= DIFF_THRESHOLD)
+    df_valid = df_merge[valid_mask]
+
+    if len(df_valid) > 0:
+        overall_rmse = np.sqrt(mean_squared_error(df_valid[mea_col], df_valid[inf_col]))
+        r2 = r2_score(df_valid[mea_col], df_valid[inf_col])
+        bias = np.mean(df_valid[inf_col] - df_valid[mea_col])
+        print(f"{title_name}:")
+        print(f"  RMSE = {overall_rmse:.3f} K")
+        print(f"  R² = {r2:.4f}")
+        print(f"  Bias = {bias:.3f} K")
+        print(f"  样本数 = {len(df_valid)}")
+
+# ================= 7. 绘制RMSE柱状图 =================
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# 定义颜色方案
+colors = ['#d62728', '#1f77b4']  # 红色：Sunlit Soil，蓝色：Vegetation
+hatches = ['/', '\\']  # 不同的填充纹理
+
+# 设置柱状图参数
+bar_width = 0.35
+x_positions = np.arange(len(SELECT_HOURS))
+
+for idx, (inf_col, mea_col, title_name) in enumerate(tasks):
+    if title_name in hourly_rmse:
+        rmse_values = [hourly_rmse[title_name].get(hour, np.nan) for hour in SELECT_HOURS]
+
+        # 绘制柱状图
+        bars = ax.bar(x_positions + idx * bar_width,
+                      rmse_values,
+                      bar_width,
+                      label=title_name,
+                      color=colors[idx],
+                      alpha=0.8,
+                      edgecolor='black',
+                      linewidth=1.2,
+                      hatch=hatches[idx])
+
+        # 在柱状图上添加数值标签
+        for i, (bar, value) in enumerate(zip(bars, rmse_values)):
+            if not np.isnan(value):
+                ax.text(bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() + 0.1,
+                        f'{value:.2f}',
+                        ha='center',
+                        va='bottom',
+                        fontsize=10,
+                        fontweight='bold')
+
+# 设置x轴标签
+ax.set_xticks(x_positions + bar_width / 2)
+ax.set_xticklabels([f'{h}:00' for h in SELECT_HOURS], fontsize=12)
+
+# 设置y轴标签和标题
+ax.set_ylabel('RMSE (K)', fontsize=14, fontweight='bold')
+ax.set_xlabel('Local Time (Hour)', fontsize=14, fontweight='bold')
+
+# 添加标题
+hours_str = f"{min(SELECT_HOURS)}:00-{max(SELECT_HOURS)}:00" if SELECT_HOURS else "Full Day"
+ax.set_title(f'RMSE at Different Hours - {target_site}\n({START_DATE} to {END_DATE} | {hours_str})',
+             fontsize=16, fontweight='bold', pad=20)
+
+# 设置y轴范围，留出标签空间
+y_max = 0
+for title_name in hourly_rmse.keys():
+    rmse_vals = [v for v in hourly_rmse[title_name].values() if not np.isnan(v)]
+    if rmse_vals:
+        y_max = max(y_max, max(rmse_vals))
+ax.set_ylim(0, y_max * 1.2)  # 留出20%空间显示数值标签
+
+# 网格和样式设置
+ax.grid(True, axis='y', linestyle='--', alpha=0.3, zorder=0)
+ax.set_axisbelow(True)  # 网格线在柱子下方
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.tick_params(axis='both', direction='in', length=5, width=1.2)
+
+# 添加图例
+legend = ax.legend(loc='upper right',
+                   frameon=True,
+                   fancybox=True,
+                   shadow=True,
+                   fontsize=11)
+legend.get_frame().set_alpha(0.9)
+
+plt.tight_layout()
+plt.savefig(output_rmse_fig, dpi=400, bbox_inches='tight', transparent=False)
+plt.show()
+
+print(f"\nRMSE柱状图已保存至: {output_rmse_fig}")
+
+# ================= 8. 绘制日变化图（原代码保持不变） =================
+cols_plot = 2
+rows_plot = math.ceil(len(tasks) / cols_plot)
+fig, axes = plt.subplots(rows_plot, cols_plot, figsize=(14, 5.5 * rows_plot))
+
+# 调整主标题样式，显示当前选取的小时范围
+hours_str = f"{min(SELECT_HOURS)}:00-{max(SELECT_HOURS)}:00" if SELECT_HOURS else "Full Day"
+fig.suptitle(f"Diurnal Validation at {target_site} ({START_DATE} to {END_DATE} | {hours_str})",
+             fontsize=16, fontweight='bold', y=0.98)
+
+if rows_plot == 1 and cols_plot == 1:
+    axes = np.array([[axes]])
+elif rows_plot == 1:
+    axes = axes.reshape(1, -1)
+elif cols_plot == 1:
+    axes = axes.reshape(-1, 1)
+
+# 定义专业配色 (蓝: 观测, 红: 反演)
+color_mea = '#1f77b4'  # 深蓝
+color_inf = '#d62728'  # 砖红
+
+for idx, (inf_col, mea_col, title_name) in enumerate(tasks):
+    row = idx // cols_plot
+    col = idx % cols_plot
+    ax = axes[row, col]
+
+    if title_name not in hourly_stats or hourly_stats[title_name].empty:
+        ax.text(0.5, 0.5, 'No Valid Data', ha='center', va='center', transform=ax.transAxes, fontsize=12)
+        ax.set_title(f'{title_name}', fontweight='bold')
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        continue
+
+    df_hourly = hourly_stats[title_name]
+
+    # 设置X轴偏移，防止误差棒重叠 (根据选取的区间长短适当缩放偏移量)
+    offset = 0.1
+
+    # 绘制实测数据（带误差棒，空心圆点）
+    ax.errorbar(df_hourly['Hour'] - offset, df_hourly[f'{mea_col}_mean'],
+                yerr=df_hourly[f'{mea_col}_std'],
+                fmt='o-', color=color_mea,
+                markerfacecolor='white', markeredgecolor=color_mea, markeredgewidth=1.5,
+                capsize=4, capthick=1.5, elinewidth=1.5,
+                label='Measured (In-situ)', markersize=7, zorder=3)
+
+    # 绘制反演数据（带误差棒，空心方块）
+    ax.errorbar(df_hourly['Hour'] + offset, df_hourly[f'{inf_col}_mean'],
+                yerr=df_hourly[f'{inf_col}_std'],
+                fmt='s-', color=color_inf,
+                markerfacecolor='white', markeredgecolor=color_inf, markeredgewidth=1.5,
+                capsize=4, capthick=1.5, elinewidth=1.5,
+                label='Inverted (Satellite)', markersize=6, zorder=3)
+
+    # 【核心新增】：X 轴自适应逻辑
+    if SELECT_HOURS:
+        ax.set_xticks(SELECT_HOURS)  # 仅在你选择的小时处画刻度
+        ax.set_xlim(min(SELECT_HOURS) - 0.5, max(SELECT_HOURS) + 0.5)
+    else:
+        # 如果未指定小时，按常规模式
+        ax.set_xticks(np.arange(0, 24, 2))
+        ax.set_xlim(-1, 24)
+
+    # 固定Y轴范围
+    ax.set_ylim(290, 340)
+
+    # 刻度线朝内
+    ax.tick_params(axis='both', direction='in', length=5, width=1.2, top=False, right=False)
+
+    # 隐藏右边和上边的边框线 (学术图表常用)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    # 仅保留Y轴虚线网格，更加清爽
+    ax.grid(True, axis='y', linestyle='--', alpha=0.6, zorder=0)
+
+    # 标签与标题
+    ax.set_title(f'{title_name}', pad=15, fontweight='bold')
+    ax.set_xlabel('Local Time (Hour)', fontweight='bold')
+    ax.set_ylabel('Temperature (K)', fontweight='bold')
+
+    # 图例优化，去掉图例边框
+    ax.legend(loc='upper left', frameon=False)
+
+# 隐藏多余的子图
+for idx in range(len(tasks), rows_plot * cols_plot):
+    row = idx // cols_plot
+    col = idx % cols_plot
+    axes[row, col].set_visible(False)
+
+plt.tight_layout(rect=[0, 0, 1, 0.96])  # 给主标题留出空间
+plt.savefig(output_fig, dpi=400, bbox_inches='tight', transparent=False)
+plt.show()
