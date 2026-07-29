@@ -13,10 +13,10 @@ from base.util_plot import *
 # ================= 配置路径 =================
 indir = '/media/hero/MSG/'
 indir_rs = '/media/hero/rs/'
-indir0_lsct = indir + '/PRODUCTS/LSCT/MLST_COMPONENT/'
+indir0_lsct = indir + '/PRODUCTS/LSCT/MLST_COMPONENT2/'
 indir0_lai = indir_rs + '/veg/lai_2021-2025_0.01/'
-indir0_lai = indir_rs + '/veg/lai_2002-2020_0.01/'
-outdir_root = indir + '/results/'          # 所有 CSV 直接放在此目录
+# indir0_lai = indir_rs + '/veg/lai_2002-2020_0.01/'
+outdir_root = indir + '/results2/'          # 所有 CSV 直接放在此目录
 os.makedirs(outdir_root, exist_ok=True)
 altitude = 0
 
@@ -79,13 +79,13 @@ site_data = {name: [] for name in site_names}
 print("开始提取动态数据...")
 lai_cache = []   # 缓存已读取的 LAI 数组，键为文件路径
 lai0 = np.zeros([nll,nss])
-for kyear in range(2018, 2020):
+for kyear in range(2024, 2025):
     for kmonth in range(1, 12):
         for kday in range(1, 32):
             # 处理 LAI（仅示意，若需要可扩展，此处略）
             kdoy = date2DOY(kyear, kmonth, kday)   # 假定 date2DOY 已定义
             kkdoy = int(kdoy / 4) * 4 + 1
-            infile_lai = os.path.join(indir0_lai, f"{kyear:04d}", f"LAI_{kyear:04d}{kkdoy:03d}.h5")
+            infile_lai = os.path.join(indir0_lai, f"{kyear:04d}", f"lai_{kyear:04d}{kkdoy:03d}.h5")
 
             # 若需要 LAI 值，可在此读取并加入记录（略）
 

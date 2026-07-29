@@ -5,15 +5,16 @@ from sklearn.metrics import mean_squared_error, r2_score
 from scipy import stats
 import math
 from base.util_phys import *
+
 # ================= 配置参数 =================
 file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
-file_measured = "/Users/bianzj/Downloads/data/stations/Kal-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_KAL.csv"
+file_measured = "/Users/bianzj/Downloads/data/msg/field/Kal-2017.csv"
+output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
 
 # --- 新增：时间选择设定 ---
-START_DATE = '2017-08-01'       # 设定起始日期 (包含)
-END_DATE   = '2017-12-31'       # 设定结束日期 (包含)
-SELECT_HOURS = [11, 12, 13, 14, 15]  # 设定小时区间 (如只看白天)
+START_DATE = '2017-08-01'  # 开始日期 (包含)
+END_DATE   = '2017-12-31'  # 结束日期 (包含)
+SELECT_HOURS = [9, 10, 11, 12, 13, 14, 15] # 只选 10:00 到 16:00 的数据
 
 # 设定残差阈值（单位：K）
 DIFF_THRESHOLD = 10.0
@@ -22,33 +23,33 @@ Tsky = 250
 emis_v = 0.975
 emis_s = 0.975
 
-# 格式：(反演列名, 实测列名, 显示标题)
 tasks = [
     ('T_Sunlit_Soil', 'bt_s', 'Sunlit Soil vs bt_s'),
-    ('T_Shaded_Soil', 'bt_v', 'Shaded Soil vs bt_v'),
     ('T_Vegetation', 'bt_v', 'Vegetation vs bt_v'),
     ('LST_Euro', 'bt_s', 'LST Euro vs bt_s'),
-    ('LST_Euro', 'bt_v', 'LST Euro vs bt_v'),
-    ('LST_IODC', 'bt_s', 'LST IODC vs bt_s')
+    ('LST_Euro', 'bt_v', 'LST Euro vs bt_v')
 ]
 
-# ================= 1. 处理反演数据 (Inferred) =================
+## ================= 1. 处理反演数据 (Inferred) =================
 df_inf = pd.read_csv(file_inferred)
-# 确保站点名称匹配 (KAL)
 df_inf = df_inf[df_inf['Site'] == target_site].copy()
+
 
 def parse_inf_time(val):
     s = "{:.0f}".format(float(val))
     return pd.to_datetime(s, format='%Y%m%d%H%M')
 
+
 df_inf['DateTime'] = df_inf['DateTime'].apply(parse_inf_time)
 
 # ================= 2. 处理实测数据 (Measured) =================
 df_mea = pd.read_csv(file_measured)
-# 注意：这里根据你的代码将实测时间列名设为 'time'
 df_mea['DateTime'] = pd.to_datetime(df_mea['time'], dayfirst=True)
+# 规整到最近的 5 分钟，并做一次均值去重
 
-# 自动处理摄氏度转开尔文
+df_mea = df_mea.groupby('DateTime', as_index=False).mean(numeric_only=True)
+
+
 measured_cols = list(set([t[1] for t in tasks]))
 for col in measured_cols:
     if col in df_mea.columns:
@@ -58,24 +59,27 @@ for col in measured_cols:
 # ================= 3. 数据匹配与时间过滤 =================
 df_merge = pd.merge(df_inf, df_mea, on='DateTime', suffixes=('_inf', '_mea'))
 
-# --- 核心新增：执行时间过滤逻辑 ---
-# 1. 过滤日期范围
-df_merge = df_merge[(df_merge['DateTime'] >= START_DATE) & (df_merge['DateTime'] <= END_DATE)]
+# 过滤日期范围
+df_merge = df_merge[(df_merge['DateTime'] >= START_DATE) &
+                    (df_merge['DateTime'] <= END_DATE) &
+                    (df_merge['LAI'] >= 0.25)]
 
-# 2. 过滤特定小时
-df_merge = df_merge[df_merge['DateTime'].dt.hour.isin(SELECT_HOURS)]
+# 过滤特定小时
+if SELECT_HOURS:
+    df_merge = df_merge[df_merge['DateTime'].dt.hour.isin(SELECT_HOURS)]
 
 if df_merge.empty:
     print(f"未能匹配到数据！请检查日期范围 {START_DATE}~{END_DATE} 或小时设定 {SELECT_HOURS}")
     exit()
 
-print(f"时间过滤完成，剩余样本数: {len(df_merge)}")
+print(f"匹配与时间过滤完成，初始样本数: {len(df_merge)}")
 
-bg = planck(10.5,df_merge['bt_s'])
-bv = planck(10.5,df_merge['bt_v'])
-bsky = planck(10.5,250)
-df_merge['bt_s'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
-df_merge['bt_v'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+# 辐射校正
+bg = planck(10.5, df_merge['bt_s'])
+bv = planck(10.5, df_merge['bt_v'])
+bsky = planck(10.5, 250)
+df_merge['bt_s'] = inv_planck(10.5, (bg - (1 - emis_s) * bsky) / emis_s)
+df_merge['bt_v'] = inv_planck(10.5, (bv - (1 - emis_v) * bsky) / emis_v)
 
 
 # ================= 4. 统计与绘图 =================
@@ -84,8 +88,8 @@ cols_plot = 3
 rows_plot = math.ceil(len(tasks) / cols_plot)
 plt.figure(figsize=(10, 5 * rows_plot))
 
-# 添加总标题显示当前过滤条件
-plt.suptitle(f"Site: {target_site} | {START_DATE} to {END_DATE} | Hours: {SELECT_HOURS}", fontsize=16)
+# 在总标题显示时间范围
+plt.suptitle(f"Site: {target_site} | Period: {START_DATE} to {END_DATE} | Hours: {SELECT_HOURS}", fontsize=16)
 
 for i, (inf_col, mea_col, title_name) in enumerate(tasks):
     mask = (df_merge[inf_col].notna()) & (df_merge[mea_col].notna())
@@ -97,7 +101,7 @@ for i, (inf_col, mea_col, title_name) in enumerate(tasks):
     removed_count = np.sum(mask) - np.sum(valid_mask)
 
     if len(y_true) < 2:
-        print(f"任务 {title_name} 有效数据不足，跳过。")
+        print(f"任务 {title_name} 在此时间段内有效数据不足。")
         continue
 
     bias = np.mean(y_pred - y_true)
@@ -107,7 +111,7 @@ for i, (inf_col, mea_col, title_name) in enumerate(tasks):
     stats_list.append({
         'Task': title_name,
         'Bias': bias, 'RMSE': rmse, 'R': r_val,
-        'Valid_Count': len(y_true), 'Removed': removed_count
+        'Valid_Count': len(y_true)
     })
 
     ax = plt.subplot(rows_plot, cols_plot, i + 1)
@@ -115,19 +119,18 @@ for i, (inf_col, mea_col, title_name) in enumerate(tasks):
 
     v_min = min(y_true.min(), y_pred.min()) - 2
     v_max = max(y_true.max(), y_pred.max()) + 2
-    ax.plot([v_min, v_max], [v_min, v_max], 'k--', alpha=0.5, label='1:1')
+    ax.plot([v_min, v_max], [v_min, v_max], 'k--', alpha=0.5)
 
     ax.set_title(f'{title_name}')
     ax.set_xlabel('Measured (K)')
-    ax.set_ylabel('Inferred (K)')
+    ax.set_ylabel('Inverted (K)')
 
-    res_txt = f"N: {len(y_true)}\nRMSE: {rmse:.2f}K\nBias: {bias:.2f}K\nR: {r_val:.2f}\nRemoved: {removed_count}"
+    res_txt = f"N: {len(y_true)}\nRMSE: {rmse:.2f}K\nBias: {bias:.2f}K\nR: {r_val:.2f}\nExcluded: {removed_count}"
     ax.text(0.05, 0.65, res_txt, transform=ax.transAxes, fontsize=9, bbox=dict(facecolor='white', alpha=0.8))
 
-plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # 留出顶部标题空间
+plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # 为总标题留出空间
 df_stats = pd.DataFrame(stats_list)
 df_stats.to_csv(output_stats, index=False)
-print(f"处理完成。结果保存至: {output_stats}")
 plt.show()
 
 

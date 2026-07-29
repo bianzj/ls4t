@@ -9,18 +9,19 @@ from rasterio.transform import from_bounds
 
 # ================= 配置区域 =================
 
-input_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/HDF5/"
-output_root0 = "/Users/bianzj/Downloads/data/msg/PRODUCTS/MSG/MLAI/GEOTIFF/"
+indir = '/media/hero/MSG/'
+input_root0 = indir + "/PRODUCTS/MSG/MDLAI/HDF5/"
+output_root0 = indir + "/PRODUCTS/MSG/MDLAI/GEOTIFF/"
 target_var = 'LST'
-input_root0 = "/mnt/h/PRODUCTS/MSG/MLST/HDF5/"
-output_root0 = "/mnt/h/PRODUCTS/MSG/MLST/GEOTIFF/"
+# input_root0 = "/mnt/h/PRODUCTS/MSG/MLST/HDF5/"
+# output_root0 = "/mnt/h/PRODUCTS/MSG/MLST/GEOTIFF/"
 
 
 # ！！！重要提示：
 # 如果 HDF5 是全圆盘 (3712x3712)，这两个 TIF 也必须是 3712x3712。
 # 如果 TIF 是 3201 大小，请更换为全圆盘对应的经纬度文件。
-lat_path = "/mnt/h/msg/Static/EURO_lat.tif"
-lon_path = "/mnt/h/msg/Static/EURO_lon.tif"
+lat_path = indir + "/Static/EURO_Lat.tif"
+lon_path = indir + "/Static/EURO_Lon.tif"
 
 def load_static_latlon(lat_p, lon_p):
     """读取静态经纬度并处理翻转"""

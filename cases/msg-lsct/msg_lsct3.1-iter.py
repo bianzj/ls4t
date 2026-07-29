@@ -12,9 +12,9 @@ from pvlib.location import Location
 from osgeo import gdal
 from osgeo import osr
 import os
-import pyresample as pr
-from satpy import Scene
-import satpy
+# import pyresample as pr
+# from satpy import Scene
+# import satpy
 
 import numpy as np
 
@@ -289,52 +289,63 @@ def solve_joint_vectorized_with_prior(rad_e, rad_i, w, x_prior, lmbda=0.5):
 
 
 # ================= 配置路径 =================
-indir = "/Users/bianzj/Downloads/data/"
+indir = "/media/hero/MSG/"
+indir_rs = '/media/hero/rs/'
 indir0_euro = indir + '/PRODUCTS/MSG/MLST/GEOTIFF'
+indir0_euro_lai = indir + '/PRODUCTS/MSG/MDLAI/GEOTIFF'
 indir0_iodc = indir + '/PRODUCTS/MSG-IODC/MLST/GEOTIFF'
-indir0_lai = indir + '/lai/'
-outdir_root = indir + '/PRODUCTS/LSCT/MLST_COMPONENT/'
+indir0_lai = indir_rs + '/veg/lai_2021-2025_0.01/'
+outdir_root = indir + '/PRODUCTS/LSCT/MLST_COMPONENT2/'
 altitude = 0
-
+lambda_val = 100.0
+dif = 3
+hspot_val = 0.2
 # ================= 读取静态数据 =================
 print("正在读取静态数据及坐标映射...")
 infile_source = indir + "/map/MCD12C1_2011_0.01.tif"
-infile_vza_e = indir + "/msg/static/combined_euro_vza.tif"
-infile_vaa_e = indir + "/msg/static/combined_euro_vaa.tif"
-infile_vza_i = indir + "/msg/static/combined_iodc_vza.tif"
-infile_vaa_i = indir + "/msg/static/combined_iodc_vaa.tif"
+infile_vza_e = indir + "/Static/combined_euro_vza.tif"
+infile_vaa_e = indir + "/Static/combined_euro_vaa.tif"
+infile_vza_i = indir + "/Static/combined_iodc_vza.tif"
+infile_vaa_i = indir + "/Static/combined_iodc_vaa.tif"
+infile_lat_e = indir + "/Static/combined_euro_lat.tif"
+infile_lon_e = indir + "/Static/combined_euro_lon.tif"
 
 # 读取并校正角度
 [vza_euro, nss, nll, nb, _, _, dataset_ref] = read_image_dataset_gdal(infile_vza_e)
 [vaa_euro, _, _, _, _, _, _] = read_image_dataset_gdal(infile_vaa_e)
 [vza_iodc, _, _, _, _, _, _] = read_image_dataset_gdal(infile_vza_i)
 [vaa_iodc, _, _, _, _, _, _] = read_image_dataset_gdal(infile_vaa_i)
-
+[lat, _, _, _, _, _, _] = read_image_dataset_gdal(infile_lat_e)
+[lon, _, _, _, _, _, _] = read_image_dataset_gdal(infile_lon_e)
 
 vza_euro, vaa_euro = vza_euro / 100.0, vaa_euro / 100.0
 vza_iodc, vaa_iodc = vza_iodc / 100.0, vaa_iodc / 100.0
 vaa_euro = (360 + vaa_euro) % 360
 vaa_iodc = (360 + vaa_iodc) % 360
+lat, lon = lat / 100.0, lon / 100.0         # 修正：使用 np.flipud
+# 若经纬度存在异常值，置为 NaN
+ind = (lat > 90) | (lat < -90)
+lat[ind] = np.nan
+lon[ind] = np.nan
 
 # 坐标转换映射 (用于提取土地利用类型和发射率)
-ns, nl = nss, nll
-nsi, nli = np.meshgrid(np.arange(ns), np.arange(nl))
-nli_flat, nsi_flat = nli.flatten(), nsi.flatten()
-
-temp1, temp2 = imagexy2geo(dataset_ref, nli_flat, nsi_flat)
-lon, lat = geo2lonlat(dataset_ref, temp1, temp2)
-lon, lat = lon.reshape(nl, ns), lat.reshape(nl, ns)
-lonn = resize_data(lon,int(nl/10),int(ns/10))
-latt = resize_data(lat,int(nl/10),int(ns/10))
+# ns, nl = nss, nll
+# nsi, nli = np.meshgrid(np.arange(ns), np.arange(nl))
+# nli_flat, nsi_flat = nli.flatten(), nsi.flatten()
+# temp1, temp2 = imagexy2geo(dataset_ref, nli_flat, nsi_flat)
+# lon, lat = geo2lonlat(dataset_ref, temp1, temp2)
+# lon, lat = lon.reshape(nl, ns), lat.reshape(nl, ns)
+# lonn = resize_data(lon,int(nl/10),int(ns/10))
+# latt = resize_data(lat,int(nl/10),int(ns/10))
 
 [land_type_map, _, _, _, _, _, dataset_map] = read_image_dataset_gdal(infile_source)
-indx, indy = loc2map(lat, lon, dataset_map)
+indx, indy = loc2map(lat.flatten(), lon.flatten(), dataset_map)
 indx, indy = indx.reshape(nll, nss), indy.reshape(nll, nss)
 land_type = land_type_map[indx, indy].astype(np.int16)
 
 # 读取发射率
 indir_ems = indir + '/lse/'
-infile_soil_emis = indir_ems + 'emis1.tif'
+infile_soil_emis = indir_ems + 'AG1km.v003.SoilEmi.ABI.Global.001D_LSE11.tif'
 infile_veg_emis = indir_ems + 'IGBP_Emi.txt'
 [emis_s_full, _, _, _, _, _] = read_image_gdal(infile_soil_emis)
 emis_s = emis_s_full[indx, indy]
@@ -347,26 +358,30 @@ emis_v = emis_v_table[land_type, 0] / 1000.0
 
 # ================= 循环处理 =================
 isfirst = True
-for kyear in range(2017, 2018):
-    for kmonth in range(8, 9):
-        for kday in range(10, 11):
+lai_cache = []
+lai = np.zeros([nll,nss])
+for kyear in range(2022, 2023):
+    for kmonth in range(1, 13):
+        for kday in range(1, 32):
 
             # --- 1. 处理 LAI 和 权重 w ---
             kdoy = date2DOY(kyear, kmonth, kday)
             kkdoy = int(kdoy / 4) * 4 + 1
-            infile_lai = os.path.join(indir0_lai, "%04d" % kyear, "lai_%04d%03d.tif" % (kyear, kkdoy))
+            infile_lai = os.path.join(indir0_lai, f"{kyear:04d}", f"lai_{kyear:04d}{kkdoy:03d}.h5")
 
             if isfirst or (kkdoy == kdoy):
                 if os.path.exists(infile_lai):
-                    lai, _, _, _, _, _ = read_image_gdal(infile_lai)
-                    lai = lai[indx, indy] / 1000.0
-                    lai[lai > 30] = np.nan
-                    lai[lai < 0] = 0
+
+                    # 读取 LAI 数据（假设读取函数 read_h5py_item 可用）
+                    lai_full = read_h5py_item(infile_lai, "/data")  # 或直接用 h5py
+                    lai_full = lai_full / 1000.0
+                    lai_full[lai_full > 10] = np.nan
+                    lai = lai_full[indx, indy]
+                    lai_cache.append(infile_lai)
 
                     # 计算 FVC 和 权重 w
                     fvc_euro = 1.0 - gap_probability_hom_analytical(lai, vza_euro)
                     fvc_iodc = 1.0 - gap_probability_hom_analytical(lai, vza_iodc)
-
 
                     isfirst = False
                 else:
@@ -381,7 +396,7 @@ for kyear in range(2017, 2018):
                 os.makedirs(outdir)
 
             # --- 3. 逐小时处理 ---
-            for khour in range(12, 13):
+            for khour in range(9, 17, 1):
                 for kmin in range(0, 1):
                     file_id = "%04d%02d%02d%02d00" % (kyear, kmonth, kday, khour)
                     date_str = "%04d%02d%02d" % (kyear, kmonth, kday)
@@ -391,175 +406,162 @@ for kyear in range(2017, 2018):
                     if not (os.path.exists(infile_e) and os.path.exists(infile_i)):
                         continue
 
-                    print(f"正在处理: {file_id}")
-                    lst_e, _, _, _, _, _ = read_image_gdal(infile_e)
-                    lst_i, _, _, _, _, _ = read_image_gdal(infile_i)
+                    try:
+                        print(f"正在处理: {file_id}")
 
-                    time_val = pd.to_datetime(f"{date_str} {khour:02d}:{kmin:02d}:00").tz_localize('UTC')
-                    site_temp = Location(latt.flatten(), lonn.flatten(), 'Etc/GMT', altitude, 'None')
-                    nloc = len(latt.flatten())
-                    solpos_temp = pvlib.solarposition.get_solarposition(np.repeat(time_val, nloc), site_temp.latitude,
-                                                                        site_temp.longitude, site_temp.altitude,
-                                                                        method='nrel_numpy')
-                    sza_temp = solpos_temp['zenith'].to_numpy().reshape(latt.shape).astype(np.float32)
-                    saa_temp = solpos_temp['azimuth'].to_numpy().reshape(latt.shape).astype(np.float32)
-                    sza = resize_data(sza_temp, nll, nss)
-                    saa = resize_data(saa_temp, nll, nss)
+                        outfile_h5 = os.path.join(outdir, f"MSG_LSCT_{file_id}.h5")
+                        if os.path.exists(outfile_h5):
+                            continue
 
-                    vsa_euro = np.abs(saa - vaa_euro)
-                    vsa_iodc = np.abs(saa - vaa_iodc)
-                    vsa_euro[vsa_euro > 180] = 360 - vsa_euro[vsa_euro > 180]
-                    vsa_iodc[vsa_iodc > 180] = 360 - vsa_iodc[vsa_iodc > 180]
+                        print(f"正在处理: {file_id}")
+                        lst_e, _, _, _, _, _ = read_image_gdal(infile_e)
+                        lst_i, _, _, _, _, _ = read_image_gdal(infile_i)
 
-                    b1 = gap_probability_hom_analytical(lai, vza_euro)
-                    w1,b1 = hotspot_layer(lai, 0.1, vza_euro, sza, vsa_euro)
-                    b2 = gap_probability_hom_analytical(lai, vza_iodc)
-                    w2,b2 = hotspot_layer(lai, 0.1, vza_iodc, sza, vsa_iodc)
+                        time_val = pd.to_datetime(f"{date_str} {khour:02d}:{kmin:02d}:00").tz_localize('UTC')
+                        site_temp = Location(lat.flatten(), lon.flatten(), 'Etc/GMT', altitude, 'None')
+                        nloc = len(lat.flatten())
+                        solpos_temp = pvlib.solarposition.get_solarposition(np.repeat(time_val, nloc), site_temp.latitude,
+                                                                            site_temp.longitude, site_temp.altitude,
+                                                                            method='nrel_numpy')
+                        sza_temp = solpos_temp['zenith'].to_numpy().reshape(lat.shape).astype(np.float32)
+                        saa_temp = solpos_temp['azimuth'].to_numpy().reshape(lat.shape).astype(np.float32)
+                        sza = resize_data(sza_temp, nll, nss)
+                        saa = resize_data(saa_temp, nll, nss)
 
-                    w = np.zeros([nll, nss, 6])
-                    w[:, :, 0] = emis_s * (w1)  # Soil Euro
-                    w[:, :, 1] = emis_s * (b1 - w1)  # Veg Euro
-                    w[:, :, 2] = emis_v * (1-b1)  # Soil IODC
-                    w[:, :, 3] = emis_s * (w2)  # Veg IODC
-                    w[:, :, 4] = emis_s * (b2 - w2)  # Veg IODC
-                    w[:, :, 5] = emis_v * (1-b2)  # Veg IODC
+                        vsa_euro = np.abs(saa - vaa_euro)
+                        vsa_iodc = np.abs(saa - vaa_iodc)
+                        vsa_euro[vsa_euro > 180] = 360 - vsa_euro[vsa_euro > 180]
+                        vsa_iodc[vsa_iodc > 180] = 360 - vsa_iodc[vsa_iodc > 180]
 
-                    # 数据清洗：处理无效值 (0, NaN, 水体类型等)
-                    # 修正屏蔽逻辑：这里建议根据各产品自身的 fillvalue 处理
-                    bad_mask = (lst_e <= 0) | (lst_i <= 0) | np.isnan(lst_e) | np.isnan(lst_i) | (land_type == 0) | (
-                            land_type > 17)
+                        b1 = gap_probability_hom_analytical(lai, vza_euro)
+                        w1,b1 = hotspot_layer(lai, 0.1, vza_euro, sza, vsa_euro)
+                        b2 = gap_probability_hom_analytical(lai, vza_iodc)
+                        w2,b2 = hotspot_layer(lai, 0.1, vza_iodc, sza, vsa_iodc)
 
-                    lst_e = lst_e / 100.0 + 273.15
-                    lst_i = lst_i / 100.0 + 273.15
-                    lst_e[bad_mask] = np.nan
-                    lst_i[bad_mask] = np.nan
-                    # 计算总辐射
-                    rad_e = planck(10.5, lst_e) * (w[:, :, 0] + w[:, :, 1] + w[:, :, 2])
-                    rad_i = planck(10.5, lst_i) * (w[:, :, 3] + w[:, :, 4] + w[:, :, 5])
+                        w = np.zeros([nll, nss, 6])
+                        w[:, :, 0] = emis_s * (w1)  # Soil Euro
+                        w[:, :, 1] = emis_s * (b1 - w1)  # Veg Euro
+                        w[:, :, 2] = emis_v * (1-b1)  # Soil IODC
+                        w[:, :, 3] = emis_s * (w2)  # Veg IODC
+                        w[:, :, 4] = emis_s * (b2 - w2)  # Veg IODC
+                        w[:, :, 5] = emis_v * (1-b2)  # Veg IODC
 
-                    # ---------------------------------------------------------
-                    # 步骤 A: 第一阶段求解 - [光照土壤] vs [阴影土壤 + 植被]
-                    # ---------------------------------------------------------
-                    # 合并土壤权重: W_soil = W_sunlit + W_shaded
-                    w_soil_e = w[:, :, 0] + w[:, :, 1]
-                    w_veg_e = w[:, :, 2]
-                    w_soil_i = w[:, :, 3] + w[:, :, 4]
-                    w_veg_i = w[:, :, 5]
+                        # 数据清洗：处理无效值 (0, NaN, 水体类型等)
+                        # 修正屏蔽逻辑：这里建议根据各产品自身的 fillvalue 处理
+                        bad_mask = (lst_e <= 0) | (lst_i <= 0) | np.isnan(lst_e) | np.isnan(lst_i) | (land_type == 0) | (
+                                land_type > 17)
 
-                    # 求解整体土壤辐射 (bs_total_rad) 和 植被辐射 (bv_rad)
-                    bs_total_rad, bv_rad = solve_2x2_system_5x5(rad_e, rad_i,
-                                                            w_soil_e, w_veg_e,
-                                                            w_soil_i, w_veg_i, size=5)
+                        lst_e = lst_e / 100.0 + 273.15
+                        lst_i = lst_i / 100.0 + 273.15
+                        lst_e[bad_mask] = np.nan
+                        lst_i[bad_mask] = np.nan
+                        # 计算总辐射
+                        rad_e = planck(10.5, lst_e) * (w[:, :, 0] + w[:, :, 1] + w[:, :, 2])
+                        rad_i = planck(10.5, lst_i) * (w[:, :, 3] + w[:, :, 4] + w[:, :, 5])
 
-                    # ---------------------------------------------------------
-                    # 步骤 B: 第二阶段求解 - 拆分土壤组分 (光照土壤 vs 阴影土壤)
-                    # ---------------------------------------------------------
-                    # 在已知 bv_rad 的情况下，减去植被贡献，得到纯土壤的残差辐射响应
-                    with np.errstate(invalid='ignore'):
-                        rad_soil_only_e = rad_e - w_veg_e * bv_rad
-                        rad_soil_only_i = rad_i - w_veg_i * bv_rad
+                        # ---------------------------------------------------------
+                        # 步骤 A: 第一阶段求解 - [光照土壤] vs [阴影土壤 + 植被]
+                        # ---------------------------------------------------------
+                        # 合并土壤权重: W_soil = W_sunlit + W_shaded
+                        w_soil_e = w[:, :, 0] + w[:, :, 1]
+                        w_veg_e = w[:, :, 2]
+                        w_soil_i = w[:, :, 3] + w[:, :, 4]
+                        w_veg_i = w[:, :, 5]
 
-                    # 利用光照土壤(w1, w4)和阴影土壤(w2, w5)的权重关系求解 bs1 和 bs2
-                    # 方程: w1*bs1 + w2*bs2 = rad_soil_only_e
-                    #      w4*bs1 + w5*bs2 = rad_soil_only_i
-                    bs1_rad, bs2_rad = solve_2x2_system_5x5(rad_soil_only_e, rad_soil_only_i,
-                                                        w[:, :, 0], w[:, :, 1],
-                                                        w[:, :, 3], w[:, :, 4], size=5)
+                        # 求解整体土壤辐射 (bs_total_rad) 和 植被辐射 (bv_rad)
+                        bs_total_rad, bv_rad = solve_2x2_system_5x5(rad_e, rad_i,
+                                                                w_soil_e, w_veg_e,
+                                                                w_soil_i, w_veg_i, size=5)
 
-                    # ---------------------------------------------------------
-                    # 步骤 B: 第三阶段求解 - 在残差中分离 [阴影土壤] 和 [植被]
-                    # ---------------------------------------------------------
-                    # 构造先验矩阵堆栈
-                    # --- 阶段 B: 物理边界快速修正 (Vectorized) ---
-                    # 强制执行 bs2 < bs1 以及异常值压制
-                    # bs2_rad = np.where(bs2_rad > bs1_rad, bs1_rad, bs2_rad)
-                    # bv_rad = np.where(bv_rad > planck(10.5, 350), bs2_rad, bv_rad)  # 植被不过热
+                        # ---------------------------------------------------------
+                        # 步骤 B: 第二阶段求解 - 拆分土壤组分 (光照土壤 vs 阴影土壤)
+                        # ---------------------------------------------------------
+                        # 在已知 bv_rad 的情况下，减去植被贡献，得到纯土壤的残差辐射响应
+                        with np.errstate(invalid='ignore'):
+                            rad_soil_only_e = rad_e - w_veg_e * bv_rad
+                            rad_soil_only_i = rad_i - w_veg_i * bv_rad
 
-                    x_prior = np.stack([bs1_rad, bs2_rad, bv_rad], axis=-1)
-                    print(f"正在进行联合平差修正...")
-                    bs1_final, bs2_final, bv_final = solve_joint_vectorized_with_prior(
-                        rad_e, rad_i, w, x_prior, lmbda=0.1
-                    )
-                    # ---------------------------------------------------------
-                    # 步骤 C: 反演温度
-                    # ---------------------------------------------------------
-                    with np.errstate(invalid='ignore'):
-                        ts1 = inv_planck(10.5, bs1_final)
-                        ts2 = inv_planck(10.5, bs2_final)
-                        tv = inv_planck(10.5, bv_final)
-                    # with np.errstate(invalid='ignore'):
-                    #     ts1 = inv_planck(10.5, bs1_rad)
-                    #     ts2 = inv_planck(10.5, bs2_rad)
-                    #     tv = inv_planck(10.5, bv_rad)
-                    # --- 6. 保存结果及绘图 ---
-                    # 绘图逻辑 (注意修正 vmin/vmax)
-                    fig, axs = plt.subplots(2, 2, figsize=(7, 7))
+                        # 利用光照土壤(w1, w4)和阴影土壤(w2, w5)的权重关系求解 bs1 和 bs2
+                        # 方程: w1*bs1 + w2*bs2 = rad_soil_only_e
+                        #      w4*bs1 + w5*bs2 = rad_soil_only_i
+                        bs1_rad, bs2_rad = solve_2x2_system_5x5(rad_soil_only_e, rad_soil_only_i,
+                                                            w[:, :, 0], w[:, :, 1],
+                                                            w[:, :, 3], w[:, :, 4], size=5)
 
-                    im0 = axs[0, 0].imshow(ts1 - ts2, vmin=-25, vmax=25, cmap='RdBu_r')
-                    axs[0, 0].set_title("T_sunlit - T_shaded")
-                    plt.colorbar(im0, ax=axs[0, 0])
+                        # ---------------------------------------------------------
+                        # 步骤 B: 第三阶段求解 - 在残差中分离 [阴影土壤] 和 [植被]
+                        # ---------------------------------------------------------
+                        # 构造先验矩阵堆栈
+                        # --- 阶段 B: 物理边界快速修正 (Vectorized) ---
+                        # 强制执行 bs2 < bs1 以及异常值压制
+                        # bs2_rad = np.where(bs2_rad > bs1_rad, bs1_rad, bs2_rad)
+                        # bv_rad = np.where(bv_rad > planck(10.5, 350), bs2_rad, bv_rad)  # 植被不过热
 
-                    im1 = axs[0, 1].imshow(tv, vmin=275, vmax=320, cmap='jet')
-                    axs[0, 1].set_title("T_vegetation")
-                    plt.colorbar(im1, ax=axs[0, 1])
+                        x_prior = np.stack([bs1_rad, bs2_rad, bv_rad], axis=-1)
+                        print(f"正在进行联合平差修正...")
+                        bs1_final, bs2_final, bv_final = solve_joint_vectorized_with_prior(
+                            rad_e, rad_i, w, x_prior, lmbda=0.1
+                        )
+                        # ---------------------------------------------------------
+                        # 步骤 C: 反演温度
+                        # ---------------------------------------------------------
+                        with np.errstate(invalid='ignore'):
+                            ts1 = inv_planck(10.5, bs1_final)
+                            ts2 = inv_planck(10.5, bs2_final)
+                            tv = inv_planck(10.5, bv_final)
+                            ts = inv_planck(10.5,bs_total_rad)
+                        # with np.errstate(invalid='ignore'):
+                        #     ts1 = inv_planck(10.5, bs1_rad)
+                        #     ts2 = inv_planck(10.5, bs2_rad)
+                        #     tv = inv_planck(10.5, bv_rad)
+                        # --- 6. 保存结果及绘图 ---
+                        # 绘图逻辑 (注意修正 vmin/vmax)
 
-                    im2 = axs[1, 0].imshow(ts1, vmin=275, vmax=320, cmap='jet')
-                    axs[1, 0].set_title("T_sunlit_soil")
-                    plt.colorbar(im2, ax=axs[1, 0])
+                        trans = dataset_ref.GetGeoTransform()
+                        proj = dataset_ref.GetProjection()
 
-                    im3 = axs[1, 1].imshow(ts2, vmin=275, vmax=320, cmap='jet')
-                    axs[1, 1].set_title("T_shaded_soil")
-                    plt.colorbar(im3, ax=axs[1, 1])
+                        # 统一构建掩码 (包含 NaN 和 范围外的值)
+                        # 注意：np.isnan 是为了防止之前的计算步骤中已经产生了 NaN
+                        invalid_mask = (np.isnan(ts)) | (ts < 250) | (ts > 350) | \
+                                       (np.isnan(tv)) | (tv < 250) | (tv > 350) | \
+                                       (np.isnan(ts1)) | (ts1 < 250) | (ts1 > 350) | \
+                                       (np.isnan(ts2)) | (ts2 < 250) | (ts2 > 350) | (lai < 0.05)
 
-                    plt.tight_layout()
-                    plt.show()
+                        # 堆叠数据 [4, H, W]
+                        stack = np.stack([ts, tv, ts1, ts2], axis=0)
 
-                    # pss = w[:, :, 0] / (w[:, :, 0] + w[:, :, 1])
-                    # plt.imshow(pss,vmin=0,vmax=1)
-                    # plt.colorbar()
-                    # plt.show()
-                    # pss = w[:, :, 3] / (w[:, :, 3] + w[:, :, 4])
-                    # plt.imshow(pss,vmin=0,vmax=1)
-                    # plt.colorbar()
-                    # plt.show()
-                    #
-                    # plt.imshow(w[:, :, 0],vmin=0,vmax=0.5)
-                    # plt.colorbar()
-                    # plt.show()
-                    #
-                    # plt.imshow(vsa_euro)
-                    # plt.colorbar()
-                    # plt.show()
-                    #
-                    # CSCA_euro = calculate_scattering_angle(sza,saa,vza_euro,vaa_euro)
-                    # plt.imshow(CSCA_euro,vmin=0,vmax=50)
-                    # plt.colorbar()
-                    # plt.show()
-                    #
-                    #
-                    # plt.imshow(vsa_iodc)
-                    # plt.colorbar()
-                    # plt.show()
-                    #
-                    # CSCA_iodc = calculate_scattering_angle(sza,saa,vza_iodc,vaa_iodc)
-                    # plt.imshow(CSCA_iodc,vmin=0,vmax=50)
-                    # plt.colorbar()
-                    # plt.show()
+                        # --- 关键转换步骤 ---
+                        # 1. 扩大 100 倍
+                        stack_scaled = stack * 100.0
 
-                    # --- 6. 保存结果 ---
-                    # out_file_v = os.path.join(outdir, f"TV_{file_id}.tif")
-                    # out_file_s1 = os.path.join(outdir, f"TSS_{file_id}.tif")
-                    # out_file_s2 = os.path.join(outdir, f"TSH_{file_id}.tif")
-                    #
-                    # trans = dataset_ref.GetGeoTransform()
-                    # proj = dataset_ref.GetProjection()
-                    # # 将结果限制在合理范围并处理异常
-                    # tv[(tv < 200) | (tv > 350)] = np.nan
-                    # ts1[(ts1 < 200) | (ts1 > 380)] = np.nan
-                    # ts2[(ts2 < 200) | (ts2 > 380)] = np.nan
-                    #
-                    # write_image_gdal(tv.astype(np.float32), nss, nll, 1, trans, proj, out_file_v)
-                    # write_image_gdal(ts1.astype(np.float32), nss, nll, 1, trans, proj, out_file_s1)
-                    # write_image_gdal(ts2.astype(np.float32), nss, nll, 1, trans, proj, out_file_s2)
+                        # 2. 将无效区域设为 0 (uint16 的填充值)
+                        stack_scaled[np.broadcast_to(invalid_mask, stack_scaled.shape)] = 0
 
-print("批量处理任务全部完成。")
+                        # 3. 转换为 uint16 (会强制截断小数位，相当于 np.floor)
+                        result_u16 = stack_scaled.astype(np.uint16)
+
+                        # --- 保存为 H5 ---
+                        try:
+                            with h5py.File(outfile_h5, 'w') as h5f:
+                                # 创建压缩数据集 (chunks=True 对后续局部读取很有帮助)
+                                dset = h5f.create_dataset(
+                                    'data',
+                                    data=result_u16,
+                                    compression="gzip",
+                                    compression_opts=4,
+                                    chunks=True
+                                )
+
+                                # 保存地理参考信息（关键：将 trans 和 proj 存入属性）
+                                dset.attrs['GeoTransform'] = trans
+                                dset.attrs['Projection'] = proj
+                                dset.attrs['Description'] = "Bands: ts, tv, tss, tsh"
+                                dset.attrs['Scale_Factor'] = 100
+                                dset.attrs['NoData_Value'] = 0
+                        except Exception as e:
+                            print(f"H5 save failed: {e}")
+
+                    except Exception as e:
+                        print(f"H5 save failed: {e}")
+
+                print("批量处理任务全部完成。")
