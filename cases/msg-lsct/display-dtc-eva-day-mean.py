@@ -20,10 +20,11 @@ mpl.rcParams['axes.linewidth'] = 1.2
 mpl.rcParams['lines.linewidth'] = 1.5
 
 # ================= 配置参数 =================
-file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
-file_measured = "/Users/bianzj/Downloads/data/msg/field/Evo-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
-output_fig = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Diurnal_Validation_Evora.png"
+indir = "/media/hero/MSG/"
+file_inferred = indir + "/PRODUCTS/LSCT_Site_Results.csv"
+file_measured = indir + "/field/Evo-2017.csv"
+output_stats = indir + "/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
+output_fig =  indir + "/PRODUCTS/LSCT_Diurnal_Validation_Evora.png"
 
 # --- 时间选择设定 ---
 START_DATE = '2017-08-16'
@@ -45,7 +46,8 @@ emis_s = 0.975
 
 # 修改Title名称以适应学术风格
 tasks = [
-    ('LST_Euro', 'LST_IODC', '(a) Sunlit Soil Temperature')
+    ('T_Sunlit_Soil', 'Ts', '(a) Sunlit Soil Temperature'),
+    ('T_Vegetation', 'Tcrown', '(b) Vegetation Canopy Temperature')
 ]
 
 # ================= 1. 处理反演数据 (Inferred) =================
@@ -90,6 +92,9 @@ bv = planck(10.5, df_merge['Tcrown'])
 bsky = planck(10.5, 250)
 df_merge['Ts'] = inv_planck(10.5, (bg - (1 - emis_s) * bsky) / emis_s)
 df_merge['Tcrown'] = inv_planck(10.5, (bv - (1 - emis_v) * bsky) / emis_v)
+
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)-273.15
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)-273.15
 
 # ================= 5. 计算变化（按小时平均） =================
 df_merge['Hour'] = df_merge['DateTime'].dt.hour
@@ -191,7 +196,7 @@ for idx, (inf_col, mea_col, title_name) in enumerate(tasks):
         ax.set_xlim(-1, 24)
 
     # 固定Y轴范围
-    ax.set_ylim(290, 340)
+    ax.set_ylim(20, 60)
 
     # 刻度线朝内
     ax.tick_params(axis='both', direction='in', length=5, width=1.2, top=False, right=False)

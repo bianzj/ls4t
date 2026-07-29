@@ -214,9 +214,15 @@ def solve_joint_vectorized_with_prior(rad_e, rad_i, w, x_prior, lmbda=0.5):
 
 
 # ================= 配置路径 =================
-indir_root = "/Users/bianzj/Downloads/data/PRODUCTS/SITE/"  # 你之前提取出的站点数据根目录
-infile_sites = "/Users/bianzj/Downloads/data/msg/sites.txt"
-outfile_csv = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Site_Results.csv"
+indir = "/media/hero/MSG/"
+indir0_euro = indir + '/PRODUCTS/MSG/MLST/GEOTIFF'
+indir0_euro_lai = indir + '/PRODUCTS/MSG/MDLAI/GEOTIFF'
+indir0_iodc = indir + '/PRODUCTS/MSG-IODC/MLST/GEOTIFF'
+indir0_lai = indir + '/lai/'
+infile_sites = indir + "/field/sites.txt"
+outdir_root = indir + '/PRODUCTS/LSCT/MLST_COMPONENT/'
+indir_root = indir + "/PRODUCTS/SITE/"
+outfile_csv = indir + "/PRODUCTS/LSCT_Site_Results.csv"
 
 # ================= 核心反演参数 =================
 wavelength = 10.5

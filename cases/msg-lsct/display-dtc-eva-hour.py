@@ -20,19 +20,22 @@ mpl.rcParams['axes.linewidth'] = 1.2
 mpl.rcParams['lines.linewidth'] = 1.5
 
 # ================= 配置参数 =================
-file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
-file_measured = "/Users/bianzj/Downloads/data/msg/field/Evo-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
-output_fig = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Diurnal_Validation_Evora.png"
-output_rmse_fig = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_RMSE_Bar_Evora.png"  # 新增RMSE柱状图输出路径
-
+indir = "/media/hero/MSG/"
+file_inferred = indir + "/PRODUCTS/LSCT_Site_Results.csv"
+file_measured = indir + "/field/Evo-2017.csv"
+output_stats = indir + "/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
+output_rmse_fig =  indir + "/PRODUCTS/LSCT_Diurnal_Validation_Evora.png"
+output_fig = output_rmse_fig
 # --- 时间选择设定 ---
-START_DATE = '2017-07-01'
+START_DATE = '2017-12-01'
 END_DATE = '2017-12-30'
+
+# START_DATE = '2017-8-01'
+# END_DATE = '2017-8-30'
 
 # 【新增】：设定只提取特定的小时 (如 11点 到 15点)
 # 如果想看全天，可以写成 np.arange(0, 24).tolist()
-SELECT_HOURS = [11, 12, 13, 14, 15]
+SELECT_HOURS = [10,11, 12, 13, 14, 15,16]
 
 # 设定残差阈值（单位：K）
 DIFF_THRESHOLD = 10.0
@@ -43,8 +46,8 @@ emis_s = 0.975
 
 # 修改Title名称以适应学术风格
 tasks = [
-    ('T_Sunlit_Soil', 'Ts', '(a) Sunlit Soil Temperature'),
-    ('T_Vegetation', 'Tcrown', '(b) Vegetation Canopy Temperature')
+    ('T_Sunlit_Soil', 'Ts', '(a) Soil Temperature'),
+    ('T_Vegetation', 'Tcrown', '(b) Vegetation Temperature')
 ]
 
 # ================= 1. 处理反演数据 (Inferred) =================
@@ -89,6 +92,10 @@ bv = planck(10.5, df_merge['Tcrown'])
 bsky = planck(10.5, 250)
 df_merge['Ts'] = inv_planck(10.5, (bg - (1 - emis_s) * bsky) / emis_s)
 df_merge['Tcrown'] = inv_planck(10.5, (bv - (1 - emis_v) * bsky) / emis_v)
+
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)-273.15
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)-273.15
+
 
 # ================= 5. 计算RMSE和变化（按小时平均） =================
 df_merge['Hour'] = df_merge['DateTime'].dt.hour
@@ -188,84 +195,6 @@ for inf_col, mea_col, title_name in tasks:
         print(f"  Bias = {bias:.3f} K")
         print(f"  样本数 = {len(df_valid)}")
 
-# ================= 7. 绘制RMSE柱状图 =================
-fig, ax = plt.subplots(figsize=(10, 6))
-
-# 定义颜色方案
-colors = ['#d62728', '#1f77b4']  # 红色：Sunlit Soil，蓝色：Vegetation
-hatches = ['/', '\\']  # 不同的填充纹理
-
-# 设置柱状图参数
-bar_width = 0.35
-x_positions = np.arange(len(SELECT_HOURS))
-
-for idx, (inf_col, mea_col, title_name) in enumerate(tasks):
-    if title_name in hourly_rmse:
-        rmse_values = [hourly_rmse[title_name].get(hour, np.nan) for hour in SELECT_HOURS]
-
-        # 绘制柱状图
-        bars = ax.bar(x_positions + idx * bar_width,
-                      rmse_values,
-                      bar_width,
-                      label=title_name,
-                      color=colors[idx],
-                      alpha=0.8,
-                      edgecolor='black',
-                      linewidth=1.2,
-                      hatch=hatches[idx])
-
-        # 在柱状图上添加数值标签
-        for i, (bar, value) in enumerate(zip(bars, rmse_values)):
-            if not np.isnan(value):
-                ax.text(bar.get_x() + bar.get_width() / 2,
-                        bar.get_height() + 0.1,
-                        f'{value:.2f}',
-                        ha='center',
-                        va='bottom',
-                        fontsize=10,
-                        fontweight='bold')
-
-# 设置x轴标签
-ax.set_xticks(x_positions + bar_width / 2)
-ax.set_xticklabels([f'{h}:00' for h in SELECT_HOURS], fontsize=12)
-
-# 设置y轴标签和标题
-ax.set_ylabel('RMSE (K)', fontsize=14, fontweight='bold')
-ax.set_xlabel('Local Time (Hour)', fontsize=14, fontweight='bold')
-
-# 添加标题
-hours_str = f"{min(SELECT_HOURS)}:00-{max(SELECT_HOURS)}:00" if SELECT_HOURS else "Full Day"
-ax.set_title(f'RMSE at Different Hours - {target_site}\n({START_DATE} to {END_DATE} | {hours_str})',
-             fontsize=16, fontweight='bold', pad=20)
-
-# 设置y轴范围，留出标签空间
-y_max = 0
-for title_name in hourly_rmse.keys():
-    rmse_vals = [v for v in hourly_rmse[title_name].values() if not np.isnan(v)]
-    if rmse_vals:
-        y_max = max(y_max, max(rmse_vals))
-ax.set_ylim(0, y_max * 1.2)  # 留出20%空间显示数值标签
-
-# 网格和样式设置
-ax.grid(True, axis='y', linestyle='--', alpha=0.3, zorder=0)
-ax.set_axisbelow(True)  # 网格线在柱子下方
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.tick_params(axis='both', direction='in', length=5, width=1.2)
-
-# 添加图例
-legend = ax.legend(loc='upper right',
-                   frameon=True,
-                   fancybox=True,
-                   shadow=True,
-                   fontsize=11)
-legend.get_frame().set_alpha(0.9)
-
-plt.tight_layout()
-plt.savefig(output_rmse_fig, dpi=400, bbox_inches='tight', transparent=False)
-plt.show()
-
-print(f"\nRMSE柱状图已保存至: {output_rmse_fig}")
 
 # ================= 8. 绘制日变化图（原代码保持不变） =================
 cols_plot = 2
@@ -333,7 +262,7 @@ for idx, (inf_col, mea_col, title_name) in enumerate(tasks):
         ax.set_xlim(-1, 24)
 
     # 固定Y轴范围
-    ax.set_ylim(290, 340)
+    ax.set_ylim(0, 65)
 
     # 刻度线朝内
     ax.tick_params(axis='both', direction='in', length=5, width=1.2, top=False, right=False)

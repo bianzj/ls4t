@@ -7,14 +7,15 @@ import math
 from base.util_phys import *
 
 # ================= 配置参数 =================
-file_inferred = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Site_Results.csv"
-file_measured = "/Users/bianzj/Downloads/data/msg/field/Evo-2017.csv"
-output_stats = "/Users/bianzj/Downloads/data/msg/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
+indir = "/media/hero/MSG/"
+file_inferred = indir + "/PRODUCTS/LSCT_Site_Results.csv"
+file_measured = indir + "/field/Evo-2017.csv"
+output_stats = indir + "/PRODUCTS/LSCT_Validation_Stats_Evora.csv"
 
 # --- 新增：时间选择设定 ---
 START_DATE = '2017-08-01'  # 开始日期 (包含)
 END_DATE   = '2017-12-31'  # 结束日期 (包含)
-SELECT_HOURS = [9, 10, 11, 12, 13, 14, 15] # 只选 10:00 到 16:00 的数据
+SELECT_HOURS = [10, 11, 12, 13, 14, 15,16] # 只选 10:00 到 16:00 的数据
 
 # 设定残差阈值（单位：K）
 DIFF_THRESHOLD = 12.0
@@ -70,8 +71,8 @@ print(f"过滤后剩余有效样本数: {len(df_merge)}")
 bg = planck(10.5,df_merge['Ts'])
 bv = planck(10.5,df_merge['Tcrown'])
 bsky = planck(10.5,250)
-df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)
-df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)-273.15
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)-273.15
 
 
 # ================= 4. 统计与绘图 =================

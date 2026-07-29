@@ -418,27 +418,40 @@ def solve_joint_vectorized_with_prior(rad_e, rad_i, w, x_prior, lmbda=0.5):
 
 
 # ================= 配置路径 =================
-indir_root = "/Users/bianzj/Downloads/data/PRODUCTS/SITE/"  # 你之前提取出的站点数据根目录
-infile_sites = "/Users/bianzj/Downloads/data/msg/sites.txt"
-outfile_csv = "/Users/bianzj/Downloads/data/PRODUCTS/LSCT_Site_Results.csv"
+indir = "/media/hero/MSG/"
+indir_root = indir + "/PRODUCTS/SITE/"  # 你之前提取出的站点数据根目录
+infile_sites = indir+"/field/sites-2025.csv"
+outfile_csv = indir + "/PRODUCTS/LSCT_Site_Results_2025.csv"
+
+
+# indir = "/media/hero/MSG/"
+# indir_root = indir + "/PRODUCTS/SITE/"
+# infile_sites = indir + "/field/sites.txt"
+# outfile_csv = indir + "/PRODUCTS/LSCT_Site_Results.csv"
 
 # ================= 核心反演参数 =================
 wavelength = 10.5
-hspot_val = 0.1
+hspot_val = 0.2
 lmbda_val = 1000  # 联合平差的先验权重
-dif = 10
+dif = 3
 
 # 读取站点列表
 site_info = read_txt_str(infile_sites, r",")
-site_names = [_[0] for _ in site_info]
-
+site_names = [row[0] for row in site_info]
+n_site = len(site_names)
 results_list = []
 
 print(f"开始处理站点反演，共 {len(site_names)} 个站点...")
 
-for site in site_names:
+
+for ksite in range(n_site):
+    if ksite != 53:continue
+
+    site = site_names[ksite]
     site_path = os.path.join(indir_root, site)
     static_path = os.path.join(site_path, "static")
+    print(ksite)
+    print(site_path)
 
     if not os.path.exists(static_path):
         continue
@@ -454,7 +467,7 @@ for site in site_names:
 
     # --- 2. 遍历时间 (年/月/日) ---
     # 搜索该站点下所有的日期文件夹
-    date_folders = glob.glob(os.path.join(site_path, "2017/*/*"))
+    date_folders = glob.glob(os.path.join(site_path, "2024/*/*"))
 
     for date_dir in sorted(date_folders):
         # 提取日期信息
@@ -484,8 +497,20 @@ for site in site_names:
             lst_i, _, _, _, _, _ = read_image_gdal(f_i)
             sza, _, _, _, _, _ = read_image_gdal(f_sza)
             saa, _, _, _, _, _ = read_image_gdal(f_saa)
+
+            # if np.nanmean(lst_e) < 150: lst_e =  np.nan # 自动纠正
+            # if np.nanmean(lst_i) < 150: lst_i =  np.nan
+
+            lst_e = lst_e*1.0
+            lst_i = lst_i *1.0
+            lst_e[lst_e==0] = np.nan
+            lst_i[lst_i==0] = np.nan
             lst_e = lst_e/100.0+273.15
             lst_i = lst_i/100.0+273.15
+
+            # 辐射计算 (假设存储的是摄氏度或开尔文，统一转为开尔文)
+            # if np.nanmean(lst_e) < 150: lst_e =  np.nan # 自动纠正
+            # if np.nanmean(lst_i) < 150: lst_i =  np.nan
 
             # --- 4. 准备反演权重 ---
             vsa_e = np.abs(saa - vaa_e)
@@ -505,9 +530,10 @@ for site in site_names:
             w_mat[:, :, 4] = emis_s * (b2 - w2)  # Shaded Soil IODC
             w_mat[:, :, 5] = emis_v * (1.0 - b2)  # Veg IODC
 
-            # 辐射计算 (假设存储的是摄氏度或开尔文，统一转为开尔文)
-            if np.nanmean(lst_e) < 150: lst_e += 273.15  # 自动纠正
-            if np.nanmean(lst_i) < 150: lst_i += 273.15
+
+
+
+
 
             rad_e = planck(wavelength, lst_e) * (w_mat[:, :, 0] + w_mat[:, :, 1] + w_mat[:, :, 2])
             rad_i = planck(wavelength, lst_i) * (w_mat[:, :, 3] + w_mat[:, :, 4] + w_mat[:, :, 5])
@@ -532,10 +558,14 @@ for site in site_names:
 
             # 物理边界初步修正
             bs2_s2 = np.where(bs2_s2 > bs1_s1, bs1_s1, bs2_s2)
+            bv_s2 = np.where(bv_s2 > planck(wl8_g, 350), bs2_s2, bv_s2)
 
             # 阶段 2: 联合平差 (Joint Inversion)
             x_prior = np.stack([bs1_s1, bs2_s2, bv_s2], axis=-1)
             bs1_f, bs2_f, bv_f = solve_joint_vectorized_with_prior(rad_e, rad_i, w_mat, x_prior, lmbda=lmbda_val)
+
+            bs = gap_probability_hom_analytical(lai, sza)
+            bs_f = bs1_f * bs + bs2_f * (1 - bs)
 
             # --- 6. 提取结果 ---
             # 提取 5x5 窗口的中心像素 (索引 2,2)
@@ -543,9 +573,12 @@ for site in site_names:
                 ts1_pix = inv_planck(wavelength, bs1_f[2, 2])
                 ts2_pix = inv_planck(wavelength, bs2_f[2, 2])
                 tv_pix = inv_planck(wavelength, bv_f[2, 2])
+                ts_pix = inv_planck(wavelength, bs_f[2, 2])
                 lst_e_pix = lst_e[2, 2]
                 lst_i_pix = lst_i[2, 2]
                 sza_pix = sza[2, 2]
+
+
 
             # 保存记录
             results_list.append({
@@ -557,8 +590,12 @@ for site in site_names:
                 'T_Sunlit_Soil': np.round(ts1_pix, 2),
                 'T_Shaded_Soil': np.round(ts2_pix, 2),
                 'T_Vegetation': np.round(tv_pix, 2),
+                'T_Soil': np.round(ts_pix, 2),
                 'LAI': np.round(lai[2, 2], 3)
             })
+
+            if np.isnan(tv_pix)==0:
+                a = 10
 
 # --- 7. 输出到 CSV ---
 df = pd.DataFrame(results_list)

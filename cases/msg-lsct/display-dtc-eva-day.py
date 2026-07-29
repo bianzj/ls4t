@@ -92,6 +92,10 @@ bsky = planck(10.5, 250)
 df_merge['Ts'] = inv_planck(10.5, (bg - (1 - emis_s) * bsky) / emis_s)
 df_merge['Tcrown'] = inv_planck(10.5, (bv - (1 - emis_v) * bsky) / emis_v)
 
+df_merge['Ts'] = inv_planck(10.5,(bg-(1-emis_s)*bsky)/emis_s)-273.15
+df_merge['Tcrown'] = inv_planck(10.5,(bv-(1-emis_v)*bsky)/emis_v)-273.15
+
+
 # ================= 5. 计算变化（按小时平均） =================
 df_merge['Hour'] = df_merge['DateTime'].dt.hour
 hourly_stats = {}

@@ -13,8 +13,8 @@ from osgeo import gdal
 from osgeo import osr
 import os
 import pyresample as pr
-from satpy import Scene
-import satpy
+# from satpy import Scene
+# import satpy
 
 import numpy as np
 
@@ -330,7 +330,7 @@ def solve_joint_vectorized_with_prior(rad_e, rad_i, w, x_prior, lmbda=0.5):
     return bs1, bs2, bv
 
 # ================= 配置路径 =================
-indir = "/mnt/h/"
+indir = "/media/hero/MSG/"
 indir0_euro = indir + '/PRODUCTS/MSG/MLST/GEOTIFF'
 indir0_euro_lai = indir + '/PRODUCTS/MSG/MDLAI/GEOTIFF'
 indir0_iodc = indir + '/PRODUCTS/MSG-IODC/MLST/GEOTIFF'
@@ -343,10 +343,10 @@ hspot_val = 0.2
 # ================= 读取静态数据 =================
 print("正在读取静态数据及坐标映射...")
 infile_source = indir + "/map/MCD12C1_2011_0.01.tif"
-infile_vza_e = indir + "/msg/static/combined_euro_vza.tif"
-infile_vaa_e = indir + "/msg/static/combined_euro_vaa.tif"
-infile_vza_i = indir + "/msg/static/combined_iodc_vza.tif"
-infile_vaa_i = indir + "/msg/static/combined_iodc_vaa.tif"
+infile_vza_e = indir + "/Static/combined_euro_vza.tif"
+infile_vaa_e = indir + "/Static/combined_euro_vaa.tif"
+infile_vza_i = indir + "/Static/combined_iodc_vza.tif"
+infile_vaa_i = indir + "/Static/combined_iodc_vaa.tif"
 
 # 读取并校正角度
 [vza_euro, nss, nll, nb, _, _, dataset_ref] = read_image_dataset_gdal(infile_vza_e)
@@ -391,8 +391,8 @@ emis_v = emis_v_table[land_type, 0] / 1000.0
 
 # ================= 循环处理 =================
 isfirst = True
-for kyear in range(2025, 2026):
-    for kmonth in range(1, 13):
+for kyear in range(2017, 2018):
+    for kmonth in range(8, 13):
         for kday in range(1, 32):
 
             # --- 1. 处理 LAI 和 权重 w ---
