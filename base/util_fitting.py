@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from base.util_packages import *
-
+from base.util_kernel import *
 '''
 util_fitting
 求解方程函数
@@ -17,7 +17,7 @@ def fitting_unknown_linear_ls(y,A):
     :param x: 自变量
     :return:
     '''
-    coeffs = np.asarray(lstsq(A, y))[0]
+    coeffs = np.asarray(lstsq(A, y)[0])
     return coeffs
 
 def fitting_unknown_nonlinear_fmin(fun,y,A,xn,x0):
@@ -79,16 +79,17 @@ def fitting_unknown_linear_sklearn(y,A,method='ridge'):
     :param method: 方法，推荐ridge，然后是lasso，因为lasso会倾向于拟合0
     :return: 回归系数
     '''
-    alphas = [0.0001,0.001,0.01,0.1,1,10,100]
+    # alphas = [0.0001,0.001,0.01,0.1,1,10,100]
+    alphas = [0.01]
     coeffs = 1.0
     if method=='ridge':
         clf = RidgeCV(alphas=alphas, fit_intercept=False)
         clf.fit(A, y)
         coeffs = clf.coef_
-    elif method =='lasso':
-        lasso = LassoCV(alphas=alphas, fit_intercept=False)
-        lasso.fit(A, y)
-        coeffs = lasso.coef_
+    elif method == 'lasso':
+        clf = Lasso(alpha=0.01, fit_intercept=False)
+        clf.fit(A, y)
+        coeffs = clf.coef_
     elif method =='bayesianridge':
         clf = BayesianRidge(fit_intercept=False)
         clf.fit(A,y)
@@ -143,3 +144,61 @@ def fitting_unknown_nonlinear_min_condition(fun, y, A, xn, x0, bnds, method='Pow
     return res.x
 
 
+def fitting_DTCRL_min(y,t,fhs,fn,x0,method = 'BFGS'):
+    '''
+    非线性反演/回归，基于minimize函数，能给初值，也能给边界条件
+    :param fun: 函数
+    :param y: 因变量
+    :param x: 自变量，是个多列数组
+    :param x0: 初值
+    :param xn: 列数
+    :param bnds: 边界
+    :param method: 方法，默认为powell，还有slsqp，L-BFGS-B，TNC，
+    :return: 回归系数
+    '''
+    res = minimize(cost_DTCRL, x0,
+                   args=(y,t,fhs,fn),
+                   method=method )
+
+    # res = minimize(fun, x0,
+    #                args=(y,t,fhs,fn),
+    #                method=method)
+
+    return res.x
+
+
+
+def fitting_DTCRL(obs,pst,fhs,fn,x0 = np.asarray([6,16,14,6,1,0.5])):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+
+    res = fmin(cost_DTCRL, x0,args=(obs,pst,fhs,fn), disp = 0)
+    return res
+
+
+def fitting_DTC( obs,pst, x0):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+
+    res = fmin(cost_DTC, x0,args=(obs,pst), disp = 0)
+    return res
+
+
+def fitting_DTCLSFRL(obs,pst,kLSF,fhs,fn,x0 = np.asarray([6,16,14,6,0.5,1,0.5])):
+    '''
+    直接进行DTC系数的拟合
+    :param obs:
+    :param pst:
+    :return:
+    '''
+
+    res = fmin(cost_DTCLSFRL, x0,args=(obs,pst,kLSF,fhs,fn), disp = 0)
+    return res

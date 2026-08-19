@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 '''注意：不同时区一定要调day_start_hour\day_end_hour'''
 
 '''
-slstr_data.py
+slstr_data_single.py
 从解压后的原始数据中提取相关信息，并根据type文件进行重投影
 脚本操作包括：
 1. 先提出出来成tif

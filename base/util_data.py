@@ -18,7 +18,7 @@ def resize_data(preArray, nl, ns, method = 'cv2.INTER_NEAREST'):
     '''
     ns = np.int_(ns)
     nl = np.int_(nl)
-    data = cv2.resize(preArray,(ns,nl),interpolation=0)
+    data = cv2.resize(preArray,(ns,nl),interpolation=method)
     return data
 
 def resize_data_ratio(preArray, ratio = 0.5, method = 'cv2.INTER_LINEAR'):
@@ -146,6 +146,8 @@ def imagexy2geo(dataset, row,col):
     py = trans[3] + col * trans[4] + row * trans[5]
     return px, py
 
+
+
 def reproj_image_gdal(dataset_destination, dataset_source):
     '''
     源数据集重投影，提取与目标数据集对应的数据，数据来自源数据，结果的坐标与投影与目标数据一致
@@ -246,8 +248,8 @@ def loc2map(lat, lon, dataset):
     '''
     ns2 = dataset.RasterXSize
     nl2 = dataset.RasterYSize
-    nb2 = dataset.RasterCount
-    data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
+    # nb2 = dataset.RasterCount
+    # data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
     temp21, temp22 = lonlat2geo(dataset, lat, lon)
     imagex, imagey = geo2imagexy(dataset, temp21, temp22)
     # imagex = np.asarray(imagex+0.5, np.int_)
@@ -255,6 +257,8 @@ def loc2map(lat, lon, dataset):
     imagex = np.asarray(imagex, np.int_)
     imagey = np.asarray(imagey, np.int_)
     return imagex,imagey
+
+
 
 def calc_azimuth(lat1, lon1, lat2, lon2):
     '''
@@ -491,5 +495,18 @@ def cal_rmse_r2(data1,data2,tshred=9):
     r2 = coef[1]*coef[1]
     return bias,rmse,r2
 
+<<<<<<< HEAD
 
 
+=======
+def cal_rmse_r2_3sigma(mea,inv):
+    data1,data2 = mea,inv
+    dif = (data2-data1)
+    tshred = 3*1.4826*np.median(np.abs(dif-np.median(dif)))
+    ind = np.abs(dif)<tshred
+    bias = np.average(dif[ind])
+    rmse = np.sqrt(np.average(dif[ind]*dif[ind]))
+    coef = corrcoef(data1[ind],data2[ind])
+    r2 = coef[1]*coef[1]
+    return bias,rmse,r2[0]
+>>>>>>> atsr-lsct
