@@ -1,0 +1,19 @@
+schema_version = 1
+
+[case]
+id = "viirs-unclassified-legacy"
+sensor = "viirs"
+region = "unclassified"
+status = "draft"
+spatial_mode = "study-area-first"
+description = "Legacy VNP/VJ1 extraction, bow-tie repair, projection and split-window LST methods awaiting validation."
+
+[processing]
+directories = ["data", "lst", "auxiliary", "tools"]
+current_entrypoints = ["data/VIIRS_data.py", "lst/VIIRS_lst.py"]
+standard_core = false
+
+[provenance]
+source = "old sensor-processing scripts"
+source_revision = "6a79ff4"
+validation = "not-run"

@@ -42,6 +42,33 @@ spatial_mode = "scene-first"
 path = "slstr/europe_south_africa/scene_first_migrated"
 entrypoints = ["scene_first/slstr_lst.py"]
 
+[[case]]
+id = "modis-unclassified-legacy"
+sensor = "modis"
+region = "unclassified"
+status = "draft"
+spatial_mode = "study-area-first"
+path = "modis/unclassified/legacy_draft"
+entrypoints = ["data/MODIS_data.py", "lst/MODIS_lst.py"]
+
+[[case]]
+id = "viirs-unclassified-legacy"
+sensor = "viirs"
+region = "unclassified"
+status = "draft"
+spatial_mode = "study-area-first"
+path = "viirs/unclassified/legacy_draft"
+entrypoints = ["data/VIIRS_data.py", "lst/VIIRS_lst.py"]
+
+[[case]]
+id = "ahi-unclassified-legacy"
+sensor = "ahi"
+region = "unclassified"
+status = "draft"
+spatial_mode = "fixed-grid"
+path = "ahi/unclassified/legacy_draft"
+entrypoints = ["data/AHI_data.py", "lst/AHI_lst.py"]
+
 [[archive]]
 path = "_archive/aatsr/product_history"
 reason = "duplicate historical product implementations and backups"
@@ -53,10 +80,6 @@ reason = "pre-reorganization snapshots, experiments and old validation"
 [[archive]]
 path = "_archive/slstr/mixed_batch"
 reason = "mixed Europe, South Africa and machine-specific paths"
-
-[[archive]]
-path = "_archive/sensors"
-reason = "MODIS, VIIRS and AHI scripts not yet converted into registered cases"
 
 [[archive]]
 path = "_archive/shared"

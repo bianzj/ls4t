@@ -1,0 +1,19 @@
+schema_version = 1
+
+[case]
+id = "ahi-unclassified-legacy"
+sensor = "ahi"
+region = "unclassified"
+status = "draft"
+spatial_mode = "fixed-grid"
+description = "Legacy Himawari-8 AHI preparation, LST, angular, temporal and uncertainty methods awaiting separation by region."
+
+[processing]
+directories = ["data", "lst", "auxiliary", "angular", "temporal", "uncertainty"]
+current_entrypoints = ["data/AHI_data.py", "lst/AHI_lst.py"]
+standard_core = false
+
+[provenance]
+source = "old sensor-processing scripts"
+source_revision = "6a79ff4"
+validation = "not-run"

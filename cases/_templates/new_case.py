@@ -19,7 +19,9 @@ TOKENS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("sensor", choices=("aatsr", "msg", "slstr", "modis", "viirs", "ahi"))
+    parser.add_argument(
+        "sensor", choices=("aatsr", "msg", "slstr", "modis", "viirs", "ahi", "aster")
+    )
     parser.add_argument("region", help="lower-case region slug, for example heihe")
     parser.add_argument("case_id", help="lower-case case slug, for example summer-2022")
     parser.add_argument(

@@ -24,8 +24,10 @@
 因此单独克隆主仓库也能查看和复现流程。它们不是 submodule；同步关系由
 `cases/projects.toml` 中的 `source_revision` 明确记录。
 
-MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本放在 `cases/_archive/sensors/`；只有
-补齐 `case.toml`、区域、机器配置和运行验证后，才迁入正式的 `cases/<sensor>/`。
+MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已经放入各自的
+`cases/<sensor>/unclassified/legacy_draft/` 并登记为 `draft`；完成区域、机器路径、
+依赖和结果验证后才可标记 `migrated` 或 `active`。ASTER 当前没有找到可迁移源码，
+只在 `cases/aster/` 保留待导入说明。
 
 ## 代码流动原则
 

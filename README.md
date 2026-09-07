@@ -5,8 +5,8 @@ LS4T 按产品组织可复用代码，并用自动化测试和最小样例验证
 
 `/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR 的实际
 运行脚本已按来源提交收录到 `cases/`；三个独立私有项目继续作为运行项目和同步来源。
-MODIS、VIIRS、AHI 的历史执行脚本也已从 `old/` 按传感器归档到 `cases/`，等待逐项
-验证。项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
+MODIS、VIIRS、AHI 的历史处理方法已经登记为 `draft` 案例，ASTER 暂时只有待导入说明。
+这些未验证方法不放在根目录冒充标准模块。项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
 `cases/projects.toml` 和 `cases/catalog.toml`。
 
 ## 源码结构
@@ -85,8 +85,8 @@ L1O → L2LST / L2LSCT → L3N → L3C → L4A
 角度、时间、空间和传感器归一化分别手工执行。融合只接受已经处于相同网格和归一化基准的 L3N 数据。
 
 旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。AATSR、MSG、
-SLSTR 当前案例从 `cases/<sensor>/<region>/` 查找；MODIS、VIIRS、AHI 尚未整理成正式
-案例的脚本暂存在 `cases/_archive/sensors/`。
+SLSTR 当前案例从 `cases/<sensor>/<region>/` 查找；MODIS、VIIRS、AHI 也从同一位置
+查看，但目前状态为 `draft`。ASTER 尚无可迁移实现，入口说明位于 `cases/aster/`。
 详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
 [docs/PIPELINE.md](docs/PIPELINE.md)。实际案例的新建、机器配置、版本升级和归档流程见
 [docs/CASE_WORKFLOW.md](docs/CASE_WORKFLOW.md)。

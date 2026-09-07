@@ -1,0 +1,9 @@
+[machine]
+id = "replace-me"
+scheduler = "replace-me"
+
+[paths]
+raw_root = "/replace/viirs/raw"
+project_root = "/replace/viirs/project"
+lst_root = "/replace/viirs/lst"
+auxiliary_root = "/replace/common/auxiliary"

@@ -13,19 +13,27 @@ cases/<sensor>/<region>/   真实数据、研究区、机器和运行实现
 ```text
 cases/
 ├── _templates/                         新案例模板和生成工具
-├── _archive/                           非活动、重复、混杂或未验证材料
+├── _archive/                           非活动、重复或混杂材料
+├── ahi/
+│   └── unclassified/legacy_draft/      AHI 历史方法，draft
+├── aster/                              ASTER 待导入说明，暂无实现
 ├── aatsr/
 │   └── global/001deg_2003_2012/        全球 0.01° 日/月统计
+├── modis/
+│   └── unclassified/legacy_draft/      MODIS 历史方法，draft
 ├── msg/
 │   └── europe_africa/dual_disk/        MSG + IODC 双星盘案例
-└── slstr/
+├── slstr/
     ├── heihe/study_area_2022/          黑河，研究区优先
     └── europe_south_africa/
         └── scene_first_migrated/       欧洲/南非，逐景优先迁移快照
+└── viirs/
+    └── unclassified/legacy_draft/      VIIRS 历史方法，draft
 ```
 
-只有带 `case.toml` 的目录才算一个正式案例。当前状态和入口见 `catalog.toml`；三个独立
-运行项目的来源提交见 `projects.toml`。
+只有带 `case.toml` 的目录才算一个已登记案例。`draft` 表示代码已经归到案例，但区域、
+机器路径、依赖和结果还没有完成验证，不能当作生产入口。当前状态和入口见
+`catalog.toml`；三个独立运行项目的来源提交见 `projects.toml`。
 
 ## 一个案例应包含什么
 
