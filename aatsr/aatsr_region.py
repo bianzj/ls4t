@@ -9,6 +9,7 @@ scenes from one acquisition and one AATSR view.
 from pathlib import Path
 
 from aatsr.aatsr_data import read_data_product, write_data_product
+from base.parameters import require_parameters
 from base.product_io import read_product, write_product
 from base.spatial import (
     crop_observation,
@@ -18,10 +19,10 @@ from base.spatial import (
 )
 
 
-DATA_INPUT = Path("/home/hero/data/ls4t/aatsr/project/one_group")
-DATA_OUTPUT = Path("/home/hero/data/ls4t/aatsr/region/data.npz")
-RESULT_INPUT = Path("/home/hero/data/ls4t/aatsr/scene_result/one_group")
-RESULT_OUTPUT = Path("/home/hero/data/ls4t/aatsr/region/result.npz")
+DATA_INPUT = None
+DATA_OUTPUT = None
+RESULT_INPUT = None
+RESULT_OUTPUT = None
 STUDY_BOUNDS = None  # (west, south, east, north), e.g. (97.0, 37.0, 102.0, 43.0)
 INPUT_PATTERN = "*.npz"
 
@@ -51,6 +52,7 @@ def aatsr_data_region(
         output_path = DATA_OUTPUT
     if bounds is None:
         bounds = STUDY_BOUNDS
+    require_parameters(input_paths=input_paths, output_path=output_path)
     paths = _resolve_inputs(input_paths)
     item = mosaic_observations(
         [read_data_product(path) for path in paths], primary_field="bt11_k"
@@ -73,13 +75,9 @@ def aatsr_result_region(
         output_path = RESULT_OUTPUT
     if bounds is None:
         bounds = STUDY_BOUNDS
+    require_parameters(input_paths=input_paths, output_path=output_path)
     paths = _resolve_inputs(input_paths)
     product = mosaic_temperature_products([read_product(path) for path in paths])
     if bounds is not None:
         product = crop_temperature_product(product, bounds)
     write_product(output_path, product)
-
-
-if __name__ == "__main__":
-    # 每次只保留所选处理方式；逐景反演后处理时改为 aatsr_result_region()。
-    aatsr_data_region()

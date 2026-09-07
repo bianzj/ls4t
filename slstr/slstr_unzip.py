@@ -7,15 +7,16 @@ extract arrays or run any temperature algorithm.
 from pathlib import Path
 import shutil
 
+from base.parameters import require_parameters
 from slstr.slstr_data import unpack_archive
 
 
-# 修改本文件顶部参数即可手工运行解压阶段
-SLSTR_ZIP_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_RAW_ROOT = Path("/media/hero/slstr-euro")
+# Execution paths and years are supplied by cases.
+SLSTR_ZIP_ROOT = None
+SLSTR_RAW_ROOT = None
 ZIP_YEAR_TEMPLATE = "{year}/zip"
 RAW_YEAR_TEMPLATE = "{year}/raw"
-YEARS = range(2021, 2026)
+YEARS = None
 OVERWRITE = False
 START_INDEX = 0
 
@@ -44,6 +45,7 @@ def slstr_unzip(
     if start_index is None:
         start_index = START_INDEX
 
+    require_parameters(indir_zip=indir_zip, outdir_raw=outdir_raw, years=years)
     for year in years:
         input_year = _year_directory(indir_zip, ZIP_YEAR_TEMPLATE, year)
         output_year = _year_directory(outdir_raw, RAW_YEAR_TEMPLATE, year)
@@ -62,7 +64,3 @@ def slstr_unzip(
                 shutil.rmtree(destination)
             print(f"[{year}] {index + 1}/{len(archives)} 解压 {archive.name}")
             unpack_archive(archive, destination)
-
-
-if __name__ == "__main__":
-    slstr_unzip()

@@ -7,15 +7,16 @@ from pathlib import Path
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-L3_INPUT_ROOT = Path("/home/hero/data/ls4t/l3c")
-L4_OUTPUT_ROOT = Path("/home/hero/data/ls4t/l4a")
-YEARS = range(2003, 2026)
+L3_INPUT_ROOT = None
+L4_OUTPUT_ROOT = None
+YEARS = None
 DRY_EDGE_COEFFICIENTS = (330.0, -10.0)
 WET_EDGE_COEFFICIENTS = (290.0, -2.0)
 OVERWRITE = False
@@ -60,6 +61,7 @@ def tvdi_years(
         wet_edge_coefficients = WET_EDGE_COEFFICIENTS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(indir_l3=indir_l3, outdir_l4=outdir_l4, years=years)
     for year in years:
         input_year = Path(indir_l3) / str(year)
         output_year = Path(outdir_l4) / str(year)
@@ -79,7 +81,3 @@ def tvdi_years(
                     )
                 },
             )
-
-
-if __name__ == "__main__":
-    tvdi_years()

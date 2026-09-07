@@ -1,4 +1,4 @@
-"""AATSR land-surface temperature retrieval run manually by date range."""
+"""AATSR land-surface temperature retrieval batch API configured by cases."""
 
 from __future__ import annotations
 
@@ -9,24 +9,25 @@ import numpy as np
 from aatsr.aatsr_data import AatsrDataProduct, add_lst_auxiliary, read_data_product
 from base.calibration import load_split_window_model
 from base.lst import DualChannelObservation, SplitWindowResult, retrieve_dual_channel_lst
+from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.product_io import write_product
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-AATSR_DATA_ROOT = Path("/home/hero/data/ls4t/aatsr/extract")
-AATSR_LST_ROOT = Path("/home/hero/data/ls4t/aatsr/lst")
+AATSR_DATA_ROOT = None
+AATSR_LST_ROOT = None
 DATA_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
 LST_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
 
-YEARS = range(2003, 2012)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
-COEFFICIENT_FILE = Path("/home/hero/data/base/coefficients/aatsr_split_window.npz")
-AUXILIARY_FILE = Path("/home/hero/data/ls4t/aatsr/base/lst_auxiliary.npz")
+COEFFICIENT_FILE = None
+AUXILIARY_FILE = None
 GRID_ID = "AATSR-NATIVE-1KM"
 ALGORITHM_VERSION = "aatsr-split-window-v1"
 UNCERTAINTY_K = 1.0
@@ -36,6 +37,7 @@ OVERWRITE = False
 def retrieve_aatsr_lst(item: AatsrDataProduct, coefficient_file=None) -> SplitWindowResult:
     if coefficient_file is None:
         coefficient_file = COEFFICIENT_FILE
+    require_parameters(coefficient_file=coefficient_file)
     item.validate(require_lst_auxiliary=True)
     observation = DualChannelObservation(
         bt1_k=item.bt11_k,
@@ -71,6 +73,7 @@ def produce_aatsr_lst(
         algorithm_version = ALGORITHM_VERSION
     if uncertainty_k is None:
         uncertainty_k = UNCERTAINTY_K
+    require_parameters(coefficient_file=coefficient_file, auxiliary_file=auxiliary_file)
     item = read_data_product(input_path)
     auxiliary_source = None
     if not item.has_lst_auxiliary:
@@ -132,6 +135,13 @@ def aatsr_lst(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_data=indir_data,
+        outdir_lst=outdir_lst,
+        coefficient_file=coefficient_file,
+        auxiliary_file=auxiliary_file,
+        years=years,
+    )
     for year in years:
         for month in months:
             for day in days:
@@ -152,7 +162,3 @@ def aatsr_lst(
                         coefficient_file,
                         auxiliary_file,
                     )
-
-
-if __name__ == "__main__":
-    aatsr_lst()

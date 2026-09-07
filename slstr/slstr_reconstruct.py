@@ -2,15 +2,16 @@
 
 from pathlib import Path
 
+from base.parameters import require_parameters
 from slstr.slstr_data import read_extracted_product, reconstruct_product, write_data_product
 
 
-# 修改本文件顶部参数即可手工运行重建阶段
-SLSTR_EXTRACT_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_RECONSTRUCT_ROOT = Path("/media/hero/slstr-euro")
+# Execution paths and years are supplied by cases.
+SLSTR_EXTRACT_ROOT = None
+SLSTR_RECONSTRUCT_ROOT = None
 EXTRACT_YEAR_TEMPLATE = "{year}/extract"
 RECONSTRUCT_YEAR_TEMPLATE = "{year}/reconstruct"
-YEARS = range(2021, 2026)
+YEARS = None
 OVERWRITE = False
 
 
@@ -35,6 +36,11 @@ def slstr_reconstruct(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_extract=indir_extract,
+        outdir_reconstruct=outdir_reconstruct,
+        years=years,
+    )
     for year in years:
         input_year = _year_directory(indir_extract, EXTRACT_YEAR_TEMPLATE, year)
         output_year = _year_directory(outdir_reconstruct, RECONSTRUCT_YEAR_TEMPLATE, year)
@@ -48,7 +54,3 @@ def slstr_reconstruct(
                 continue
             print(f"[{year}] {index + 1}/{len(inputs)} 重建 {input_path.name}")
             write_data_product(output_path, reconstruct_product(read_extracted_product(input_path)))
-
-
-if __name__ == "__main__":
-    slstr_reconstruct()

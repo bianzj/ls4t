@@ -4,15 +4,16 @@ from pathlib import Path
 
 import numpy as np
 
+from base.parameters import require_parameters
 from slstr.slstr_data import LST_AUXILIARY_FIELDS, SlstrDataProduct, read_data_product, write_data_product
 
 
-# 修改本文件顶部参数即可手工运行合并阶段
-SLSTR_PROJECT_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_MERGE_ROOT = Path("/media/hero/slstr-euro")
+# Execution paths and years are supplied by cases.
+SLSTR_PROJECT_ROOT = None
+SLSTR_MERGE_ROOT = None
 PROJECT_YEAR_TEMPLATE = "{year}/project"
 MERGE_YEAR_TEMPLATE = "{year}/merge"
-YEARS = range(2021, 2026)
+YEARS = None
 OVERWRITE = False
 
 
@@ -77,6 +78,7 @@ def slstr_merge(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(indir_project=indir_project, outdir_merge=outdir_merge, years=years)
     for year in years:
         input_year = _year_directory(indir_project, PROJECT_YEAR_TEMPLATE, year)
         output_year = _year_directory(outdir_merge, MERGE_YEAR_TEMPLATE, year)
@@ -95,7 +97,3 @@ def slstr_merge(
                 continue
             print(f"[{date}] 合并 {len(items)} 景 {view} 数据")
             write_data_product(output_path, _merge_products(items))
-
-
-if __name__ == "__main__":
-    slstr_merge()

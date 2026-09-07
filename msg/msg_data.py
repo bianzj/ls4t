@@ -1,4 +1,4 @@
-"""MSG/SEVIRI extraction run manually by date range."""
+"""MSG/SEVIRI extraction batch API configured by cases."""
 
 from __future__ import annotations
 
@@ -12,17 +12,19 @@ import tempfile
 
 import numpy as np
 
+from base.parameters import require_parameters
+
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-MSG_RAW_ROOT = Path("/home/hero/data/ls4t/msg/raw")
-MSG_DATA_ROOT = Path("/home/hero/data/ls4t/msg/data")
-MSG_STATIC_FILE = Path("/home/hero/data/ls4t/msg/base/msg_static.npz")
+MSG_RAW_ROOT = None
+MSG_DATA_ROOT = None
+MSG_STATIC_FILE = None
 RAW_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
 DATA_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
-YEARS = range(2017, 2026)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
 RAW_FILE_PATTERN = "*.nat"
@@ -97,6 +99,7 @@ def read_native_product(input_path: str | Path, static_file=None) -> MsgDataProd
 
     if static_file is None:
         static_file = MSG_STATIC_FILE
+    require_parameters(static_file=static_file)
     try:
         from satpy import Scene
     except ModuleNotFoundError as error:
@@ -209,6 +212,12 @@ def msg_extract(
         days = DAYS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(
+        indir_raw=indir_raw,
+        outdir_data=outdir_data,
+        static_file=static_file,
+        years=years,
+    )
     for year in years:
         for month in months:
             for day in days:
@@ -223,7 +232,3 @@ def msg_extract(
                         continue
                     print(f"[{year:04d}-{month:02d}-{day:02d}] {index + 1}/{len(inputs)} {input_path.name}")
                     write_data_product(output_path, read_native_product(input_path, static_file))
-
-
-if __name__ == "__main__":
-    msg_extract()

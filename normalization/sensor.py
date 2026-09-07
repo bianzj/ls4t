@@ -6,13 +6,14 @@ from pathlib import Path
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 
 
-# 手动运行参数
-SENSOR_INPUT_ROOT = Path("/home/hero/data/ls4t/l3n_space")
-SENSOR_OUTPUT_ROOT = Path("/home/hero/data/ls4t/l3n_sensor")
+# Execution paths and years are supplied by cases.
+SENSOR_INPUT_ROOT = None
+SENSOR_OUTPUT_ROOT = None
 YEAR_TEMPLATE = "{year}"
-YEARS = range(2003, 2026)
+YEARS = None
 SENSOR_NAME = "AATSR"
 REFERENCE_SENSOR_NAME = "SLSTR"
 SLOPE = 1.0
@@ -72,6 +73,7 @@ def sensor_normalize_years(
         calibration_uncertainty_k = CALIBRATION_UNCERTAINTY_K
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(indir_space=indir_space, outdir_sensor=outdir_sensor, years=years)
     model = SensorHarmonization(
         sensor_name,
         reference_sensor_name,
@@ -91,7 +93,3 @@ def sensor_normalize_years(
                 payload["temperature_k"], payload["uncertainty_k"]
             )
             write_npz_atomic(output_path, payload)
-
-
-if __name__ == "__main__":
-    sensor_normalize_years()

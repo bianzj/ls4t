@@ -1,6 +1,7 @@
 # LS4T
 
-LS4T 按产品组织代码，按目录和年份手工运行。项目不提供统一 CLI，也不把不同传感器强制包装成相同接口。
+LS4T 按产品组织可复用代码，并用自动化测试和最小样例验证。项目不提供统一 CLI，
+也不把不同传感器强制包装成相同接口；真实生产运行统一由 `cases/` 中的脚本配置。
 
 `/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR 的实际
 运行脚本分别维护在独立的 case 项目中；主项目的 `cases/` 保存案例说明、历史案例和
@@ -39,59 +40,38 @@ ls4t/
 │   ├── space.py             空间归一化
 │   ├── sensor.py            传感器归一化
 │   └── fusion.py            多传感器融合
-├── composite.py             时间合成
-├── applications.py          TVDI 等 L4 应用
+├── composite/               时间合成
+├── applications/            TVDI 等 L4 应用
 └── cases/                    实际案例、历史实验和独立 case 项目索引
 ```
 
-源码直接从项目根目录开始，不再增加 `` 层，也不使用统一流程包。
+源码直接从项目根目录开始，不再增加名为 `src/` 的中间层，也不使用统一流程包。
 
-## 参数和运行方式
+## 代码、测试和案例边界
 
-每个可手工运行的文件都遵守同一规则：
+根目录模块只保存函数、数据模型和稳定算法，不保存 `/home/...`、`/media/...` 等
+机器路径，也不提供直接执行的 `__main__`。`tests/` 使用合成数据和临时目录验证算法；
+输入目录、输出目录、年份、研究区、覆盖策略和本次启用的阶段全部放在 `cases/`。
 
-1. 文件最上面集中定义输入目录、输出目录、年份、日期、阈值和覆盖方式。
-2. 函数参数默认是 `None`。
-3. 参数为 `None` 时使用文件顶部的默认参数；外部传值时使用外部参数。
-4. 一个函数只完成一个阶段，不自动调用下一个阶段。
-5. 文件末尾只保留本次需要执行的一个函数。
-
-例如直接提取 SLSTR：
+每个阶段仍保持独立，不自动调用下一阶段。案例脚本显式传入运行参数，例如：
 
 ```python
-if __name__ == "__main__":
-    slstr_extract()
-```
+from pathlib import Path
 
-每个 SLSTR 阶段都有自己的文件；例如解压运行
-`python slstr/slstr_unzip.py`，投影运行
-`python slstr/slstr_project.py`。只修改所选文件顶部的参数，
-不会自动调用其它阶段。`slstr_data.py` 中仍保留同名兼容入口，旧脚本可以继续导入。
+from slstr.slstr_extract import slstr_extract
 
-需要投影时手动改成：
-
-```python
-if __name__ == "__main__":
-    slstr_project()
-```
-
-从项目根目录运行：
-
-```bash
-python slstr/slstr_extract.py
-```
-
-外部程序也可以直接调用某个批处理函数：
-
-```python
-from slstr.slstr_data import slstr_extract
+CASE_ROOT = Path("data/slstr-example")
 
 slstr_extract(
-    indir_raw="/data/slstr/raw",
-    outdir_extract="/data/slstr/extract",
+    indir_raw=CASE_ROOT / "raw",
+    outdir_extract=CASE_ROOT / "extract",
     years=range(2022, 2025),
 )
 ```
+
+如果缺少执行所需的路径或年份，核心批处理函数会提示到 `cases/` 中配置，而不会使用
+开发者机器上的隐式默认值。历史运行材料位于 `cases/legacy/`，当前 AATSR、MSG、
+SLSTR 生产案例见 [cases/README.md](cases/README.md)。
 
 ## 产品层级
 

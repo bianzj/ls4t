@@ -8,18 +8,19 @@ from pathlib import Path
 import numpy as np
 
 from base.lsct import retrieve_components, retrieve_components_window
+from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.product_io import write_product
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-MSG_LSCT_INPUT_ROOT = Path("/home/hero/data/ls4t/msg/lsct_input")
-MSG_LSCT_OUTPUT_ROOT = Path("/home/hero/data/ls4t/msg/lsct")
+MSG_LSCT_INPUT_ROOT = None
+MSG_LSCT_OUTPUT_ROOT = None
 DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
-YEARS = range(2017, 2026)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
 WAVELENGTH_UM = 10.8
@@ -131,6 +132,11 @@ def msg_lsct(
         days = DAYS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(
+        indir_lsct_input=indir_lsct_input,
+        outdir_lsct=outdir_lsct,
+        years=years,
+    )
     for year in years:
         for month in months:
             for day in days:
@@ -144,7 +150,3 @@ def msg_lsct(
                     if output_path.exists() and not overwrite:
                         continue
                     retrieve_msg_lsct(input_path, output_path)
-
-
-if __name__ == "__main__":
-    msg_lsct()

@@ -1,4 +1,4 @@
-"""AATSR component-temperature retrieval run manually by date range."""
+"""AATSR component-temperature retrieval batch API configured by cases."""
 
 from __future__ import annotations
 
@@ -8,18 +8,19 @@ from pathlib import Path
 import numpy as np
 
 from base.lsct import retrieve_components, retrieve_components_window
+from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.product_io import write_product
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-AATSR_LSCT_INPUT_ROOT = Path("/home/hero/data/ls4t/aatsr/lsct_input")
-AATSR_LSCT_OUTPUT_ROOT = Path("/home/hero/data/ls4t/aatsr/lsct")
+AATSR_LSCT_INPUT_ROOT = None
+AATSR_LSCT_OUTPUT_ROOT = None
 DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
-YEARS = range(2003, 2012)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
 WAVELENGTH_UM = 10.8
@@ -131,6 +132,11 @@ def aatsr_lsct(
         days = DAYS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(
+        indir_lsct_input=indir_lsct_input,
+        outdir_lsct=outdir_lsct,
+        years=years,
+    )
     for year in years:
         for month in months:
             for day in days:
@@ -145,7 +151,3 @@ def aatsr_lsct(
                     if output_path.exists() and not overwrite:
                         continue
                     retrieve_aatsr_lsct(input_path, output_path)
-
-
-if __name__ == "__main__":
-    aatsr_lsct()

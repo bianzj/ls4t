@@ -4,17 +4,18 @@ from pathlib import Path
 
 import numpy as np
 
+from base.parameters import require_parameters
 from normalization.space import aggregate_to_grid
 from slstr.slstr_data import LST_AUXILIARY_FIELDS, SlstrDataProduct, read_data_product, write_data_product
 
 
-# 修改本文件顶部参数即可手工运行投影阶段
-SLSTR_RECONSTRUCT_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_PROJECT_ROOT = Path("/media/hero/slstr-euro")
+# Execution paths and years are supplied by cases.
+SLSTR_RECONSTRUCT_ROOT = None
+SLSTR_PROJECT_ROOT = None
 RECONSTRUCT_YEAR_TEMPLATE = "{year}/reconstruct"
 PROJECT_YEAR_TEMPLATE = "{year}/project"
-YEARS = range(2021, 2026)
-TARGET_GRID_FILE = Path("/media/hero/base/type/type_world_1000.tif")
+YEARS = None
+TARGET_GRID_FILE = None
 PROJECTION_CHUNK_SIZE = 100_000
 CLOUD_FRACTION_THRESHOLD = 0.0
 OVERWRITE = False
@@ -153,6 +154,12 @@ def slstr_project(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_reconstruct=indir_reconstruct,
+        outdir_project=outdir_project,
+        target_grid_file=target_grid_file,
+        years=years,
+    )
     for year in years:
         input_year = _year_directory(indir_reconstruct, RECONSTRUCT_YEAR_TEMPLATE, year)
         output_year = _year_directory(outdir_project, PROJECT_YEAR_TEMPLATE, year)
@@ -173,7 +180,3 @@ def slstr_project(
                     cloud_fraction_threshold,
                 ),
             )
-
-
-if __name__ == "__main__":
-    slstr_project()

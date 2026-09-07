@@ -1,4 +1,4 @@
-"""SLSTR component-temperature retrieval run manually by year or folder."""
+"""SLSTR component-temperature retrieval batch API configured by cases."""
 
 from __future__ import annotations
 
@@ -8,20 +8,21 @@ from pathlib import Path
 import numpy as np
 
 from base.lsct import retrieve_components, retrieve_components_window
+from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.product_io import write_product
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-SLSTR_LSCT_INPUT_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_LSCT_OUTPUT_ROOT = Path("/media/hero/slstr-euro")
+SLSTR_LSCT_INPUT_ROOT = None
+SLSTR_LSCT_OUTPUT_ROOT = None
 INPUT_YEAR_TEMPLATE = "{year}/lsct_input"
 OUTPUT_YEAR_TEMPLATE = "{year}/lsct"
 
-YEARS = range(2021, 2026)
+YEARS = None
 WAVELENGTH_UM = 10.8
 COMPONENT_NAMES = ("soil", "vegetation")
 WINDOW_SIZE = 5
@@ -130,6 +131,11 @@ def slstr_lsct(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_lsct_input=indir_lsct_input,
+        outdir_lsct=outdir_lsct,
+        years=years,
+    )
     for year in years:
         input_year = Path(indir_lsct_input) / INPUT_YEAR_TEMPLATE.format(year=int(year))
         output_year = Path(outdir_lsct) / OUTPUT_YEAR_TEMPLATE.format(year=int(year))
@@ -144,7 +150,3 @@ def slstr_lsct(
                 continue
             print(f"[{year}] {index + 1}/{len(inputs)} 组分温度反演 {input_path}")
             retrieve_slstr_lsct(input_path, output_path)
-
-
-if __name__ == "__main__":
-    slstr_lsct()

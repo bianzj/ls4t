@@ -10,17 +10,14 @@ import numpy as np
 
 from base.quality import QualityFlag, new_flags, set_flag, usable
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 from .profile import NormalizationProfile
 
 
-# 手动运行参数
-FUSION_INPUT_ROOTS = (
-    Path("/home/hero/data/ls4t/aatsr/l3n"),
-    Path("/home/hero/data/ls4t/slstr/l3n"),
-    Path("/home/hero/data/ls4t/msg/l3n"),
-)
-FUSION_OUTPUT_ROOT = Path("/home/hero/data/ls4t/fusion/l3n")
-YEARS = range(2003, 2026)
+# Execution paths and years are supplied by cases.
+FUSION_INPUT_ROOTS = None
+FUSION_OUTPUT_ROOT = None
+YEARS = None
 INNOVATION_THRESHOLD_SIGMA = 4.0
 MINIMUM_SENSORS = 1
 OVERWRITE = False
@@ -131,6 +128,7 @@ def fusion_years(
         minimum_sensors = MINIMUM_SENSORS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(input_roots=input_roots, output_root=output_root, years=years)
     roots = tuple(Path(root) for root in input_roots)
     for year in years:
         relative_names = set()
@@ -184,7 +182,3 @@ def fusion_years(
                     "temporal_interval": np.asarray(result.profile.temporal_interval),
                 },
             )
-
-
-if __name__ == "__main__":
-    fusion_years()

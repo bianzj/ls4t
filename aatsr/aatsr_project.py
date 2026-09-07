@@ -3,14 +3,15 @@
 from pathlib import Path
 
 from aatsr.aatsr_data import read_data_product, write_data_product
+from base.parameters import require_parameters
 from base.spatial import project_observation
 
 
-AATSR_DATA_ROOT = Path("/home/hero/data/ls4t/aatsr/extract")
-AATSR_PROJECT_ROOT = Path("/home/hero/data/ls4t/aatsr/project")
-TARGET_GRID_FILE = Path("/media/hero/base/type/type_world_1000.tif")
+AATSR_DATA_ROOT = None
+AATSR_PROJECT_ROOT = None
+TARGET_GRID_FILE = None
 DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
-YEARS = range(2003, 2012)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
 PROJECTION_CHUNK_SIZE = 100_000
@@ -30,6 +31,7 @@ def project_aatsr_product(
         projection_chunk_size = PROJECTION_CHUNK_SIZE
     if cloud_fraction_threshold is None:
         cloud_fraction_threshold = CLOUD_FRACTION_THRESHOLD
+    require_parameters(target_grid_file=target_grid_file)
     return project_observation(
         item,
         target_grid_file,
@@ -68,6 +70,12 @@ def aatsr_project(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_data=indir_data,
+        outdir_project=outdir_project,
+        target_grid_file=target_grid_file,
+        years=years,
+    )
     for year in years:
         for month in months:
             for day in days:
@@ -97,7 +105,3 @@ def aatsr_project(
                             cloud_fraction_threshold,
                         ),
                     )
-
-
-if __name__ == "__main__":
-    aatsr_project()

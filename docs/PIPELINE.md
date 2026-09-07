@@ -65,7 +65,7 @@ LST 输出携带经纬度，可以直接进入结果阶段。LSCT 的准备文�
 
 ## 归一化
 
-归一化不包装成一个统一调用。操作人员依次按需要手工运行：
+归一化不包装成一个统一调用。case 脚本依次按需要调用：
 
 - `normalization/angle.py`
 - `normalization/time.py`

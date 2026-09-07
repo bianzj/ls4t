@@ -2,15 +2,16 @@
 
 from pathlib import Path
 
+from base.parameters import require_parameters
 from slstr.slstr_data import extract_native_product, write_extracted_product
 
 
-# 修改本文件顶部参数即可手工运行提取阶段
-SLSTR_RAW_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_EXTRACT_ROOT = Path("/media/hero/slstr-euro")
+# Execution paths and years are supplied by cases.
+SLSTR_RAW_ROOT = None
+SLSTR_EXTRACT_ROOT = None
 RAW_YEAR_TEMPLATE = "{year}/raw"
 EXTRACT_YEAR_TEMPLATE = "{year}/extract"
-YEARS = range(2021, 2026)
+YEARS = None
 VIEWS = ("nadir", "oblique")
 OVERWRITE = False
 
@@ -39,6 +40,7 @@ def slstr_extract(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(indir_raw=indir_raw, outdir_extract=outdir_extract, years=years)
     for year in years:
         input_year = _year_directory(indir_raw, RAW_YEAR_TEMPLATE, year)
         output_year = _year_directory(outdir_extract, EXTRACT_YEAR_TEMPLATE, year)
@@ -53,7 +55,3 @@ def slstr_extract(
                 if output.exists() and not overwrite:
                     continue
                 write_extracted_product(output, extract_native_product(product, view=view))
-
-
-if __name__ == "__main__":
-    slstr_extract()

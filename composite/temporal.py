@@ -9,15 +9,16 @@ import numpy as np
 
 from base.quality import QualityFlag, new_flags, set_flag, usable
 from base.files import write_npz_atomic
+from base.parameters import require_parameters
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-INPUT_ROOT = Path("/home/hero/data/ls4t/l3n")
-OUTPUT_ROOT = Path("/home/hero/data/ls4t/l3c")
-YEARS = range(2003, 2026)
+INPUT_ROOT = None
+OUTPUT_ROOT = None
+YEARS = None
 MINIMUM_OBSERVATIONS = 1
 OVERWRITE = False
 
@@ -79,6 +80,7 @@ def composite_years(
         minimum_observations = MINIMUM_OBSERVATIONS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(indir_l3n=indir_l3n, outdir_l3c=outdir_l3c, years=years)
     for year in years:
         input_year = Path(indir_l3n) / str(year)
         output_path = Path(outdir_l3c) / str(year) / f"LS4T_L3C_{year}.npz"
@@ -108,7 +110,3 @@ def composite_years(
                 "observation_count": result.observation_count,
             },
         )
-
-
-if __name__ == "__main__":
-    composite_years()

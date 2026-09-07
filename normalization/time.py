@@ -5,13 +5,14 @@ from pathlib import Path
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 
 
-# 手动运行参数
-TIME_INPUT_ROOT = Path("/home/hero/data/ls4t/l3n_angle")
-TIME_OUTPUT_ROOT = Path("/home/hero/data/ls4t/l3n_time")
+# Execution paths and years are supplied by cases.
+TIME_INPUT_ROOT = None
+TIME_OUTPUT_ROOT = None
 YEAR_TEMPLATE = "{year}"
-YEARS = range(2003, 2026)
+YEARS = None
 REFERENCE_LOCAL_SOLAR_TIME_HOUR = 13.5
 OVERWRITE = False
 
@@ -59,6 +60,7 @@ def time_normalize_years(
         years = YEARS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(indir_angle=indir_angle, outdir_time=outdir_time, years=years)
     for year in years:
         input_year = Path(indir_angle) / YEAR_TEMPLATE.format(year=year)
         output_year = Path(outdir_time) / YEAR_TEMPLATE.format(year=year)
@@ -74,7 +76,3 @@ def time_normalize_years(
                 payload["diurnal_peak_hour"],
             )
             write_npz_atomic(output_path, payload)
-
-
-if __name__ == "__main__":
-    time_normalize_years()

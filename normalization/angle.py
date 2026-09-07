@@ -7,13 +7,14 @@ from pathlib import Path
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 
 
-# 手动运行参数
-ANGLE_INPUT_ROOT = Path("/home/hero/data/ls4t/l2")
-ANGLE_OUTPUT_ROOT = Path("/home/hero/data/ls4t/l3n_angle")
+# Execution paths and years are supplied by cases.
+ANGLE_INPUT_ROOT = None
+ANGLE_OUTPUT_ROOT = None
 YEAR_TEMPLATE = "{year}"
-YEARS = range(2003, 2026)
+YEARS = None
 REFERENCE_VIEW_ZENITH_DEG = 0.0
 REFERENCE_SOLAR_ZENITH_DEG = 30.0
 REFERENCE_RELATIVE_AZIMUTH_DEG = 0.0
@@ -83,6 +84,11 @@ def angle_normalize_years(
         years = YEARS
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(
+        indir_temperature=indir_temperature,
+        outdir_angle=outdir_angle,
+        years=years,
+    )
     for year in years:
         input_year = Path(indir_temperature) / YEAR_TEMPLATE.format(year=year)
         output_year = Path(outdir_angle) / YEAR_TEMPLATE.format(year=year)
@@ -99,7 +105,3 @@ def angle_normalize_years(
                 payload["directional_coefficients_k"],
             )
             write_npz_atomic(output_path, payload)
-
-
-if __name__ == "__main__":
-    angle_normalize_years()

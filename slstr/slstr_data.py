@@ -1,4 +1,4 @@
-"""SLSTR data preparation, with every stage run manually and independently.
+"""SLSTR data preparation, with independent stage APIs.
 
 This module contains only SLSTR data-product responsibilities.  It does not
 perform temperature retrieval.  The stored NPZ is the explicit boundary
@@ -522,8 +522,3 @@ def slstr_merge(
     from slstr.slstr_merge import slstr_merge as run_stage
 
     return run_stage(indir_project, outdir_merge, years, overwrite)
-
-
-if __name__ == "__main__":
-    # Compatibility behavior: new runs should execute a stage-specific file.
-    slstr_extract()

@@ -2,6 +2,7 @@ import inspect
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from aatsr.aatsr_data import aatsr_extract, aatsr_unzip
 from aatsr.aatsr_project import aatsr_project
@@ -31,9 +32,36 @@ from slstr.slstr_unzip import slstr_unzip
 def test_runtime_tree_is_flat():
     source = Path(__file__).resolve().parents[1]
     assert not (source / "src").exists()
-    for name in ("base", "aatsr", "slstr", "msg", "normalization"):
+    for name in (
+        "base",
+        "aatsr",
+        "slstr",
+        "msg",
+        "normalization",
+        "composite",
+        "applications",
+    ):
         assert (source / name).is_dir()
     assert (source / "cases").is_dir()
+
+
+def test_core_has_no_machine_paths_or_direct_execution():
+    root = Path(__file__).resolve().parents[1]
+    core_directories = (
+        "base",
+        "aatsr",
+        "slstr",
+        "msg",
+        "normalization",
+        "composite",
+        "applications",
+    )
+    for directory in core_directories:
+        for path in (root / directory).rglob("*.py"):
+            source = path.read_text(encoding="utf-8")
+            assert "/home/" not in source, path
+            assert "/media/" not in source, path
+            assert 'if __name__ == "__main__"' not in source, path
 
 
 def test_manual_batch_parameters_default_to_none():
@@ -65,6 +93,39 @@ def test_manual_batch_parameters_default_to_none():
     for function in functions:
         for parameter in inspect.signature(function).parameters.values():
             assert parameter.default is None, f"{function.__name__}.{parameter.name}"
+
+
+@pytest.mark.parametrize(
+    "function",
+    (
+        aatsr_unzip,
+        aatsr_extract,
+        aatsr_project,
+        aatsr_data_region,
+        aatsr_result_region,
+        slstr_unzip,
+        slstr_extract,
+        slstr_reconstruct,
+        slstr_project,
+        slstr_merge,
+        slstr_data_region,
+        slstr_result_region,
+        msg_extract,
+        msg_project,
+        msg_data_region,
+        msg_result_region,
+        angle_normalize_years,
+        time_normalize_years,
+        space_normalize_years,
+        sensor_normalize_years,
+        fusion_years,
+        composite_years,
+        tvdi_years,
+    ),
+)
+def test_batch_execution_requires_case_parameters(function):
+    with pytest.raises(ValueError, match="cases/"):
+        function()
 
 
 def test_slstr_extraction_and_reconstruction_are_separate():

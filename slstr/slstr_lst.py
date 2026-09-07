@@ -12,23 +12,24 @@ from base.calibration import (
     save_split_window_model,
 )
 from base.lst import DualChannelObservation, SplitWindowResult, retrieve_dual_channel_lst
+from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.product_io import write_product
 from slstr.slstr_data import SlstrDataProduct, add_lst_auxiliary, read_data_product
 
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-SLSTR_DATA_ROOT = Path("/media/hero/slstr-euro")
-SLSTR_LST_ROOT = Path("/media/hero/slstr-euro")
+SLSTR_DATA_ROOT = None
+SLSTR_LST_ROOT = None
 DATA_YEAR_TEMPLATE = "{year}/reconstruct"
 LST_YEAR_TEMPLATE = "{year}/lst"
 
-YEARS = range(2021, 2026)
-COEFFICIENT_FILE = Path("/media/hero/base/coefficients/slstr_split_window.npz")
-AUXILIARY_FILE = Path("/media/hero/base/slstr/lst_auxiliary.npz")
+YEARS = None
+COEFFICIENT_FILE = None
+AUXILIARY_FILE = None
 GRID_ID = "SLSTR-NATIVE-1KM"
 ALGORITHM_VERSION = "slstr-split-window-v1"
 UNCERTAINTY_K = 1.0
@@ -62,6 +63,7 @@ def retrieve_slstr_lst(item: SlstrDataProduct, coefficient_file=None) -> SplitWi
 
     if coefficient_file is None:
         coefficient_file = COEFFICIENT_FILE
+    require_parameters(coefficient_file=coefficient_file)
     item.validate(require_lst_auxiliary=True)
     model = load_split_window_model(coefficient_file)
     observation = DualChannelObservation(
@@ -97,6 +99,7 @@ def produce_slstr_lst(
         coefficient_file = COEFFICIENT_FILE
     if auxiliary_file is None:
         auxiliary_file = AUXILIARY_FILE
+    require_parameters(coefficient_file=coefficient_file, auxiliary_file=auxiliary_file)
     item = read_data_product(input_path)
     if not item.has_lst_auxiliary:
         item = add_lst_auxiliary(item, auxiliary_file)
@@ -171,6 +174,13 @@ def slstr_lst(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(
+        indir_data=indir_data,
+        outdir_lst=outdir_lst,
+        coefficient_file=coefficient_file,
+        auxiliary_file=auxiliary_file,
+        years=years,
+    )
     for year in years:
         input_year = Path(indir_data) / DATA_YEAR_TEMPLATE.format(year=int(year))
         output_year = Path(outdir_lst) / LST_YEAR_TEMPLATE.format(year=int(year))
@@ -193,7 +203,3 @@ def slstr_lst(
                 algorithm_version=algorithm_version,
                 uncertainty_k=float(uncertainty_k),
             )
-
-
-if __name__ == "__main__":
-    slstr_lst()

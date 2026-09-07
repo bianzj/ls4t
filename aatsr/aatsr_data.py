@@ -14,20 +14,22 @@ import tempfile
 
 import numpy as np
 
+from base.parameters import require_parameters
+
 
 # ============================================================================
-# 手动运行参数
+# 算法默认值；执行参数由 cases 提供
 # ============================================================================
 
-AATSR_ZIP_ROOT = Path("/home/hero/data/ls4t/aatsr/zip")
-AATSR_RAW_ROOT = Path("/home/hero/data/ls4t/aatsr/raw")
-AATSR_EXTRACT_ROOT = Path("/home/hero/data/ls4t/aatsr/extract")
+AATSR_ZIP_ROOT = None
+AATSR_RAW_ROOT = None
+AATSR_EXTRACT_ROOT = None
 
 ZIP_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}/ats_toa_1p"
 RAW_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
 EXTRACT_DAY_TEMPLATE = "{year:04d}/{month:02d}/{day:02d}"
 
-YEARS = range(2003, 2012)
+YEARS = None
 MONTHS = range(1, 13)
 DAYS = range(1, 32)
 VIEWS = ("nadir", "forward")
@@ -247,6 +249,7 @@ def aatsr_unzip(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(indir_zip=indir_zip, outdir_raw=outdir_raw, years=years)
     for year in years:
         for month in months:
             for day in days:
@@ -285,6 +288,7 @@ def aatsr_extract(
     if overwrite is None:
         overwrite = OVERWRITE
 
+    require_parameters(indir_raw=indir_raw, outdir_extract=outdir_extract, years=years)
     for year in years:
         for month in months:
             for day in days:
@@ -302,7 +306,3 @@ def aatsr_extract(
                             continue
                         print(f"[{year:04d}-{month:02d}-{day:02d}] {index + 1}/{len(files)} {view}")
                         write_data_product(output_path, read_native_product(input_path, view=view))
-
-
-if __name__ == "__main__":
-    aatsr_extract()

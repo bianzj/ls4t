@@ -5,14 +5,15 @@ from pathlib import Path
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
+from base.parameters import require_parameters
 from base.quality import QualityFlag, new_flags, set_flag
 
 
-# 手动运行参数
-SPACE_INPUT_ROOT = Path("/home/hero/data/ls4t/l3n_time")
-SPACE_OUTPUT_ROOT = Path("/home/hero/data/ls4t/l3n_space")
+# Execution paths and years are supplied by cases.
+SPACE_INPUT_ROOT = None
+SPACE_OUTPUT_ROOT = None
 YEAR_TEMPLATE = "{year}"
-YEARS = range(2003, 2026)
+YEARS = None
 TARGET_SHAPE = (3600, 7200)
 OVERWRITE = False
 
@@ -74,6 +75,7 @@ def space_normalize_years(
         target_shape = TARGET_SHAPE
     if overwrite is None:
         overwrite = OVERWRITE
+    require_parameters(indir_time=indir_time, outdir_space=outdir_space, years=years)
     target_shape = tuple(target_shape)
     for year in years:
         input_year = Path(indir_time) / YEAR_TEMPLATE.format(year=year)
@@ -100,7 +102,3 @@ def space_normalize_years(
             payload.pop("target_row_index", None)
             payload.pop("target_column_index", None)
             write_npz_atomic(output_path, payload)
-
-
-if __name__ == "__main__":
-    space_normalize_years()

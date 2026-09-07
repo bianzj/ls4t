@@ -8,7 +8,7 @@
 - `aatsr/`、`slstr/`、`msg/`：传感器数据、投影、LST 和 LSCT；
 - `base/`：公共反演、质量控制、产品读写和空间算法；
 - `normalization/`：角度、时间、空间和传感器归一化；
-- `composite.py`、`applications.py`：时间合成和 L4 应用；
+- `composite/`、`applications/`：时间合成和 L4 应用；
 - `cases/`：实际案例、历史实验和独立 case 项目索引。
 
 ## 独立 case 项目

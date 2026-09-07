@@ -7,6 +7,7 @@ and oblique views or unrelated overpasses in one input group.
 from pathlib import Path
 
 from base.product_io import read_product, write_product
+from base.parameters import require_parameters
 from base.spatial import (
     crop_observation,
     crop_temperature_product,
@@ -16,10 +17,10 @@ from base.spatial import (
 from slstr.slstr_data import read_data_product, write_data_product
 
 
-DATA_INPUT = Path("/home/hero/data/ls4t/slstr/project/one_group")
-DATA_OUTPUT = Path("/home/hero/data/ls4t/slstr/region/data.npz")
-RESULT_INPUT = Path("/home/hero/data/ls4t/slstr/scene_result/one_group")
-RESULT_OUTPUT = Path("/home/hero/data/ls4t/slstr/region/result.npz")
+DATA_INPUT = None
+DATA_OUTPUT = None
+RESULT_INPUT = None
+RESULT_OUTPUT = None
 STUDY_BOUNDS = None  # (west, south, east, north)
 INPUT_PATTERN = "*.npz"
 
@@ -49,6 +50,7 @@ def slstr_data_region(
         output_path = DATA_OUTPUT
     if bounds is None:
         bounds = STUDY_BOUNDS
+    require_parameters(input_paths=input_paths, output_path=output_path)
     paths = _resolve_inputs(input_paths)
     item = mosaic_observations(
         [read_data_product(path) for path in paths], primary_field="bt8_k"
@@ -71,13 +73,9 @@ def slstr_result_region(
         output_path = RESULT_OUTPUT
     if bounds is None:
         bounds = STUDY_BOUNDS
+    require_parameters(input_paths=input_paths, output_path=output_path)
     paths = _resolve_inputs(input_paths)
     product = mosaic_temperature_products([read_product(path) for path in paths])
     if bounds is not None:
         product = crop_temperature_product(product, bounds)
     write_product(output_path, product)
-
-
-if __name__ == "__main__":
-    # 每次只保留所选处理方式；逐景反演后处理时改为 slstr_result_region()。
-    slstr_data_region()

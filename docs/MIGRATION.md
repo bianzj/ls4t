@@ -23,7 +23,7 @@
 | 网格和空间归一化 | `normalization/space.py` |
 | 传感器标定 | `normalization/sensor.py` |
 | 数据融合 | `normalization/fusion.py` |
-| 月平均和时间合成 | `composite.py` |
-| TVDI 等应用 | `applications.py` |
+| 月平均和时间合成 | `composite/temporal.py` |
+| TVDI 等应用 | `applications/tvdi.py` |
 
 旧工作区不覆盖，继续用于逐传感器实际数据回归。新源码不再依赖个人目录、`production/`、`retrieval/` 或统一 CLI。
