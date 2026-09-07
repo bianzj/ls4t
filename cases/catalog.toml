@@ -1,0 +1,75 @@
+version = 1
+
+[policy]
+core = "Reusable algorithms live at repository root."
+tests = "Automated tests use synthetic or temporary data."
+cases = "Machine paths, regions, years and real execution live under cases/<sensor>."
+
+[[sensor]]
+id = "aatsr"
+status = "active"
+source = "bianzj/ls4t-aatsr@f95acc7"
+paths = ["aatsr/production/global_001deg", "aatsr/product"]
+entrypoints = [
+  "aatsr/production/global_001deg/aatsr_001deg_stats.py",
+  "aatsr/production/global_001deg/aatsr_monthly_3files.py",
+]
+spatial_modes = ["scene-first", "temporal-composite"]
+
+[[sensor]]
+id = "msg"
+status = "active"
+source = "bianzj/ls4t-msg@fdaa5bc"
+paths = ["msg/lsct", "msg/preprocess", "msg/field", "msg/auxiliary", "msg/download"]
+entrypoints = ["msg/lsct/msg_lsct3.2-iter.py", "msg/lsct/msg_monthly_averaging.py"]
+spatial_modes = ["study-area-first", "fixed-grid"]
+
+[[sensor]]
+id = "slstr"
+status = "active"
+source = "bianzj/ls4t-slstr@f4bc61b"
+paths = ["slstr/study_area", "slstr/scene_first", "slstr/batch"]
+entrypoints = ["slstr/study_area/slstr_lst.py", "slstr/scene_first/slstr_lst.py"]
+spatial_modes = ["study-area-first", "scene-first"]
+
+[[sensor]]
+id = "modis"
+status = "legacy"
+source = "old/ migration"
+paths = ["modis/data", "modis/lst", "modis/auxiliary"]
+entrypoints = []
+spatial_modes = ["unclassified"]
+
+[[sensor]]
+id = "viirs"
+status = "legacy"
+source = "old/ migration"
+paths = ["viirs/data", "viirs/lst", "viirs/auxiliary", "viirs/tools"]
+entrypoints = []
+spatial_modes = ["unclassified"]
+
+[[sensor]]
+id = "ahi"
+status = "legacy"
+source = "old/ migration"
+paths = ["ahi/data", "ahi/lst", "ahi/auxiliary", "ahi/angular", "ahi/temporal", "ahi/uncertainty"]
+entrypoints = []
+spatial_modes = ["study-area-first", "unclassified"]
+
+[[shared_case]]
+id = "laads-download"
+status = "legacy"
+path = "shared/download/laads"
+sensors = ["modis", "viirs"]
+
+[[shared_case]]
+id = "slstr-ahi"
+status = "legacy"
+path = "shared/cross_sensor/slstr_ahi"
+sensors = ["slstr", "ahi"]
+
+[[shared_case]]
+id = "stream-msg"
+status = "legacy"
+path = "shared/cross_sensor/stream_msg"
+sensors = ["stream", "msg"]

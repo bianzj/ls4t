@@ -4,8 +4,10 @@ LS4T 按产品组织可复用代码，并用自动化测试和最小样例验证
 也不把不同传感器强制包装成相同接口；真实生产运行统一由 `cases/` 中的脚本配置。
 
 `/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR 的实际
-运行脚本分别维护在独立的 case 项目中；主项目的 `cases/` 保存案例说明、历史案例和
-这些独立项目的关联。项目关系见 [cases/README.md](cases/README.md)。
+运行脚本已按来源提交收录到 `cases/`；三个独立私有项目继续作为运行项目和同步来源。
+MODIS、VIIRS、AHI 的历史执行脚本也已从 `old/` 按传感器归档到 `cases/`，等待逐项
+验证。项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
+`cases/projects.toml` 和 `cases/catalog.toml`。
 
 ## 源码结构
 
@@ -42,7 +44,7 @@ ls4t/
 │   └── fusion.py            多传感器融合
 ├── composite/               时间合成
 ├── applications/            TVDI 等 L4 应用
-└── cases/                    实际案例、历史实验和独立 case 项目索引
+└── cases/                    各传感器实际执行、参数、历史实验及项目索引
 ```
 
 源码直接从项目根目录开始，不再增加名为 `src/` 的中间层，也不使用统一流程包。
@@ -81,7 +83,10 @@ L1O → L2LST / L2LSCT → L3N → L3C → L4A
 
 角度、时间、空间和传感器归一化分别手工执行。融合只接受已经处于相同网格和归一化基准的 L3N 数据。
 
-旧目录保留为迁移和回归依据，不作为新源码运行入口。详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和 [docs/PIPELINE.md](docs/PIPELINE.md)。
+旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。AATSR、MSG、
+SLSTR 当前生产脚本以及 MODIS、VIIRS、AHI 历史脚本统一从 `cases/<sensor>/` 查找。
+详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
+[docs/PIPELINE.md](docs/PIPELINE.md)。
 
 ## 两种空间处理方式
 

@@ -3,7 +3,6 @@ import sys
 import os
 
 from base.util_file import read_image_dataset_gdal
-from old.data_satellite.match_SLSTR_using_AHI import indir_slstr_tif
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import netCDF4
@@ -209,7 +208,6 @@ for kyear in range(2022,2023):
 
                 outfile = indir_slstr_tif  + 'lst_obliq.tif'
                 write_image_gdal(lstn, ns, nl, 1, geog, proj, outfile)
-
 
 
 

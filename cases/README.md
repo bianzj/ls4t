@@ -1,46 +1,59 @@
 # LS4T cases
 
-`cases/` 保存针对具体传感器、研究区、年份和数据盘目录的实际运行案例。它与根目录
-的通用产品代码分工如下：
+`cases/` 保存真实生产、研究区实验和历史复现实例。根目录保存通用算法，`tests/`
+保存自动化测试；机器路径、年份、区域参数、批处理入口和阶段性脚本只放在这里。
 
-- 根目录 `base/`、`aatsr/`、`msg/`、`slstr/`、`normalization/`：可复用算法；
-- `cases/`：一次研究或产品生产所需的参数、路径、验证和批处理脚本；
-- 原始数据、LST、LSCT、图像和日志：保存在外部数据盘，不进入 Git。
+## 目录
 
-## 独立运行项目
+| 目录 | 状态 | 内容 |
+|---|---|---|
+| `aatsr/` | active | AATSR 0.01° 日/月统计、LST/LSCT 与历史产品实验 |
+| `msg/` | active | MSG 投影、LSCT、月合成、站点提取和验证 |
+| `slstr/` | active | SLSTR 研究区优先、逐景优先和批处理流程 |
+| `modis/` | legacy | MODIS 数据准备、LST 和辅助数据脚本 |
+| `viirs/` | legacy | VIIRS 数据准备、LST 和辅助数据脚本 |
+| `ahi/` | legacy | AHI 数据、LST、角度/时间归一化和不确定性实验 |
+| `shared/` | mixed | LAADS 下载及 SLSTR-AHI 等跨传感器案例 |
+| `examples/` | example | 最小的手工运行示例，不代替 `tests/` |
+| `legacy/` | archive | 尚未按传感器归类的早期快照和兼容代码 |
 
-三个当前使用的 case 已独立发布，并保留各自的历史算法和机器运行参数：
+机器生成的数据、缓存、日志和结果图不应继续加入 Git。已经存在的结果材料保留在相应
+`archive/` 或历史目录中，仅用于追溯。
 
-| 传感器 | 本地目录 | 私有 GitHub 项目 | 主要内容 |
-|---|---|---|---|
-| AATSR | `/home/hero/work/ls4t-aatsr-lsct` | `bianzj/ls4t-aatsr` | 逐景 LSCT、0.01° 日/月统计和月分析文件 |
-| MSG | `/home/hero/work/ls4t-msg-lsct` | `bianzj/ls4t-msg` | 投影、LSCT、月合成、站点提取和验证 |
-| SLSTR | `/home/hero/work/ls4t-slstr-lsct` | `bianzj/ls4t-slstr` | 研究区优先和逐景优先两种处理路线 |
+## 当前生产案例与来源
 
-这些项目是独立 Git 仓库，不是 worktree，也不作为 Python 包依赖嵌入主项目。这样可
-避免主项目整理影响正在运行的案例。可复用的改进应整理到主项目；案例采用某次主项目
-实现时，应在对应 README 或提交信息中记录来源提交。
+AATSR、MSG、SLSTR 的实际执行脚本已收录到本仓库。三个独立私有仓库继续作为运行
+项目和上游来源；这里保存可审查的脚本快照，不使用 submodule。来源提交和入口见
+`projects.toml`，传感器状态和处理方式见 `catalog.toml`。同步时应以独立仓库的一个明确
+提交更新整个对应目录，并同时修改来源提交，避免两个版本含义不明。
 
-## 仓库内案例
+| 传感器 | 本仓库执行目录 | 独立私有项目 |
+|---|---|---|
+| AATSR | `aatsr/production/global_001deg/` | `bianzj/ls4t-aatsr` |
+| MSG | `msg/lsct/`、`msg/preprocess/`、`msg/field/` | `bianzj/ls4t-msg` |
+| SLSTR | `slstr/study_area/`、`slstr/scene_first/`、`slstr/batch/` | `bianzj/ls4t-slstr` |
 
-当前目录还保留 `AATSR_product/`、`MSG/`、`msg-fit/`、`msg-lsct/`、`slstr-lsct/`
-以及早期 `case1/`、`case2/`。原根目录中的 `aatsr_lst/`、`msg_lst/`、`slstr_lst/`
-和旧数据整理脚本已集中到 `legacy/`；它们使用的旧 `base/util_*` 模块位于
-`_legacy_support/base/`。这些内容用于历史结果复现和迁移检查，不是新的公共 API。
+## 两种空间处理方式
 
-必须运行仓库内旧案例时，从项目根目录显式加入兼容路径，例如：
+每个实际案例必须明确选择一种方式，不在同一批次中隐式混合：
+
+1. `study-area-first`：下载相邻影像 → 提取/投影 → 拼接或裁剪成完整研究区 →
+   对研究区整体运行 LST/LSCT。
+2. `scene-first`：逐景提取/投影 → 逐景运行 LST/LSCT → 完成后拼接或裁剪结果。
+
+SLSTR 已按这两个名称分目录。MSG 固定网格通常接近第一种方式；AATSR 全球 0.01°
+统计属于逐景处理后再做日/月聚合。
+
+## 新增和整理规则
+
+1. 按 `cases/<sensor>/<case-name>/` 放置，不能再直接堆到 `cases/` 最外层。
+2. 在 `catalog.toml` 登记传感器、状态、入口、空间处理方式和外部依赖。
+3. 参数可集中在脚本顶部；通用计算函数应移回根目录模块。
+4. 不提交凭据、原始影像、产品、缓存和日志。
+5. 从 `old/` 迁入但尚未验证的脚本标为 `legacy`，不能直接标为生产入口。
+
+历史脚本可能仍有旧绝对路径。需要运行时，从项目根目录显式加入兼容路径：
 
 ```bash
 PYTHONPATH=cases/_legacy_support:. python cases/legacy/aatsr_lst/aatsr_lst.py
 ```
-
-旧文件中可能仍有未解决的历史分支冲突或过期绝对路径；实际生产优先使用上面的三个
-独立 case 项目。
-
-新增案例时应放在明确命名的子目录中，并做到：
-
-1. 参数集中在脚本顶部，不引入统一 CLI；
-2. 数据、LST、LSCT 分阶段运行；
-3. 明确采用“先形成研究区再反演”或“逐景反演后再拼接/裁剪”；
-4. 不提交认证信息、数据产品、缓存、日志和本机生成图；
-5. 通用算法放回根目录模块，案例脚本只保留数据选择和运行参数。

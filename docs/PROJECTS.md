@@ -9,7 +9,7 @@
 - `base/`：公共反演、质量控制、产品读写和空间算法；
 - `normalization/`：角度、时间、空间和传感器归一化；
 - `composite/`、`applications/`：时间合成和 L4 应用；
-- `cases/`：实际案例、历史实验和独立 case 项目索引。
+- `cases/`：按传感器组织的实际执行快照、历史实验和独立项目索引。
 
 ## 独立 case 项目
 
@@ -20,15 +20,22 @@
 | `/home/hero/work/ls4t-slstr-lsct` | `bianzj/ls4t-slstr` | SLSTR 研究区优先与逐景优先流程 |
 
 这三个目录是独立 Git 仓库，不共享主项目的 `.git`，也不再由 `git worktree` 管理。
-独立仓库保存与数据盘、年份、区域和一次运行紧密绑定的内容，主项目保存可复用实现。
+主仓库同时在 `cases/aatsr/`、`cases/msg/`、`cases/slstr/` 保存指定提交的执行脚本快照，
+因此单独克隆主仓库也能查看和复现流程。它们不是 submodule；同步关系由
+`cases/projects.toml` 中的 `source_revision` 明确记录。
+
+MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已从 `old/` 迁入对应的
+`cases/modis/`、`cases/viirs/`、`cases/ahi/`，并在验证前统一标记为 `legacy`。
 
 ## 代码流动原则
 
-1. 在 case 中经过实际数据验证的通用改进，整理后移入主项目对应传感器目录。
-2. 主项目的新实现用于 case 时，由 case 主动更新并记录主项目提交，不自动同步。
+1. 在 case 中经过实际数据验证的通用改进，整理后移入主项目根目录的传感器模块。
+2. 独立项目更新主仓库快照时，整体同步对应 case，并更新 `source_revision`，不做无版本
+   记录的零散双向复制。
 3. case 可以保留本机绝对路径，但必须集中在脚本顶部；认证信息不能写入源码。
 4. 数据、LST、LSCT 分开保存和执行，不增加统一总调度器。
 5. 两种空间模式都保留：先形成完整研究区再反演，以及逐景反演后再拼接或裁剪。
+6. 多传感器流程放入 `cases/shared/`，不能为了文件名方便重复归入两个传感器。
 
 ## 日常检查
 
@@ -39,4 +46,5 @@ git -C /home/hero/work/ls4t-msg-lsct status --short --branch
 git -C /home/hero/work/ls4t-slstr-lsct status --short --branch
 ```
 
-三个 case 的更详细内容见 `cases/README.md` 和各自独立仓库的 README。
+项目状态、主仓库快照路径和入口见 `cases/README.md`、`cases/catalog.toml`、
+`cases/projects.toml` 以及各自独立仓库的 README。

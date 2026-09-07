@@ -9,18 +9,34 @@ sensor = "AATSR"
 name = "ls4t-aatsr"
 repository = "git@github.com:bianzj/ls4t-aatsr.git"
 local_path = "/home/hero/work/ls4t-aatsr-lsct"
-entrypoints = ["aatsr_lst/aatsr_001deg_stats.py", "aatsr_lst/aatsr_monthly_3files.py"]
+source_revision = "f95acc7"
+vendored_path = "cases/aatsr/production/global_001deg"
+entrypoints = [
+  "cases/aatsr/production/global_001deg/aatsr_001deg_stats.py",
+  "cases/aatsr/production/global_001deg/aatsr_monthly_3files.py",
+]
 
 [[case]]
 sensor = "MSG"
 name = "ls4t-msg"
 repository = "git@github.com:bianzj/ls4t-msg.git"
 local_path = "/home/hero/work/ls4t-msg-lsct"
-entrypoints = ["cases/msg-lsct/msg_lsct3.2-iter.py", "cases/msg-lsct/msg_monthly_averaging.py"]
+source_revision = "fdaa5bc"
+vendored_path = "cases/msg"
+entrypoints = [
+  "cases/msg/lsct/msg_lsct3.2-iter.py",
+  "cases/msg/lsct/msg_monthly_averaging.py",
+]
 
 [[case]]
 sensor = "SLSTR"
 name = "ls4t-slstr"
 repository = "git@github.com:bianzj/ls4t-slstr.git"
 local_path = "/home/hero/work/ls4t-slstr-lsct"
-entrypoints = ["slstr_lst/study_area/slstr_lst.py", "slstr_lst/one_by_one/slstr_lst.py"]
+source_revision = "f4bc61b"
+vendored_path = "cases/slstr"
+entrypoints = [
+  "cases/slstr/study_area/slstr_lst.py",
+  "cases/slstr/scene_first/slstr_lst.py",
+  "cases/slstr/batch/slstr_lst.py",
+]
