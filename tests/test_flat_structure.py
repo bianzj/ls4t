@@ -29,10 +29,11 @@ from slstr.slstr_unzip import slstr_unzip
 
 
 def test_runtime_tree_is_flat():
-    source = Path(__file__).resolve().parents[1] / "src"
-    assert not (source / "ls4t").exists()
+    source = Path(__file__).resolve().parents[1]
+    assert not (source / "src").exists()
     for name in ("base", "aatsr", "slstr", "msg", "normalization"):
         assert (source / name).is_dir()
+    assert (source / "cases").is_dir()
 
 
 def test_manual_batch_parameters_default_to_none():

@@ -20,9 +20,9 @@ raw
 
 | 传感器 | 投影 | 形成研究区数据 |
 |---|---|---|
-| AATSR | `src/aatsr/aatsr_project.py` | `aatsr_data_region()` |
-| SLSTR | `src/slstr/slstr_project.py` | `slstr_data_region()` |
-| MSG | `src/msg/msg_project.py`（可选） | `msg_data_region()` |
+| AATSR | `aatsr/aatsr_project.py` | `aatsr_data_region()` |
+| SLSTR | `slstr/slstr_project.py` | `slstr_data_region()` |
+| MSG | `msg/msg_project.py`（可选） | `msg_data_region()` |
 
 研究区拼接在重叠位置优先选择无云且观测天顶角较小的像元。输入可以是一个目录，
 也可以是明确的 NPZ 文件列表。一个输入组只能包含同一次获取和同一视角的数据。

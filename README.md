@@ -2,15 +2,14 @@
 
 LS4T 按产品组织代码，按目录和年份手工运行。项目不提供统一 CLI，也不把不同传感器强制包装成相同接口。
 
-`/home/hero/work/ls4t` 是当前唯一主工作目录。`/home/hero/work` 下名称以
-`ls4t-` 开头的其它目录是同一 Git 仓库的传感器工作树，用于保留历史实验、区域参数和
-运行脚本，不是独立项目。工作树职责和整理规则见
-[docs/WORKTREES.md](docs/WORKTREES.md)。
+`/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR 的实际
+运行脚本分别维护在独立的 case 项目中；主项目的 `cases/` 保存案例说明、历史案例和
+这些独立项目的关联。项目关系见 [cases/README.md](cases/README.md)。
 
 ## 源码结构
 
 ```text
-src/
+ls4t/
 ├── base/                    公共数值、质量、产品读写和空间算法
 ├── aatsr/
 │   ├── aatsr_data.py        AATSR 解压与数据提取
@@ -41,10 +40,11 @@ src/
 │   ├── sensor.py            传感器归一化
 │   └── fusion.py            多传感器融合
 ├── composite.py             时间合成
-└── applications.py          TVDI 等 L4 应用
+├── applications.py          TVDI 等 L4 应用
+└── cases/                    实际案例、历史实验和独立 case 项目索引
 ```
 
-没有 `src/ls4t/`、`production/`、`products/` 或统一流程包。
+源码直接从项目根目录开始，不再增加 `` 层，也不使用统一流程包。
 
 ## 参数和运行方式
 
@@ -64,8 +64,8 @@ if __name__ == "__main__":
 ```
 
 每个 SLSTR 阶段都有自己的文件；例如解压运行
-`PYTHONPATH=src python src/slstr/slstr_unzip.py`，投影运行
-`PYTHONPATH=src python src/slstr/slstr_project.py`。只修改所选文件顶部的参数，
+`python slstr/slstr_unzip.py`，投影运行
+`python slstr/slstr_project.py`。只修改所选文件顶部的参数，
 不会自动调用其它阶段。`slstr_data.py` 中仍保留同名兼容入口，旧脚本可以继续导入。
 
 需要投影时手动改成：
@@ -78,7 +78,7 @@ if __name__ == "__main__":
 从项目根目录运行：
 
 ```bash
-PYTHONPATH=src python src/slstr/slstr_extract.py
+python slstr/slstr_extract.py
 ```
 
 外部程序也可以直接调用某个批处理函数：

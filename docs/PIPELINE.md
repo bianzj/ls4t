@@ -12,11 +12,11 @@ MSG-DATA   → MSG-LST   / MSG-LSCT
 
 SLSTR 数据阶段被明确拆开：
 
-1. `src/slstr/slstr_unzip.py` 的 `slstr_unzip()`：压缩包到 SEN3。
-2. `src/slstr/slstr_extract.py` 的 `slstr_extract()`：读取原生数组，不做网格重建。
-3. `src/slstr/slstr_reconstruct.py` 的 `slstr_reconstruct()`：把坐标、云和 tie-point 角度对齐到热红外网格。
-4. `src/slstr/slstr_project.py` 的 `slstr_project()`：投影到指定目标栅格。
-5. `src/slstr/slstr_merge.py` 的 `slstr_merge()`：按日期和视角合并同网格场景。
+1. `slstr/slstr_unzip.py` 的 `slstr_unzip()`：压缩包到 SEN3。
+2. `slstr/slstr_extract.py` 的 `slstr_extract()`：读取原生数组，不做网格重建。
+3. `slstr/slstr_reconstruct.py` 的 `slstr_reconstruct()`：把坐标、云和 tie-point 角度对齐到热红外网格。
+4. `slstr/slstr_project.py` 的 `slstr_project()`：投影到指定目标栅格。
+5. `slstr/slstr_merge.py` 的 `slstr_merge()`：按日期和视角合并同网格场景。
 
 这些函数互不调用，可分别重跑。
 

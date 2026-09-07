@@ -1,0 +1,26 @@
+[core]
+name = "ls4t"
+repository = "git@github.com:bianzj/ls4t.git"
+local_path = "/home/hero/work/ls4t"
+source_layout = "root"
+
+[[case]]
+sensor = "AATSR"
+name = "ls4t-aatsr"
+repository = "git@github.com:bianzj/ls4t-aatsr.git"
+local_path = "/home/hero/work/ls4t-aatsr-lsct"
+entrypoints = ["aatsr_lst/aatsr_001deg_stats.py", "aatsr_lst/aatsr_monthly_3files.py"]
+
+[[case]]
+sensor = "MSG"
+name = "ls4t-msg"
+repository = "git@github.com:bianzj/ls4t-msg.git"
+local_path = "/home/hero/work/ls4t-msg-lsct"
+entrypoints = ["cases/msg-lsct/msg_lsct3.2-iter.py", "cases/msg-lsct/msg_monthly_averaging.py"]
+
+[[case]]
+sensor = "SLSTR"
+name = "ls4t-slstr"
+repository = "git@github.com:bianzj/ls4t-slstr.git"
+local_path = "/home/hero/work/ls4t-slstr-lsct"
+entrypoints = ["slstr_lst/study_area/slstr_lst.py", "slstr_lst/one_by_one/slstr_lst.py"]
