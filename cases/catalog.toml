@@ -1,75 +1,63 @@
-version = 1
+version = 2
 
 [policy]
-core = "Reusable algorithms live at repository root."
-tests = "Automated tests use synthetic or temporary data."
-cases = "Machine paths, regions, years and real execution live under cases/<sensor>."
+case_layout = "cases/<sensor>/<region>/<case-id>"
+machine_layout = "<case>/machines/<machine-id>.toml"
+active_requires = ["case.toml", "documented entrypoint", "tested LS4T revision"]
+archive_root = "_archive"
 
-[[sensor]]
-id = "aatsr"
+[[case]]
+id = "aatsr-global-001deg-2003-2012"
+sensor = "aatsr"
+region = "global"
 status = "active"
-source = "bianzj/ls4t-aatsr@f95acc7"
-paths = ["aatsr/production/global_001deg", "aatsr/product"]
-entrypoints = [
-  "aatsr/production/global_001deg/aatsr_001deg_stats.py",
-  "aatsr/production/global_001deg/aatsr_monthly_3files.py",
-]
-spatial_modes = ["scene-first", "temporal-composite"]
+spatial_mode = "temporal-composite"
+path = "aatsr/global/001deg_2003_2012"
+entrypoints = ["aatsr_001deg_stats.py", "aatsr_monthly_3files.py"]
 
-[[sensor]]
-id = "msg"
-status = "active"
-source = "bianzj/ls4t-msg@fdaa5bc"
-paths = ["msg/lsct", "msg/preprocess", "msg/field", "msg/auxiliary", "msg/download"]
-entrypoints = ["msg/lsct/msg_lsct3.2-iter.py", "msg/lsct/msg_monthly_averaging.py"]
-spatial_modes = ["study-area-first", "fixed-grid"]
+[[case]]
+id = "msg-europe-africa-dual-disk"
+sensor = "msg"
+region = "europe-africa"
+status = "migrated"
+spatial_mode = "fixed-grid"
+path = "msg/europe_africa/dual_disk"
+entrypoints = ["lsct/msg_lsct3.2-iter.py", "lsct/msg_monthly_averaging.py"]
 
-[[sensor]]
-id = "slstr"
-status = "active"
-source = "bianzj/ls4t-slstr@f4bc61b"
-paths = ["slstr/study_area", "slstr/scene_first", "slstr/batch"]
-entrypoints = ["slstr/study_area/slstr_lst.py", "slstr/scene_first/slstr_lst.py"]
-spatial_modes = ["study-area-first", "scene-first"]
+[[case]]
+id = "slstr-heihe-2022-study-area"
+sensor = "slstr"
+region = "heihe"
+status = "migrated"
+spatial_mode = "study-area-first"
+path = "slstr/heihe/study_area_2022"
+entrypoints = ["study_area/slstr_lst.py"]
 
-[[sensor]]
-id = "modis"
-status = "legacy"
-source = "old/ migration"
-paths = ["modis/data", "modis/lst", "modis/auxiliary"]
-entrypoints = []
-spatial_modes = ["unclassified"]
+[[case]]
+id = "slstr-europe-south-africa-scene-first"
+sensor = "slstr"
+region = "europe-south-africa"
+status = "migrated"
+spatial_mode = "scene-first"
+path = "slstr/europe_south_africa/scene_first_migrated"
+entrypoints = ["scene_first/slstr_lst.py"]
 
-[[sensor]]
-id = "viirs"
-status = "legacy"
-source = "old/ migration"
-paths = ["viirs/data", "viirs/lst", "viirs/auxiliary", "viirs/tools"]
-entrypoints = []
-spatial_modes = ["unclassified"]
+[[archive]]
+path = "_archive/aatsr/product_history"
+reason = "duplicate historical product implementations and backups"
 
-[[sensor]]
-id = "ahi"
-status = "legacy"
-source = "old/ migration"
-paths = ["ahi/data", "ahi/lst", "ahi/auxiliary", "ahi/angular", "ahi/temporal", "ahi/uncertainty"]
-entrypoints = []
-spatial_modes = ["study-area-first", "unclassified"]
+[[archive]]
+path = "_archive/msg"
+reason = "pre-reorganization snapshots, experiments and old validation"
 
-[[shared_case]]
-id = "laads-download"
-status = "legacy"
-path = "shared/download/laads"
-sensors = ["modis", "viirs"]
+[[archive]]
+path = "_archive/slstr/mixed_batch"
+reason = "mixed Europe, South Africa and machine-specific paths"
 
-[[shared_case]]
-id = "slstr-ahi"
-status = "legacy"
-path = "shared/cross_sensor/slstr_ahi"
-sensors = ["slstr", "ahi"]
+[[archive]]
+path = "_archive/sensors"
+reason = "MODIS, VIIRS and AHI scripts not yet converted into registered cases"
 
-[[shared_case]]
-id = "stream-msg"
-status = "legacy"
-path = "shared/cross_sensor/stream_msg"
-sensors = ["stream", "msg"]
+[[archive]]
+path = "_archive/shared"
+reason = "unverified cross-sensor and download scripts"

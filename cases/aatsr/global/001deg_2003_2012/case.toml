@@ -1,0 +1,29 @@
+schema_version = 1
+
+[case]
+id = "aatsr-global-001deg-2003-2012"
+sensor = "aatsr"
+region = "global"
+status = "active"
+spatial_mode = "temporal-composite"
+description = "AATSR 0.01-degree daily/monthly LSCT statistics and 2003-2011 monthly analysis stacks."
+
+[period]
+start = "2003-10-17"
+end = "2012-04-08"
+analysis_years = [2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011]
+
+[grid]
+id = "global-001deg"
+shape = [18000, 36000]
+resolution_degree = 0.01
+
+[processing]
+standard_core = false
+current_entrypoint = "aatsr_001deg_stats.py"
+monthly_entrypoint = "aatsr_monthly_3files.py"
+product_variables = ["Ts", "Tv", "T"]
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-aatsr.git"
+source_revision = "f95acc7"

@@ -1,0 +1,33 @@
+schema_version = 1
+
+[case]
+id = "{{CASE_ID}}"
+sensor = "{{SENSOR}}"
+region = "{{REGION}}"
+status = "draft"
+spatial_mode = "{{SPATIAL_MODE}}"
+description = "Replace with the scientific objective."
+
+[period]
+years = [2022]
+months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+
+[grid]
+id = "replace-me"
+bounds = [-180.0, -90.0, 180.0, 90.0]
+
+[processing]
+standard_core = true
+views = ["nadir", "oblique"]
+overwrite = false
+projection_chunk_size = 100000
+cloud_fraction_threshold = 0.0
+uncertainty_k = 1.0
+
+[stages]
+enabled = []
+
+[provenance]
+ls4t_revision = "replace-with-tested-commit"
+algorithm_version = "replace-me"

@@ -1,0 +1,26 @@
+[machine]
+id = "example"
+description = "Copy to local.toml and replace paths for this machine."
+
+[paths]
+zip_root = "/replace/data/zip"
+raw_root = "/replace/data/raw"
+extract_root = "/replace/data/extract"
+reconstruct_root = "/replace/data/reconstruct"
+project_root = "/replace/data/project"
+merge_root = "/replace/data/merge"
+retrieval_input_root = "/replace/data/prepared-for-retrieval"
+lst_root = "/replace/data/lst"
+lsct_input_root = "/replace/data/lsct_input"
+lsct_root = "/replace/data/lsct"
+target_grid_file = "/replace/auxiliary/target_grid.tif"
+static_file = "/replace/auxiliary/static.npz"
+coefficient_file = "/replace/auxiliary/lst_coefficients.npz"
+auxiliary_file = "/replace/auxiliary/lst_auxiliary.npz"
+
+# Paths are passed to the selected standard function as its root arguments.
+# Check that module's year/day templates before running on an existing tree.
+
+[runtime]
+workers = 1
+scratch_root = "/replace/scratch"

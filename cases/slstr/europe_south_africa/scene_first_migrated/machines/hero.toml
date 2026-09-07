@@ -1,0 +1,11 @@
+[machine]
+id = "hero"
+
+[paths]
+europe_root = "/media/hero/slstr-euro"
+south_africa_root = "/media/hero/slstr-southA-lst"
+era5_root = "/media/hero/earth/ERA5_Daily_H5"
+vegetation_root = "/media/hero/rs/veg"
+
+[notes]
+split_required = "Create separate Europe and South Africa cases when either workflow is next rerun."

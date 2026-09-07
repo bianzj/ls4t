@@ -72,8 +72,9 @@ slstr_extract(
 ```
 
 如果缺少执行所需的路径或年份，核心批处理函数会提示到 `cases/` 中配置，而不会使用
-开发者机器上的隐式默认值。历史运行材料位于 `cases/legacy/`，当前 AATSR、MSG、
-SLSTR 生产案例见 [cases/README.md](cases/README.md)。
+开发者机器上的隐式默认值。当前案例位于 `cases/<sensor>/<region>/`，模板位于
+`cases/_templates/`，非活动历史材料统一位于 `cases/_archive/`。详细结构见
+[cases/README.md](cases/README.md)。
 
 ## 产品层级
 
@@ -84,9 +85,11 @@ L1O → L2LST / L2LSCT → L3N → L3C → L4A
 角度、时间、空间和传感器归一化分别手工执行。融合只接受已经处于相同网格和归一化基准的 L3N 数据。
 
 旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。AATSR、MSG、
-SLSTR 当前生产脚本以及 MODIS、VIIRS、AHI 历史脚本统一从 `cases/<sensor>/` 查找。
+SLSTR 当前案例从 `cases/<sensor>/<region>/` 查找；MODIS、VIIRS、AHI 尚未整理成正式
+案例的脚本暂存在 `cases/_archive/sensors/`。
 详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
-[docs/PIPELINE.md](docs/PIPELINE.md)。
+[docs/PIPELINE.md](docs/PIPELINE.md)。实际案例的新建、机器配置、版本升级和归档流程见
+[docs/CASE_WORKFLOW.md](docs/CASE_WORKFLOW.md)。
 
 ## 两种空间处理方式
 

@@ -7,5 +7,6 @@ LS4T.
 Use it only for legacy reproduction:
 
 ```bash
-PYTHONPATH=cases/_legacy_support:. python cases/legacy/<script>.py
+PYTHONPATH=cases/_archive/compatibility/legacy_support:. \
+  python cases/_archive/legacy/unclassified/<script>.py
 ```

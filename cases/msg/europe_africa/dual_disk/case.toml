@@ -1,0 +1,19 @@
+schema_version = 1
+
+[case]
+id = "msg-europe-africa-dual-disk"
+sensor = "msg"
+region = "europe-africa"
+status = "migrated"
+spatial_mode = "fixed-grid"
+description = "MSG and MSG-IODC dual-disk LSCT, monthly aggregation and site validation."
+
+[processing]
+directories = ["lsct", "preprocess", "field", "auxiliary", "download"]
+current_entrypoint = "lsct/msg_lsct3.2-iter.py"
+monthly_entrypoint = "lsct/msg_monthly_averaging.py"
+standard_core = false
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-msg.git"
+source_revision = "fdaa5bc"

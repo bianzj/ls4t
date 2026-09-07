@@ -1,10 +1,10 @@
 # SLSTR cases
 
-来自私有项目 `bianzj/ls4t-slstr@f4bc61b` 的当前执行快照按空间策略拆开：
+- `heihe/study_area_2022/`：黑河案例，采用 `study-area-first`；
+- `europe_south_africa/scene_first_migrated/`：欧洲/南非逐景实现快照，采用
+  `scene-first`，下次执行前应再拆成
+  两个独立区域案例。
 
-- `study_area/`：先把相邻观测形成完整研究区，再进行 LST/LSCT。
-- `scene_first/`：逐景完成 LST/LSCT，再拼接或裁剪研究区结果。
-- `batch/`：批量解压、数据准备、ERA5 辅助数据和现有批处理入口。
-
-新增脚本必须明确属于前两条路线之一；公共的 SLSTR 读取、投影和反演函数放在根目录
-`slstr/`，不要复制回案例。
+同时混有 ERA5、欧洲、南非和多台机器路径的批处理脚本已放到
+`_archive/slstr/mixed_batch/`。新案例从 `_templates/` 创建，公共读取、重建、投影、
+LST 和 LSCT 调用根目录 `slstr/` 模块。

@@ -1,0 +1,6 @@
+[machine]
+id = "hero"
+
+[paths]
+data_root = "/home/hero/data/SLSTR_heihe"
+auxiliary_root = "/home/hero/data/LSCT3/LSCT_dm_2022/0_base"

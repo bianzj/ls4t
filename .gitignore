@@ -8,3 +8,10 @@ __MACOSX/
 *.egg-info/
 build/
 dist/
+
+# Case-local machine settings and generated products
+cases/**/machines/local.toml
+cases/**/.case-state/
+cases/**/runs/
+cases/**/outputs/
+cases/**/logs/

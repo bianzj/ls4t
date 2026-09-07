@@ -1,0 +1,8 @@
+[machine]
+id = "bianzj-macos"
+
+[paths]
+msg_root = "/Users/bianzj/Downloads/data/msg"
+
+[notes]
+legacy_paths = "Only preprocessing scripts currently reference this path."

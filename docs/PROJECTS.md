@@ -24,8 +24,8 @@
 因此单独克隆主仓库也能查看和复现流程。它们不是 submodule；同步关系由
 `cases/projects.toml` 中的 `source_revision` 明确记录。
 
-MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已从 `old/` 迁入对应的
-`cases/modis/`、`cases/viirs/`、`cases/ahi/`，并在验证前统一标记为 `legacy`。
+MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本放在 `cases/_archive/sensors/`；只有
+补齐 `case.toml`、区域、机器配置和运行验证后，才迁入正式的 `cases/<sensor>/`。
 
 ## 代码流动原则
 
@@ -35,7 +35,8 @@ MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已从 `old/` 迁入�
 3. case 可以保留本机绝对路径，但必须集中在脚本顶部；认证信息不能写入源码。
 4. 数据、LST、LSCT 分开保存和执行，不增加统一总调度器。
 5. 两种空间模式都保留：先形成完整研究区再反演，以及逐景反演后再拼接或裁剪。
-6. 多传感器流程放入 `cases/shared/`，不能为了文件名方便重复归入两个传感器。
+6. 当前使用的多传感器流程按研究目标建立独立 case；尚未验证的旧联合脚本先放在
+   `cases/_archive/shared/`，不能为了文件名方便重复归入两个传感器。
 
 ## 日常检查
 

@@ -1,0 +1,9 @@
+[machine]
+id = "hero"
+
+[paths]
+msg_root = "/media/hero/MSG"
+shared_remote_sensing_root = "/media/hero/rs"
+
+[notes]
+legacy_paths = "Individual scripts still contain paths and must be migrated to this profile before active status."

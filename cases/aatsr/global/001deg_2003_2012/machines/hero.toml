@@ -1,0 +1,10 @@
+[machine]
+id = "hero"
+
+[paths]
+source_root = "/media/hero/lsct04"
+statistics_root = "/media/hero/lsct04/aatsr_lsct_001deg_simple"
+monthly_stack_root = "/media/hero/lsct04/aatsr_lsct_001deg_simple/monthly_2003_2011_3files"
+
+[runtime]
+services = ["ls4t-aatsr-001deg-simple.service", "ls4t-aatsr-001deg-workers.service"]

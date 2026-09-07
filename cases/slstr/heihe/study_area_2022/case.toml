@@ -1,0 +1,21 @@
+schema_version = 1
+
+[case]
+id = "slstr-heihe-2022-study-area"
+sensor = "slstr"
+region = "heihe"
+status = "migrated"
+spatial_mode = "study-area-first"
+description = "Heihe study-area-first SLSTR LST and LSCT implementation."
+
+[period]
+years = [2022]
+
+[processing]
+directories = ["study_area"]
+current_entrypoint = "study_area/slstr_lst.py"
+standard_core = false
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-slstr.git"
+source_revision = "f4bc61b"
