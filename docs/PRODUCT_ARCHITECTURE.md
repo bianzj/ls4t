@@ -4,7 +4,7 @@
 
 代码按产品归属，不按统一流程框架组织：
 
-- `aatsr_data.py`、`slstr_data.py`、`msg_data.py` 负责各自传感器数据；较长的
+- 各传感器的 `*_data.py` 负责标准数据产品；较长的
   SLSTR 批处理阶段另按阶段拆成 `slstr_unzip.py`、`slstr_extract.py`、
   `slstr_reconstruct.py`、`slstr_project.py` 和 `slstr_merge.py`。
 - `*_lst.py` 只负责地表温度反演。
@@ -12,7 +12,9 @@
 - 角度、时间、空间、传感器归一化和融合分别集中在 `normalization/`。
 - `base/` 只保存稳定公共算法、质量标识和产品读写，不能加入目录遍历或传感器流程。
 - `base/spatial.py` 只保存同网格投影、裁剪和像元选择算法；输入文件如何分组仍由
-  AATSR、SLSTR、MSG 各自的 `*_region.py` 决定。
+  各传感器的 `*_merge.py` 或 `*_region.py` 决定。
+- MODIS、VIIRS、AHI、ASTER 共用 `base/dual_thermal.py` 的标准产品和双通道算法，
+  但在各自根目录包中保留传感器名称、通道和公开入口。
 
 ## 执行单位
 
@@ -46,6 +48,10 @@ ls4t/
 ├── aatsr/
 ├── slstr/
 ├── msg/
+├── modis/
+├── viirs/
+├── ahi/
+├── aster/
 ├── normalization/
 ├── composite/
 ├── applications/

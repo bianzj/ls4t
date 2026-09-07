@@ -10,6 +10,10 @@ from .calibration import (
     save_split_window_model,
 )
 from .files import read_npz_payload, write_npz_atomic
+from .dual_thermal import (
+    DualThermalDataProduct,
+    DualThermalSensorSpec,
+)
 from .lsct import ComponentRetrievalResult, retrieve_components, retrieve_components_window
 from .lst import (
     DualChannelObservation,
@@ -34,6 +38,8 @@ from .spatial import (
 __all__ = [
     "ComponentRetrievalResult",
     "DualChannelObservation",
+    "DualThermalDataProduct",
+    "DualThermalSensorSpec",
     "ProductLevel",
     "ProductMetadata",
     "QualityFlag",

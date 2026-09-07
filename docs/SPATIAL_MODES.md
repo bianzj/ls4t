@@ -23,10 +23,14 @@ raw
 | AATSR | `aatsr/aatsr_project.py` | `aatsr_data_region()` |
 | SLSTR | `slstr/slstr_project.py` | `slstr_data_region()` |
 | MSG | `msg/msg_project.py`（可选） | `msg_data_region()` |
+| MODIS | `modis/modis_project.py` | `modis_data_region()` |
+| VIIRS | `viirs/viirs_project.py` | `viirs_data_region()` |
+| AHI | `ahi/ahi_project.py`（可选） | `ahi_data_region()` |
+| ASTER | `aster/aster_project.py` | `aster_data_region()` |
 
 研究区拼接在重叠位置优先选择无云且观测天顶角较小的像元。输入可以是一个目录，
 也可以是明确的 NPZ 文件列表。一个输入组只能包含同一次获取和同一视角的数据。
-进入 LST 时，如果数据产品尚无发射率、LAI 和水汽，case 必须向三个 `*_lst.py`
+进入 LST 时，如果数据产品尚无发射率、LAI 和水汽，case 必须向对应的 `*_lst.py`
 显式传入 `auxiliary_file`；该 NPZ 必须是标量或与当前研究网格形状一致。
 
 ## 方式二：逐景优先
@@ -48,13 +52,17 @@ raw
 | AATSR | `aatsr_result_region()` |
 | SLSTR | `slstr_result_region()` |
 | MSG | `msg_result_region()` |
+| MODIS | `modis_result_region()` |
+| VIIRS | `viirs_result_region()` |
+| AHI | `ahi_result_region()` |
+| ASTER | `aster_result_region()` |
 
 结果拼接先排除质量标识不可用的像元；多个有效结果重叠时，LST 优先采用不确定度
 较小的结果，LSCT 按输入文件顺序选择。这样不会在拼接阶段重新执行反演。
 
 ## 参数约定
 
-三个 `*_region.py` 函数由 case 显式接收：
+各传感器的 `*_region.py` 函数由 case 显式接收：
 
 - `DATA_INPUT` / `DATA_OUTPUT`：方式一的输入组和输出文件。
 - `RESULT_INPUT` / `RESULT_OUTPUT`：方式二的输入组和输出文件。

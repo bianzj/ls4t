@@ -47,6 +47,30 @@ STAGES = {
         "lst": ("slstr.slstr_lst", "slstr_lst"),
         "lsct": ("slstr.slstr_lsct", "slstr_lsct"),
     },
+    "modis": {
+        "extract": ("modis.modis_extract", "modis_extract"),
+        "project": ("modis.modis_project", "modis_project"),
+        "merge": ("modis.modis_merge", "modis_merge"),
+        "lst": ("modis.modis_lst", "modis_lst"),
+    },
+    "viirs": {
+        "extract": ("viirs.viirs_extract", "viirs_extract"),
+        "project": ("viirs.viirs_project", "viirs_project"),
+        "merge": ("viirs.viirs_merge", "viirs_merge"),
+        "lst": ("viirs.viirs_lst", "viirs_lst"),
+    },
+    "ahi": {
+        "extract": ("ahi.ahi_extract", "ahi_extract"),
+        "project": ("ahi.ahi_project", "ahi_project"),
+        "merge": ("ahi.ahi_merge", "ahi_merge"),
+        "lst": ("ahi.ahi_lst", "ahi_lst"),
+    },
+    "aster": {
+        "extract": ("aster.aster_extract", "aster_extract"),
+        "project": ("aster.aster_project", "aster_project"),
+        "merge": ("aster.aster_merge", "aster_merge"),
+        "lst": ("aster.aster_lst", "aster_lst"),
+    },
 }
 
 PATH_ARGUMENTS = {
@@ -69,6 +93,8 @@ PATH_ARGUMENTS = {
     "static_file": "static_file",
     "coefficient_file": "coefficient_file",
     "auxiliary_file": "auxiliary_file",
+    "input_paths": "merge_input_root",
+    "output_path": "merge_output_file",
 }
 
 
@@ -104,6 +130,7 @@ def stage_arguments(function, case: dict, machine: dict) -> dict:
         "uncertainty_k": processing.get("uncertainty_k"),
         "grid_id": grid.get("id"),
         "algorithm_version": provenance.get("algorithm_version"),
+        "bounds": grid.get("bounds"),
     }
     for argument, path_key in PATH_ARGUMENTS.items():
         if path_key in paths:

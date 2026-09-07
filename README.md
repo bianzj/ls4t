@@ -3,10 +3,10 @@
 LS4T 按产品组织可复用代码，并用自动化测试和最小样例验证。项目不提供统一 CLI，
 也不把不同传感器强制包装成相同接口；真实生产运行统一由 `cases/` 中的脚本配置。
 
-`/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR 的实际
-运行脚本已按来源提交收录到 `cases/`；三个独立私有项目继续作为运行项目和同步来源。
-MODIS、VIIRS、AHI 的历史处理方法已经登记为 `draft` 案例，ASTER 暂时只有待导入说明。
-这些未验证方法不放在根目录冒充标准模块。项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
+`/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR、MODIS、
+VIIRS、AHI、ASTER 都在根目录提供标准处理接口；地区、年份、机器和真实运行脚本统一
+放在 `cases/`。AATSR、MSG、SLSTR 的三个独立私有项目继续作为运行项目和同步来源。
+项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
 `cases/projects.toml` 和 `cases/catalog.toml`。
 
 ## 源码结构
@@ -36,6 +36,10 @@ ls4t/
 │   ├── msg_region.py        MSG 研究区前处理/结果后处理
 │   ├── msg_lst.py           MSG 地表温度
 │   └── msg_lsct.py          MSG 组分温度
+├── modis/                   MODIS 31/32 提取、投影、拼接、研究区和 LST
+├── viirs/                   VIIRS M15/M16 提取、投影、拼接、研究区和 LST
+├── ahi/                     AHI 14/15 提取、投影、拼接、研究区和 LST
+├── aster/                   ASTER 13/14 提取、投影、拼接、研究区和 LST
 ├── normalization/
 │   ├── angle.py             角度归一化
 │   ├── time.py              地方太阳时归一化
@@ -84,9 +88,9 @@ L1O → L2LST / L2LSCT → L3N → L3C → L4A
 
 角度、时间、空间和传感器归一化分别手工执行。融合只接受已经处于相同网格和归一化基准的 L3N 数据。
 
-旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。AATSR、MSG、
-SLSTR 当前案例从 `cases/<sensor>/<region>/` 查找；MODIS、VIIRS、AHI 也从同一位置
-查看，但目前状态为 `draft`。ASTER 尚无可迁移实现，入口说明位于 `cases/aster/`。
+旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。所有真实任务都从
+`cases/<sensor>/<region>/<case-id>/` 查找。MODIS、VIIRS、AHI 的现有旧任务状态为
+`draft`；ASTER 尚无真实任务，但根目录已经提供标准产品与处理接口。
 详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
 [docs/PIPELINE.md](docs/PIPELINE.md)。实际案例的新建、机器配置、版本升级和归档流程见
 [docs/CASE_WORKFLOW.md](docs/CASE_WORKFLOW.md)。
@@ -101,7 +105,8 @@ SLSTR 当前案例从 `cases/<sensor>/<region>/` 查找；MODIS、VIIRS、AHI �
 2. **逐景反演，再形成研究区**：原始数据 → 提取 → 逐景投影 → 逐景 LST/LSCT →
    `*_result_region()` 拼接/裁剪。适合保留逐景质量、过境时间和中间结果。
 
-三个传感器分别使用 `aatsr_region.py`、`slstr_region.py` 和 `msg_region.py`。
+各传感器使用自己的 `*_region.py`；MODIS、VIIRS、AHI、ASTER 还提供独立的
+`*_merge.py`，要求案例显式给出同一次获取的影像组。
 传入同一组的文件必须属于同一次获取、同一视角和同一目标网格；不应把不同时次
 或不同视角混在一次拼接中。详细运行顺序见
 [docs/SPATIAL_MODES.md](docs/SPATIAL_MODES.md)。

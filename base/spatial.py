@@ -272,7 +272,7 @@ def project_observation(
     if cloud_fraction is None:
         raise ValueError("observation product has no cloud_mask")
     primary_names = [
-        name for name in ("bt8_k", "bt11_k", "bt108_k") if name in updates
+        name for name in ("bt1_k", "bt8_k", "bt11_k", "bt108_k") if name in updates
     ]
     if not primary_names:
         raise ValueError("cannot identify a primary thermal field for projection")

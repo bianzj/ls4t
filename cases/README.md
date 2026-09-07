@@ -16,7 +16,7 @@ cases/
 ├── _archive/                           非活动、重复或混杂材料
 ├── ahi/
 │   └── unclassified/legacy_draft/      AHI 历史方法，draft
-├── aster/                              ASTER 待导入说明，暂无实现
+├── aster/                              ASTER 待导入说明，暂无真实案例
 ├── aatsr/
 │   └── global/001deg_2003_2012/        全球 0.01° 日/月统计
 ├── modis/

@@ -19,7 +19,10 @@ projection = ["GDAL>=3.6"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["base*", "aatsr*", "msg*", "slstr*", "normalization*", "composite*", "applications*"]
+include = [
+    "base*", "aatsr*", "msg*", "slstr*", "modis*", "viirs*", "ahi*", "aster*",
+    "normalization*", "composite*", "applications*",
+]
 exclude = ["cases*", "old*", "tests*"]
 
 [tool.pytest.ini_options]

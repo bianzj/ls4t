@@ -6,9 +6,15 @@
 AATSR-DATA → AATSR-LST / AATSR-LSCT
 SLSTR-DATA → SLSTR-LST / SLSTR-LSCT
 MSG-DATA   → MSG-LST   / MSG-LSCT
+MODIS-DATA → MODIS-LST
+VIIRS-DATA → VIIRS-LST
+AHI-DATA   → AHI-LST
+ASTER-DATA → ASTER-LST
 ```
 
 数据文件负责解压、原生读取、重建、投影或存放；温度文件只读取已经准备好的数据并反演产品。
+MODIS、VIIRS、AHI、ASTER 当前从已经完成辐射定标、以开尔文保存的 prepared-array
+NPZ 进入标准提取阶段；原始任务格式读取仍由案例验证后再提升。
 
 SLSTR 数据阶段被明确拆开：
 
@@ -32,9 +38,8 @@ SLSTR 数据阶段被明确拆开：
   → 研究区 LST 或 LSCT
 ```
 
-SLSTR 使用 `slstr_project.py`；AATSR 和 MSG 分别使用新增的
-`aatsr_project.py`、`msg_project.py`。如果 MSG 原始固定网格就是分析网格，可以
-跳过投影，直接把单个数据产品交给 `msg_data_region()` 裁剪。
+每个传感器使用自己的 `*_project.py`。如果 MSG 或 AHI 原始固定网格就是分析网格，可以
+跳过投影，直接把单个数据产品交给对应的 `*_data_region()` 裁剪。
 
 ### 路线 B：先逐景反演，后研究区
 

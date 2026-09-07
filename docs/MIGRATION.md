@@ -18,6 +18,10 @@
 | MSG SEVIRI 读取 | `msg/msg_data.py` |
 | MSG 投影、研究区拼接/裁剪 | `msg/msg_project.py`、`msg/msg_region.py` |
 | MSG 温度和组分温度 | `msg/msg_lst.py`、`msg/msg_lsct.py` |
+| MODIS 数据、投影、拼接和温度 | `modis/modis_data.py`、`modis/modis_project.py`、`modis/modis_merge.py`、`modis/modis_lst.py` |
+| VIIRS 数据、投影、拼接和温度 | `viirs/viirs_data.py`、`viirs/viirs_project.py`、`viirs/viirs_merge.py`、`viirs/viirs_lst.py` |
+| AHI 数据、投影、拼接和温度 | `ahi/ahi_data.py`、`ahi/ahi_project.py`、`ahi/ahi_merge.py`、`ahi/ahi_lst.py` |
+| ASTER 数据、投影、拼接和温度 | `aster/aster_data.py`、`aster/aster_project.py`、`aster/aster_merge.py`、`aster/aster_lst.py` |
 | 角度归一化 | `normalization/angle.py` |
 | 地方太阳时归一化 | `normalization/time.py` |
 | 网格和空间归一化 | `normalization/space.py` |

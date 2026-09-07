@@ -6,6 +6,7 @@
 `bianzj/ls4t`。源码直接位于项目根目录：
 
 - `aatsr/`、`slstr/`、`msg/`：传感器数据、投影、LST 和 LSCT；
+- `modis/`、`viirs/`、`ahi/`、`aster/`：双热通道数据、投影、拼接和 LST；
 - `base/`：公共反演、质量控制、产品读写和空间算法；
 - `normalization/`：角度、时间、空间和传感器归一化；
 - `composite/`、`applications/`：时间合成和 L4 应用；
@@ -26,8 +27,8 @@
 
 MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已经放入各自的
 `cases/<sensor>/unclassified/legacy_draft/` 并登记为 `draft`；完成区域、机器路径、
-依赖和结果验证后才可标记 `migrated` 或 `active`。ASTER 当前没有找到可迁移源码，
-只在 `cases/aster/` 保留待导入说明。
+依赖和结果验证后才可标记 `migrated` 或 `active`。四类传感器的机器无关处理接口已在
+根目录建立；ASTER 当前没有可迁移的真实案例，`cases/aster/` 只保留待导入说明。
 
 ## 代码流动原则
 
