@@ -9,7 +9,7 @@ sensor = "AATSR"
 name = "ls4t-aatsr"
 repository = "git@github.com:bianzj/ls4t-aatsr.git"
 local_path = "/home/hero/work/ls4t-aatsr-lsct"
-source_revision = "bc2112d"
+source_revision = "a70ef6c"
 official_path = "cases/official"
 case_paths = ["cases/aatsr/global/001deg_2003_2012"]
 
@@ -18,7 +18,7 @@ sensor = "MSG"
 name = "ls4t-msg"
 repository = "git@github.com:bianzj/ls4t-msg.git"
 local_path = "/home/hero/work/ls4t-msg-lsct"
-source_revision = "97ae8b3"
+source_revision = "40ba8cf"
 official_path = "cases/official"
 case_paths = ["cases/msg/europe_africa/dual_disk"]
 
@@ -27,7 +27,7 @@ sensor = "SLSTR"
 name = "ls4t-slstr"
 repository = "git@github.com:bianzj/ls4t-slstr.git"
 local_path = "/home/hero/work/ls4t-slstr-lsct"
-source_revision = "529700b"
+source_revision = "f9c87a0"
 official_path = "cases/official"
 case_paths = [
   "cases/slstr/heihe/study_area_2022",
