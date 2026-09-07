@@ -21,9 +21,15 @@
 | `/home/hero/work/ls4t-slstr-lsct` | `bianzj/ls4t-slstr` | SLSTR 研究区优先与逐景优先流程 |
 
 这三个目录是独立 Git 仓库，不共享主项目的 `.git`，也不再由 `git worktree` 管理。
+每个独立仓库都以 `cases/official/` 作为正式生产入口，包含阶段登记、机器配置和当前
+生产实现；旧目录名仅作为兼容符号链接。AATSR 的历史产品开发脚本已移到其独立仓库的
+`cases/_archive/product_history/`。
+
 主仓库同时在 `cases/aatsr/`、`cases/msg/`、`cases/slstr/` 保存指定提交的执行脚本快照，
 因此单独克隆主仓库也能查看和复现流程。它们不是 submodule；同步关系由
-`cases/projects.toml` 中的 `source_revision` 明确记录。
+`cases/projects.toml` 中的 `source_revision` 和 `official_path` 明确记录。修改主 LS4T
+算法不会自动修改三个独立仓库；独立仓库升级所用框架版本后，应更新各自
+`cases/official/case.toml` 的框架提交号，再同步本索引。
 
 MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已经放入各自的
 `cases/<sensor>/unclassified/legacy_draft/` 并登记为 `draft`；完成区域、机器路径、
