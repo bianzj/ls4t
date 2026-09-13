@@ -11,7 +11,7 @@ from base.calibration import load_split_window_model
 from base.lst import DualChannelObservation, SplitWindowResult, retrieve_dual_channel_lst
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
+from base.data import write_product
 
 
 # ============================================================================

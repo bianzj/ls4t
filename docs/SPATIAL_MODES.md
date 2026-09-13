@@ -1,24 +1,22 @@
-# 两种空间处理方式
+# SLSTR 空间处理方式
 
-LS4T 同时保留“研究区优先”和“逐景优先”，二者没有自动总调度器。运行人员按
-研究目的选择一条路线，并在 `cases/` 的执行脚本中配置参数。
+当前以逐景处理为主，不自动调度多景拼接。多景处理在后续需要时再显式增加统一网格步骤。
 
-## 方式一：研究区优先
+## 当前方式：单景优先
 
-适用于先下载覆盖研究区的相邻影像，再把研究区作为一个整体计算。
+适用于当前零散下载、逐景处理的场景。
 
 ```text
 raw
   → extract
-  → project each scene
-  → data_region (mosaic + optional crop)
-  → attach LST auxiliary data when needed
-  → LST / prepared LSCT input → LSCT
+  → reconstruct to SLSTR-DATA
+  → attach LST auxiliary data
+  → LST
 ```
 
 运行入口：
 
-| 传感器 | 投影 | 形成研究区数据 |
+| 传感器 | 投影（可选） | 形成研究区数据 |
 |---|---|---|
 | AATSR | `aatsr/aatsr_project.py` | `aatsr_data_region()` |
 | SLSTR | `slstr/slstr_project.py` | `slstr_data_region()` |
@@ -28,20 +26,22 @@ raw
 | AHI | `ahi/ahi_project.py`（可选） | `ahi_data_region()` |
 | ASTER | `aster/aster_project.py` | `aster_data_region()` |
 
-研究区拼接在重叠位置优先选择无云且观测天顶角较小的像元。输入可以是一个目录，
-也可以是明确的 NPZ 文件列表。一个输入组只能包含同一次获取和同一视角的数据。
-进入 LST 时，如果数据产品尚无发射率、LAI 和水汽，case 必须向对应的 `*_lst.py`
-显式传入 `auxiliary_file`；该 NPZ 必须是标量或与当前研究网格形状一致。
+当前 SLSTR 单景流程必须先执行 `slstr_reconstruct.py`，生成 `SLSTR-DATA` 后才能添加
+辅助数据和执行 LST。`slstr_project.py` 和 `slstr_data_region()` 仍是可选的空间处理阶段。
+进入 LST 时，`auxiliary_file` 必须包含发射率、LAI 和水汽，并且数组必须是标量或与
+当前热红外网格形状一致。
 
-## 方式二：逐景优先
+## 多景扩展
 
 适用于先独立处理每景影像、保留逐景结果，最后再拼接或裁剪。
 
 ```text
 raw
   → extract
-  → project each scene
+  → reconstruct to SLSTR-DATA
+  → optional project
   → LST / LSCT for each scene
+  → common-grid result
   → result_region (mosaic + optional crop)
 ```
 

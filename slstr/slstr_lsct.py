@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import numpy as np
@@ -10,7 +9,7 @@ import numpy as np
 from base.lsct import retrieve_components, retrieve_components_window
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
+from slstr.slstr_data import read_lsct_input, write_lst_product
 
 
 # ============================================================================
@@ -61,16 +60,16 @@ def retrieve_slstr_lsct(
     if algorithm_version is None:
         algorithm_version = ALGORITHM_VERSION
 
-    with np.load(input_path, allow_pickle=False) as source:
-        observed = source["observed_radiance"]
-        weights = source["effective_weights"]
-        uncertainty = source["observation_uncertainty"] if "observation_uncertainty" in source else None
-        metadata = json.loads(str(source["metadata"].item())) if "metadata" in source else {}
-        geolocation = {
-            name: source[name].copy()
-            for name in ("latitude_deg", "longitude_deg")
-            if name in source
-        }
+    source = read_lsct_input(input_path)
+    observed = source["observed_radiance"]
+    weights = source["effective_weights"]
+    uncertainty = source.get("observation_uncertainty")
+    metadata = source["metadata"]
+    geolocation = {
+        name: source[name]
+        for name in ("latitude_deg", "longitude_deg")
+        if name in source
+    }
     if len(geolocation) == 1:
         raise ValueError("LSCT input must provide latitude_deg and longitude_deg together")
 
@@ -104,14 +103,17 @@ def retrieve_slstr_lsct(
     product_metadata = ProductMetadata(
         level=ProductLevel.L2LSCT,
         sensor="SLSTR",
-        start_time=metadata["start_time"],
-        end_time=metadata["end_time"],
+        start_time=metadata.get("start_time"),
+        end_time=metadata.get("end_time"),
         grid_id=grid_id,
         algorithm_version=algorithm_version,
         source_products=(str(input_path),),
         attributes={"temperature_variable_names": list(names), "unit": "K"},
     )
-    write_product(output_path, TemperatureProduct(product_metadata, variables, result.quality_flag))
+    write_lst_product(
+        output_path,
+        TemperatureProduct(product_metadata, variables, result.quality_flag),
+    )
 
 
 def slstr_lsct(
@@ -142,10 +144,10 @@ def slstr_lsct(
         if not input_year.is_dir():
             print(f"跳过不存在的目录：{input_year}")
             continue
-        inputs = sorted(input_year.rglob("*.npz"))
+        inputs = sorted(input_year.rglob("*.tif"))
         for index, input_path in enumerate(inputs):
             relative = input_path.relative_to(input_year)
-            output_path = (output_year / relative).with_name(relative.stem + "_lsct.npz")
+            output_path = (output_year / relative).with_name(relative.stem + "_lsct.tif")
             if output_path.exists() and not overwrite:
                 continue
             print(f"[{year}] {index + 1}/{len(inputs)} 组分温度反演 {input_path}")

@@ -6,15 +6,17 @@ import pytest
 
 from base.calibration import save_split_window_model
 from base.lst import SplitWindowModel
-from base.product_io import read_product
 from slstr.slstr_data import (
     SlstrDataProduct,
     add_lst_auxiliary,
     read_data_product,
+    read_lst_product,
     unpack_archive,
+    write_auxiliary_product,
     write_data_product,
 )
 from slstr.slstr_lst import produce_slstr_lst
+from slstr.slstr_merge import _merge_products
 
 
 def observation() -> SlstrDataProduct:
@@ -41,25 +43,36 @@ def test_slstr_data_archive_rejects_parent_traversal(tmp_path: Path):
         unpack_archive(archive, tmp_path / "unpacked")
 
 
+def test_slstr_data_archive_rejects_windows_drive_relative_path(tmp_path: Path):
+    archive = tmp_path / "unsafe-drive-relative.zip"
+    with ZipFile(archive, "w") as bundle:
+        bundle.writestr(r"C:..\outside.txt", "bad")
+    with pytest.raises(ValueError, match="unsafe archive member"):
+        unpack_archive(archive, tmp_path / "unpacked")
+
+
 def test_slstr_data_and_lst_are_separate_products(tmp_path: Path):
-    decoded_path = tmp_path / "slstr-decoded.npz"
-    complete_path = tmp_path / "slstr-data.npz"
-    auxiliary_path = tmp_path / "auxiliary.npz"
+    pytest.importorskip("osgeo")
+    decoded_path = tmp_path / "slstr-decoded.tif"
+    complete_path = tmp_path / "slstr-data.tif"
+    auxiliary_path = tmp_path / "auxiliary.tif"
     coefficient_path = tmp_path / "slstr-coefficients.npz"
-    output_path = tmp_path / "slstr-l2lst.npz"
+    output_path = tmp_path / "slstr-l2lst.tif"
 
     write_data_product(decoded_path, observation())
     restored = read_data_product(decoded_path)
     assert not restored.has_lst_auxiliary
 
-    np.savez(
+    write_auxiliary_product(
         auxiliary_path,
-        soil_emissivity_s8=0.98,
-        soil_emissivity_s9=0.97,
-        vegetation_emissivity_s8=0.99,
-        vegetation_emissivity_s9=0.98,
-        lai=1.5,
-        tcwv_cm=2.0,
+        {
+            "soil_emissivity_s8": np.full((2, 2), 0.98),
+            "soil_emissivity_s9": np.full((2, 2), 0.97),
+            "vegetation_emissivity_s8": np.full((2, 2), 0.99),
+            "vegetation_emissivity_s9": np.full((2, 2), 0.98),
+            "lai": np.full((2, 2), 1.5),
+            "tcwv_cm": np.full((2, 2), 2.0),
+        },
     )
     write_data_product(complete_path, add_lst_auxiliary(restored, auxiliary_path))
     assert read_data_product(complete_path).has_lst_auxiliary
@@ -78,7 +91,23 @@ def test_slstr_data_and_lst_are_separate_products(tmp_path: Path):
         algorithm_version="slstr-test-v1",
         uncertainty_k=1.0,
     )
-    product = read_product(output_path)
+    product = read_lst_product(output_path)
     assert product.metadata.sensor == "SLSTR"
     assert product.metadata.level.value == "L2LST"
     np.testing.assert_allclose(product.variables["lst"], 299.0)
+
+
+def test_slstr_merge_prefers_clear_lower_angle_scene():
+    first = observation()
+    second = SlstrDataProduct(
+        **{
+            **first.__dict__,
+            "source_product": "lower-angle",
+            "bt8_k": np.full(first.shape, 310.0),
+            "bt9_k": np.full(first.shape, 308.0),
+            "view_zenith_deg": np.full(first.shape, 5.0),
+        }
+    )
+    merged = _merge_products([first, second])
+    np.testing.assert_allclose(merged.bt8_k, 310.0)
+    np.testing.assert_allclose(merged.view_zenith_deg, 5.0)

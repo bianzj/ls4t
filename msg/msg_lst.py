@@ -10,7 +10,7 @@ from base.calibration import load_split_window_model
 from base.lst import DualChannelObservation, retrieve_dual_channel_lst
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
+from base.raster import write_temperature_product
 from msg.msg_data import MsgDataProduct, add_lst_auxiliary, read_data_product
 
 
@@ -38,8 +38,8 @@ def retrieve_msg_lst(item: MsgDataProduct, coefficient_file=None):
     require_parameters(coefficient_file=coefficient_file)
     item.validate(require_lst_auxiliary=True)
     observation = DualChannelObservation(
-        item.bt108_k,
-        item.bt120_k,
+        item.bt8,
+        item.bt9,
         item.soil_emissivity_108,
         item.soil_emissivity_120,
         item.vegetation_emissivity_108,
@@ -101,7 +101,7 @@ def produce_msg_lst(
         result.quality_flag,
         {"lst": np.full(item.shape, float(uncertainty_k))},
     )
-    write_product(output_path, product)
+    write_temperature_product(output_path, product, reference_path=input_path)
 
 
 def msg_lst(
@@ -144,10 +144,10 @@ def msg_lst(
                 if not input_day.is_dir():
                     continue
                 output_day = Path(outdir_lst) / DAY_TEMPLATE.format(year=year, month=month, day=day)
-                inputs = sorted(input_day.rglob("*.npz"))
+                inputs = sorted(input_day.rglob("*.tif"))
                 for input_path in inputs:
                     relative = input_path.relative_to(input_day)
-                    output_path = (output_day / relative).with_name(relative.stem + "_lst.npz")
+                    output_path = (output_day / relative).with_name(relative.stem + "_lst.tif")
                     if output_path.exists() and not overwrite:
                         continue
                     produce_msg_lst(

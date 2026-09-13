@@ -5,14 +5,14 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 import json
-import os
 from pathlib import Path
 import re
-import tempfile
 
 import numpy as np
 
 from base.parameters import require_parameters
+from base.raster import metadata as raster_metadata
+from base.raster import read_raster, write_raster
 
 
 # ============================================================================
@@ -32,6 +32,22 @@ OVERWRITE = False
 
 
 SCHEMA = "ls4t.msg-data/v1"
+AUXILIARY_SCHEMA = "ls4t.msg-auxiliary/v1"
+DATA_BAND_NAMES = {
+    "bt8": "bt8",
+    "bt9": "bt9",
+    "view_zenith_deg": "vza",
+    "latitude_deg": "lat",
+    "longitude_deg": "lon",
+    "cloud_mask": "cloud",
+}
+DATA_BAND_FIELDS = {
+    **{value: key for key, value in DATA_BAND_NAMES.items()},
+    "bt108": "bt8",
+    "bt120": "bt9",
+    "bt108_k": "bt8",
+    "bt120_k": "bt9",
+}
 AUXILIARY_FIELDS = (
     "soil_emissivity_108",
     "soil_emissivity_120",
@@ -47,8 +63,8 @@ class MsgDataProduct:
     source_product: str
     start_time: str
     end_time: str
-    bt108_k: np.ndarray
-    bt120_k: np.ndarray
+    bt8: np.ndarray
+    bt9: np.ndarray
     view_zenith_deg: np.ndarray
     latitude_deg: np.ndarray
     longitude_deg: np.ndarray
@@ -62,7 +78,7 @@ class MsgDataProduct:
 
     @property
     def shape(self) -> tuple[int, ...]:
-        return np.asarray(self.bt108_k).shape
+        return np.asarray(self.bt8).shape
 
     @property
     def has_lst_auxiliary(self) -> bool:
@@ -71,7 +87,7 @@ class MsgDataProduct:
     def validate(self, require_lst_auxiliary: bool = False) -> None:
         if len(self.shape) != 2:
             raise ValueError("MSG arrays must be two-dimensional")
-        for name in ("bt120_k", "view_zenith_deg", "latitude_deg", "longitude_deg", "cloud_mask"):
+        for name in ("bt9", "view_zenith_deg", "latitude_deg", "longitude_deg", "cloud_mask"):
             if np.asarray(getattr(self, name)).shape != self.shape:
                 raise ValueError(f"{name} does not match the MSG grid")
         present = [name for name in AUXILIARY_FIELDS if getattr(self, name) is not None]
@@ -109,82 +125,116 @@ def read_native_product(input_path: str | Path, static_file=None) -> MsgDataProd
         reader_kwargs={"fill_disk": True},
     )
     scene.load(["IR_108", "IR_120"], calibration="brightness_temperature")
-    bt108 = np.asarray(scene["IR_108"].values, dtype=float)
-    bt120 = np.asarray(scene["IR_120"].values, dtype=float)
-    with np.load(static_file, allow_pickle=False) as static:
-        latitude = np.asarray(static["latitude_deg"], dtype=float)
-        longitude = np.asarray(static["longitude_deg"], dtype=float)
-        view_zenith = np.asarray(static["view_zenith_deg"], dtype=float)
-        cloud = np.asarray(static["cloud_mask"], dtype=bool) if "cloud_mask" in static else np.zeros(bt108.shape, bool)
+    bt8 = np.asarray(scene["IR_108"].values, dtype=float)
+    bt9 = np.asarray(scene["IR_120"].values, dtype=float)
+    static_fields, _ = read_raster(static_file)
+    canonical_static = {
+        DATA_BAND_FIELDS.get(name, name): value for name, value in static_fields.items()
+    }
+    required_static = ("latitude_deg", "longitude_deg", "view_zenith_deg")
+    missing = [name for name in required_static if name not in canonical_static]
+    if missing:
+        raise KeyError(f"MSG static GeoTIFF is missing: {', '.join(missing)}")
+    latitude = np.asarray(canonical_static["latitude_deg"], dtype=float)
+    longitude = np.asarray(canonical_static["longitude_deg"], dtype=float)
+    view_zenith = np.asarray(canonical_static["view_zenith_deg"], dtype=float)
+    cloud = np.asarray(canonical_static.get("cloud_mask", np.zeros(bt8.shape)), dtype=bool)
     stamp = _time_from_name(Path(input_path).name)
     item = MsgDataProduct(
-        str(input_path), stamp, stamp, bt108, bt120, view_zenith, latitude, longitude, cloud
+        str(input_path), stamp, stamp, bt8, bt9, view_zenith, latitude, longitude, cloud
     )
     item.validate()
     return item
 
 
 def add_lst_auxiliary(item: MsgDataProduct, auxiliary_file: str | Path) -> MsgDataProduct:
-    with np.load(auxiliary_file, allow_pickle=False) as auxiliary:
-        missing = [name for name in AUXILIARY_FIELDS if name not in auxiliary]
-        if missing:
-            raise KeyError(f"MSG auxiliary file is missing: {', '.join(missing)}")
-        values = {
-            name: np.broadcast_to(np.asarray(auxiliary[name], float), item.shape).copy()
-            for name in AUXILIARY_FIELDS
-        }
+    auxiliary, metadata = read_raster(auxiliary_file)
+    if metadata.get("LS4T_SCHEMA") not in {AUXILIARY_SCHEMA, None}:
+        raise ValueError(f"not an MSG auxiliary GeoTIFF: {auxiliary_file}")
+    missing = [name for name in AUXILIARY_FIELDS if name not in auxiliary]
+    if missing:
+        raise KeyError(f"MSG auxiliary GeoTIFF is missing: {', '.join(missing)}")
+    values = {
+        name: np.broadcast_to(np.asarray(auxiliary[name], float), item.shape).copy()
+        for name in AUXILIARY_FIELDS
+    }
     result = replace(item, **values)
     result.validate(require_lst_auxiliary=True)
     return result
 
 
-def write_data_product(path: str | Path, item: MsgDataProduct) -> None:
+def write_auxiliary_product(path: str | Path, fields: dict[str, np.ndarray]) -> None:
+    missing = [name for name in AUXILIARY_FIELDS if name not in fields]
+    if missing:
+        raise KeyError(f"MSG auxiliary GeoTIFF is missing: {', '.join(missing)}")
+    write_raster(
+        path,
+        {name: np.asarray(fields[name], dtype=float) for name in AUXILIARY_FIELDS},
+        raster_metadata(AUXILIARY_SCHEMA, fields=list(AUXILIARY_FIELDS)),
+    )
+
+
+def write_data_product(
+    path: str | Path,
+    item: MsgDataProduct,
+    *,
+    reference_path: str | Path | None = None,
+) -> None:
     item.validate()
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    metadata = {
-        "schema": SCHEMA,
-        "source_product": item.source_product,
-        "start_time": item.start_time,
-        "end_time": item.end_time,
-    }
-    payload = {
-        "metadata": np.asarray(json.dumps(metadata, sort_keys=True)),
-        "bt108_k": np.asarray(item.bt108_k),
-        "bt120_k": np.asarray(item.bt120_k),
-        "view_zenith_deg": np.asarray(item.view_zenith_deg),
-        "latitude_deg": np.asarray(item.latitude_deg),
-        "longitude_deg": np.asarray(item.longitude_deg),
-        "cloud_mask": np.asarray(item.cloud_mask),
+    fields = {
+        DATA_BAND_NAMES[name]: np.asarray(getattr(item, name))
+        for name in (
+            "bt8",
+            "bt9",
+            "view_zenith_deg",
+            "latitude_deg",
+            "longitude_deg",
+            "cloud_mask",
+        )
     }
     for name in AUXILIARY_FIELDS:
         if getattr(item, name) is not None:
-            payload[name] = np.asarray(getattr(item, name))
-    with tempfile.NamedTemporaryFile(dir=destination.parent, suffix=".npz", delete=False) as temporary:
-        temporary_path = Path(temporary.name)
-    try:
-        np.savez_compressed(temporary_path, **payload)
-        os.replace(temporary_path, destination)
-    finally:
-        temporary_path.unlink(missing_ok=True)
+            fields[name] = np.asarray(getattr(item, name))
+    write_raster(
+        destination,
+        fields,
+        raster_metadata(
+            SCHEMA,
+            source_product=item.source_product,
+            start_time=item.start_time,
+            end_time=item.end_time,
+        ),
+        reference_path,
+    )
 
 
 def read_data_product(path: str | Path) -> MsgDataProduct:
-    with np.load(path, allow_pickle=False) as source:
-        metadata = json.loads(str(source["metadata"].item()))
-        optional = {name: source[name].copy() if name in source else None for name in AUXILIARY_FIELDS}
-        item = MsgDataProduct(
-            source_product=metadata["source_product"],
-            start_time=metadata["start_time"],
-            end_time=metadata["end_time"],
-            bt108_k=source["bt108_k"].copy(),
-            bt120_k=source["bt120_k"].copy(),
-            view_zenith_deg=source["view_zenith_deg"].copy(),
-            latitude_deg=source["latitude_deg"].copy(),
-            longitude_deg=source["longitude_deg"].copy(),
-            cloud_mask=source["cloud_mask"].copy(),
-            **optional,
-        )
+    fields, file_metadata = read_raster(path)
+    if file_metadata.get("LS4T_SCHEMA") != SCHEMA:
+        raise ValueError(f"not an MSG-DATA GeoTIFF: {path}")
+    canonical = {DATA_BAND_FIELDS.get(name, name): value for name, value in fields.items()}
+    required = ("bt8", "bt9", "view_zenith_deg", "latitude_deg", "longitude_deg", "cloud_mask")
+    missing = [name for name in required if name not in canonical]
+    if missing:
+        raise ValueError(f"MSG-DATA GeoTIFF is missing: {', '.join(missing)}")
+    values = json.loads(file_metadata["LS4T_METADATA"])
+    optional = {
+        name: canonical[name].copy() if name in canonical else None for name in AUXILIARY_FIELDS
+    }
+    item = MsgDataProduct(
+        source_product=values["source_product"],
+        start_time=values["start_time"],
+        end_time=values["end_time"],
+        bt8=np.asarray(canonical["bt8"]).copy(),
+        bt9=np.asarray(canonical["bt9"]).copy(),
+        view_zenith_deg=np.asarray(canonical["view_zenith_deg"]).copy(),
+        latitude_deg=np.asarray(canonical["latitude_deg"]).copy(),
+        longitude_deg=np.asarray(canonical["longitude_deg"]).copy(),
+        cloud_mask=np.asarray(canonical["cloud_mask"]).copy(),
+        **optional,
+    )
     item.validate()
     return item
 
@@ -227,7 +277,7 @@ def msg_extract(
                 output_day = Path(outdir_data) / DATA_DAY_TEMPLATE.format(year=year, month=month, day=day)
                 inputs = sorted(input_day.glob(RAW_FILE_PATTERN))
                 for index, input_path in enumerate(inputs):
-                    output_path = output_day / f"{input_path.name}.npz"
+                    output_path = output_day / f"{input_path.name}.tif"
                     if output_path.exists() and not overwrite:
                         continue
                     print(f"[{year:04d}-{month:02d}-{day:02d}] {index + 1}/{len(inputs)} {input_path.name}")

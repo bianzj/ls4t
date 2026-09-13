@@ -14,8 +14,7 @@ from base.calibration import (
 from base.lst import DualChannelObservation, SplitWindowResult, retrieve_dual_channel_lst
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
-from slstr.slstr_data import SlstrDataProduct, add_lst_auxiliary, read_data_product
+from slstr.slstr_data import SlstrDataProduct, add_lst_auxiliary, read_data_product, write_lst_product
 
 
 # ============================================================================
@@ -139,7 +138,7 @@ def produce_slstr_lst(
         quality_flag=result.quality_flag,
         uncertainty={"lst": np.full(item.shape, uncertainty_k, dtype=float)},
     )
-    write_product(output_path, product)
+    write_lst_product(output_path, product, reference_path=input_path)
 
 
 def slstr_lst(
@@ -152,6 +151,7 @@ def slstr_lst(
     algorithm_version=None,
     uncertainty_k=None,
     overwrite=None,
+    input_year_template=None,
 ) -> None:
     """按年份处理重建后的 SLSTR-DATA 文件。"""
 
@@ -173,6 +173,8 @@ def slstr_lst(
         uncertainty_k = UNCERTAINTY_K
     if overwrite is None:
         overwrite = OVERWRITE
+    if input_year_template is None:
+        input_year_template = DATA_YEAR_TEMPLATE
 
     require_parameters(
         indir_data=indir_data,
@@ -182,15 +184,15 @@ def slstr_lst(
         years=years,
     )
     for year in years:
-        input_year = Path(indir_data) / DATA_YEAR_TEMPLATE.format(year=int(year))
+        input_year = Path(indir_data) / input_year_template.format(year=int(year))
         output_year = Path(outdir_lst) / LST_YEAR_TEMPLATE.format(year=int(year))
         if not input_year.is_dir():
             print(f"跳过不存在的目录：{input_year}")
             continue
-        inputs = sorted(input_year.rglob("*.npz"))
+        inputs = sorted(input_year.rglob("*.tif"))
         for index, input_path in enumerate(inputs):
             relative = input_path.relative_to(input_year)
-            output_path = (output_year / relative).with_name(relative.stem + "_lst.npz")
+            output_path = (output_year / relative).with_name(relative.stem + "_lst.tif")
             if output_path.exists() and not overwrite:
                 continue
             print(f"[{year}] {index + 1}/{len(inputs)} 反演 {input_path}")

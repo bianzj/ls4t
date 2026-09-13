@@ -10,7 +10,7 @@ import numpy as np
 from base.lsct import retrieve_components, retrieve_components_window
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
+from base.raster import write_temperature_product
 
 
 # ============================================================================
@@ -109,7 +109,10 @@ def retrieve_msg_lsct(
         source_products=(str(input_path),),
         attributes={"temperature_variable_names": list(component_names), "unit": "K"},
     )
-    write_product(output_path, TemperatureProduct(product_metadata, variables, result.quality_flag))
+    write_temperature_product(
+        output_path,
+        TemperatureProduct(product_metadata, variables, result.quality_flag),
+    )
 
 
 def msg_lsct(
@@ -146,7 +149,7 @@ def msg_lsct(
                 output_day = Path(outdir_lsct) / DAY_TEMPLATE.format(year=year, month=month, day=day)
                 for input_path in sorted(input_day.rglob("*.npz")):
                     relative = input_path.relative_to(input_day)
-                    output_path = (output_day / relative).with_name(relative.stem + "_lsct.npz")
+                    output_path = (output_day / relative).with_name(relative.stem + "_lsct.tif")
                     if output_path.exists() and not overwrite:
                         continue
                     retrieve_msg_lsct(input_path, output_path)

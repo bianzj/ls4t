@@ -68,6 +68,14 @@ def test_region_first_prefers_clear_low_angle_scene_and_crops():
     np.testing.assert_array_equal(cropped.longitude_deg[0], [101.0, 102.0])
 
 
+def test_region_mosaic_rejects_missing_view_angle():
+    first = _aatsr(300.0, np.nan, np.zeros((2, 3), dtype=bool))
+    second = _aatsr(310.0, np.nan, np.zeros((2, 3), dtype=bool))
+    mosaic = mosaic_observations([first, second], primary_field="bt11_k")
+    assert np.isnan(mosaic.bt11_k).all()
+    assert mosaic.cloud_mask.all()
+
+
 def test_scene_first_prefers_lower_uncertainty_then_crops():
     first = _result(300.0, 2.0)
     second = _result(310.0, 1.0, cloud_at=(0, 0))

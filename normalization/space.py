@@ -6,7 +6,7 @@ import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
 from base.parameters import require_parameters
-from base.quality import QualityFlag, new_flags, set_flag
+from base.quality import QualityFlag, set_flag, usable
 
 
 # Execution paths and years are supplied by cases.
@@ -16,6 +16,36 @@ YEAR_TEMPLATE = "{year}"
 YEARS = None
 TARGET_SHAPE = (3600, 7200)
 OVERWRITE = False
+
+
+def _aggregate_flags(
+    flags: np.ndarray,
+    row_index: np.ndarray,
+    column_index: np.ndarray,
+    target_shape: tuple[int, int],
+    valid_mask: np.ndarray,
+) -> np.ndarray:
+    flags, row, column, valid = np.broadcast_arrays(
+        np.asarray(flags, dtype=np.uint16),
+        row_index,
+        column_index,
+        valid_mask,
+    )
+    flags = flags.ravel()
+    row = np.asarray(row, dtype=np.int64).ravel()
+    column = np.asarray(column, dtype=np.int64).ravel()
+    valid = np.asarray(valid, dtype=bool).ravel()
+    inside = (
+        valid
+        & (row >= 0)
+        & (row < target_shape[0])
+        & (column >= 0)
+        & (column < target_shape[1])
+    )
+    linear = row[inside] * target_shape[1] + column[inside]
+    result = np.zeros(target_shape[0] * target_shape[1], dtype=np.uint16)
+    np.bitwise_or.at(result, linear, flags[inside])
+    return result.reshape(target_shape)
 
 
 def aggregate_to_grid(
@@ -85,15 +115,29 @@ def space_normalize_years(
             if output_path.exists() and not overwrite:
                 continue
             payload = read_npz_payload(input_path)
+            values = np.asarray(payload["temperature_k"], dtype=float)
+            errors = np.asarray(payload["uncertainty_k"], dtype=float)
+            input_flags = np.asarray(
+                payload.get("quality_flag", np.zeros(values.shape, dtype=np.uint16)),
+                dtype=np.uint16,
+            )
+            if values.shape != errors.shape or values.shape != input_flags.shape:
+                raise ValueError(f"temperature, uncertainty and quality_flag shapes differ: {input_path}")
+            source_valid = (
+                usable(input_flags)
+                & np.isfinite(values)
+                & np.isfinite(errors)
+                & (errors > 0)
+            )
             row = payload["target_row_index"]
             column = payload["target_column_index"]
             temperature, support = aggregate_to_grid(
-                payload["temperature_k"], row, column, target_shape
+                np.where(source_valid, values, np.nan), row, column, target_shape
             )
             uncertainty, _ = aggregate_to_grid(
-                payload["uncertainty_k"], row, column, target_shape
+                np.where(source_valid, errors, np.nan), row, column, target_shape
             )
-            flags = new_flags(target_shape)
+            flags = _aggregate_flags(input_flags, row, column, target_shape, source_valid)
             set_flag(flags, support == 0, QualityFlag.LOW_SUPPORT)
             payload["temperature_k"] = temperature
             payload["uncertainty_k"] = uncertainty

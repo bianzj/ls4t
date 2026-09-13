@@ -87,7 +87,7 @@ def msg_project(
                 output_day = Path(outdir_project) / DAY_TEMPLATE.format(
                     year=year, month=month, day=day
                 )
-                inputs = sorted(input_day.rglob("*.npz"))
+                inputs = sorted(input_day.rglob("*.tif"))
                 for index, input_path in enumerate(inputs):
                     output_path = output_day / input_path.relative_to(input_day)
                     if output_path.exists() and not overwrite:
@@ -104,4 +104,5 @@ def msg_project(
                             projection_chunk_size,
                             cloud_fraction_threshold,
                         ),
+                        reference_path=target_grid_file,
                     )

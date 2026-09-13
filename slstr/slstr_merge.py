@@ -2,10 +2,9 @@
 
 from pathlib import Path
 
-import numpy as np
-
 from base.parameters import require_parameters
-from slstr.slstr_data import LST_AUXILIARY_FIELDS, SlstrDataProduct, read_data_product, write_data_product
+from base.spatial import mosaic_observations
+from slstr.slstr_data import read_data_product, write_data_product
 
 
 # Execution paths and years are supplied by cases.
@@ -24,41 +23,7 @@ def _year_directory(root, template, year):
 def _merge_products(items):
     if not items:
         raise ValueError("没有可合并的 SLSTR 产品")
-    shape = items[0].shape
-    view = items[0].view
-    if any(item.shape != shape or item.view != view for item in items):
-        raise ValueError("合并产品必须具有相同网格和视角")
-
-    def mean(name):
-        with np.errstate(invalid="ignore"):
-            return np.nanmean(
-                np.stack([np.asarray(getattr(item, name), float) for item in items]), axis=0
-            )
-
-    optional = {
-        name: mean(name) if all(getattr(item, name) is not None for item in items) else None
-        for name in LST_AUXILIARY_FIELDS
-    }
-    starts = [item.start_time for item in items if item.start_time]
-    ends = [item.end_time for item in items if item.end_time]
-    result = SlstrDataProduct(
-        source_product=";".join(item.source_product for item in items),
-        view=view,
-        start_time=min(starts) if starts else None,
-        end_time=max(ends) if ends else None,
-        bt8_k=mean("bt8_k"),
-        bt9_k=mean("bt9_k"),
-        view_zenith_deg=mean("view_zenith_deg"),
-        latitude_deg=mean("latitude_deg"),
-        longitude_deg=mean("longitude_deg"),
-        cloud_mask=np.all(np.stack([item.cloud_mask for item in items]), axis=0),
-        auxiliary_source=";".join(
-            item.auxiliary_source for item in items if item.auxiliary_source
-        ) or None,
-        **optional,
-    )
-    result.validate()
-    return result
+    return mosaic_observations(items, primary_field="bt8_k")
 
 
 def slstr_merge(
@@ -85,14 +50,14 @@ def slstr_merge(
         if not input_year.is_dir():
             continue
         groups = {}
-        for input_path in sorted(input_year.rglob("*.npz")):
+        for input_path in sorted(input_year.rglob("*.tif")):
             item = read_data_product(input_path)
             if not item.start_time:
                 raise ValueError(f"SLSTR 产品缺少时间：{input_path}")
             date = item.start_time[:10]
             groups.setdefault((date, item.view), []).append(item)
         for (date, view), items in sorted(groups.items()):
-            output_path = output_year / date[5:7] / date[8:10] / f"{view}.npz"
+            output_path = output_year / date[5:7] / date[8:10] / f"{view}.tif"
             if output_path.exists() and not overwrite:
                 continue
             print(f"[{date}] 合并 {len(items)} 景 {view} 数据")

@@ -10,7 +10,7 @@ import numpy as np
 from base.lsct import retrieve_components, retrieve_components_window
 from base.parameters import require_parameters
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
-from base.product_io import write_product
+from base.data import write_product
 
 
 # ============================================================================

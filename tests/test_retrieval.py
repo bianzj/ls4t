@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from base.lsct import retrieve_components, retrieve_components_window
 from base.lst import SplitWindowModel
@@ -28,6 +29,11 @@ def test_split_window_rejects_outside_calibration_domain():
     result = model.retrieve(300.0, 299.0, 0.98, 0.97, 6.0, 30.0)
     assert np.isnan(result.temperature_k)
     assert int(result.quality_flag) & int(QualityFlag.INPUT_INVALID)
+
+
+def test_split_window_requires_interpolation_grids():
+    with pytest.raises(ValueError, match="at least two"):
+        SplitWindowModel(np.array([0.0]), np.array([0.0, 5.0]), np.zeros((1, 1, 8)))
 
 
 def test_two_component_radiance_retrieval():

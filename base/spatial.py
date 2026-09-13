@@ -121,17 +121,17 @@ def mosaic_observations(
     if hasattr(first, "view") and any(item.view != first.view for item in items):
         raise ValueError("nadir/oblique or nadir/forward views must be mosaicked separately")
 
+    angle = np.stack(
+        [np.abs(np.asarray(getattr(item, angle_field), dtype=float)) for item in items]
+    )
     valid = np.stack(
         [
             ~np.asarray(item.cloud_mask, dtype=bool)
             & np.isfinite(np.asarray(getattr(item, primary_field), dtype=float))
             for item in items
         ]
-    )
-    angle = np.stack(
-        [np.abs(np.asarray(getattr(item, angle_field), dtype=float)) for item in items]
-    )
-    score = np.where(valid & np.isfinite(angle), angle, np.inf)
+    ) & np.isfinite(angle)
+    score = np.where(valid, angle, np.inf)
     selected = np.argmin(score, axis=0)
     has_valid = np.any(valid, axis=0)
 
@@ -183,6 +183,8 @@ def target_grid_indices(
 ):
     """Map source longitude/latitude to row/column indices of a GDAL raster."""
 
+    if int(chunk_size) <= 0:
+        raise ValueError("chunk_size must be positive")
     try:
         from osgeo import gdal, osr
     except ModuleNotFoundError as error:
@@ -256,6 +258,8 @@ def project_observation(
 ):
     """Project every same-shape array in a decoded observation product."""
 
+    if not 0.0 <= float(cloud_fraction_threshold) <= 1.0:
+        raise ValueError("cloud_fraction_threshold must be in [0, 1]")
     item.validate()
     row, column, target_shape = target_grid_indices(
         item.longitude_deg, item.latitude_deg, target_grid_file, chunk_size
@@ -272,7 +276,7 @@ def project_observation(
     if cloud_fraction is None:
         raise ValueError("observation product has no cloud_mask")
     primary_names = [
-        name for name in ("bt1_k", "bt8_k", "bt11_k", "bt108_k") if name in updates
+        name for name in ("bt1_k", "bt8_k", "bt11_k", "bt108_k", "bt8") if name in updates
     ]
     if not primary_names:
         raise ValueError("cannot identify a primary thermal field for projection")
@@ -368,6 +372,7 @@ def mosaic_temperature_products(
         uncertainty_score = np.stack(
             [np.asarray(product.uncertainty[primary_name], dtype=float) for product in products]
         )
+        valid &= np.isfinite(uncertainty_score) & (uncertainty_score > 0)
         order = np.arange(len(products), dtype=float).reshape(
             (len(products),) + (1,) * len(shape)
         )

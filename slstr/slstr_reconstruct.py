@@ -47,10 +47,12 @@ def slstr_reconstruct(
         if not input_year.is_dir():
             print(f"跳过不存在的目录：{input_year}")
             continue
-        inputs = sorted(input_year.rglob("*.npz"))
-        for index, input_path in enumerate(inputs):
-            output_path = output_year / input_path.relative_to(input_year)
+        inputs = sorted(input_year.rglob("bt8.tif"))
+        for index, marker in enumerate(inputs):
+            input_path = marker.parent
+            relative = input_path.relative_to(input_year)
+            output_path = output_year / relative.with_suffix(".tif")
             if output_path.exists() and not overwrite:
                 continue
-            print(f"[{year}] {index + 1}/{len(inputs)} 重建 {input_path.name}")
+            print(f"[{year}] {index + 1}/{len(inputs)} 重建 {input_path}")
             write_data_product(output_path, reconstruct_product(read_extracted_product(input_path)))

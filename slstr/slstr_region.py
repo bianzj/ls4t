@@ -6,7 +6,6 @@ and oblique views or unrelated overpasses in one input group.
 
 from pathlib import Path
 
-from base.product_io import read_product, write_product
 from base.parameters import require_parameters
 from base.spatial import (
     crop_observation,
@@ -14,7 +13,12 @@ from base.spatial import (
     mosaic_observations,
     mosaic_temperature_products,
 )
-from slstr.slstr_data import read_data_product, write_data_product
+from slstr.slstr_data import (
+    read_data_product,
+    read_lst_product,
+    write_data_product,
+    write_lst_product,
+)
 
 
 DATA_INPUT = None
@@ -22,7 +26,7 @@ DATA_OUTPUT = None
 RESULT_INPUT = None
 RESULT_OUTPUT = None
 STUDY_BOUNDS = None  # (west, south, east, north)
-INPUT_PATTERN = "*.npz"
+INPUT_PATTERN = "*.tif"
 
 
 def _resolve_inputs(value):
@@ -33,7 +37,7 @@ def _resolve_inputs(value):
         paths = [Path(path) for path in value]
     paths = [path for path in paths if path.is_file()]
     if not paths:
-        raise FileNotFoundError("SLSTR region stage has no input NPZ files")
+        raise FileNotFoundError("SLSTR region stage has no input GeoTIFF files")
     return paths
 
 
@@ -75,7 +79,7 @@ def slstr_result_region(
         bounds = STUDY_BOUNDS
     require_parameters(input_paths=input_paths, output_path=output_path)
     paths = _resolve_inputs(input_paths)
-    product = mosaic_temperature_products([read_product(path) for path in paths])
+    product = mosaic_temperature_products([read_lst_product(path) for path in paths])
     if bounds is not None:
         product = crop_temperature_product(product, bounds)
-    write_product(output_path, product)
+    write_lst_product(output_path, product, reference_path=paths[0])

@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct, product_filename
-from base.product_io import read_product, write_product
+from base.data import read_product, write_product
 
 
 def test_l3n_product_round_trip(tmp_path: Path):
@@ -51,3 +51,17 @@ def test_l2lst_requires_uncertainty():
         assert "uncertainty" in str(error)
     else:
         raise AssertionError("L2LST without uncertainty must fail validation")
+
+
+def test_l3n_filename_includes_normalization_profile():
+    common = dict(
+        level=ProductLevel.L3N,
+        sensor="AATSR",
+        start_time="2026-01-01T00:00:00Z",
+        end_time="2026-01-01T01:00:00Z",
+        grid_id="G001",
+        algorithm_version="v1",
+    )
+    first = ProductMetadata(**common, normalization_profile="PROFILE-A")
+    second = ProductMetadata(**common, normalization_profile="PROFILE-B")
+    assert product_filename(first) != product_filename(second)

@@ -51,7 +51,7 @@ def slstr_extract(
         for index, product in enumerate(products):
             print(f"[{year}] {index + 1}/{len(products)} 提取 {product.name}")
             for view in views:
-                output = output_year / product.name / f"{view}.npz"
-                if output.exists() and not overwrite:
+                output = output_year / product.name / view
+                if output.exists() and any(output.glob("*.tif")) and not overwrite:
                     continue
                 write_extracted_product(output, extract_native_product(product, view=view))

@@ -27,12 +27,18 @@ class SplitWindowModel:
     valid_temperature_range_k: tuple[float, float] = (220.0, 365.0)
 
     def __post_init__(self) -> None:
-        vza = np.asarray(self.view_zenith_nodes_deg)
-        water = np.asarray(self.water_vapour_edges)
-        coeff = np.asarray(self.coefficients)
+        vza = np.asarray(self.view_zenith_nodes_deg, dtype=np.float64)
+        water = np.asarray(self.water_vapour_edges, dtype=np.float64)
+        coeff = np.asarray(self.coefficients, dtype=np.float64)
+        if vza.ndim != 1 or water.ndim != 1 or vza.size < 2 or water.size < 2:
+            raise ValueError("calibration grids require at least two VZA nodes and two water edges")
+        if not np.all(np.isfinite(vza)) or not np.all(np.isfinite(water)):
+            raise ValueError("calibration grid nodes must be finite")
         expected = (vza.size, water.size - 1, 8)
         if coeff.shape != expected:
             raise ValueError(f"coefficients must have shape {expected}, got {coeff.shape}")
+        if not np.all(np.isfinite(coeff)):
+            raise ValueError("calibration coefficients must be finite")
         if np.any(np.diff(vza) <= 0) or np.any(np.diff(water) <= 0):
             raise ValueError("coefficient grid nodes must be strictly increasing")
 

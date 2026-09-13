@@ -165,7 +165,7 @@ def slstr_project(
         output_year = _year_directory(outdir_project, PROJECT_YEAR_TEMPLATE, year)
         if not input_year.is_dir():
             continue
-        inputs = sorted(input_year.rglob("*.npz"))
+        inputs = sorted(input_year.rglob("*.tif"))
         for index, input_path in enumerate(inputs):
             output_path = output_year / input_path.relative_to(input_year)
             if output_path.exists() and not overwrite:
@@ -179,4 +179,5 @@ def slstr_project(
                     projection_chunk_size,
                     cloud_fraction_threshold,
                 ),
+                reference_path=target_grid_file,
             )

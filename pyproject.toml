@@ -12,9 +12,10 @@ dependencies = ["numpy>=1.24"]
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
-slstr = ["netCDF4>=1.6"]
+slstr = ["netCDF4>=1.6", "GDAL>=3.6"]
 aatsr = ["pyepr>=1.1"]
-msg = ["satpy>=0.49"]
+msg = ["satpy>=0.49", "GDAL>=3.6"]
+raster = ["GDAL>=3.6"]
 projection = ["GDAL>=3.6"]
 
 [tool.setuptools.packages.find]

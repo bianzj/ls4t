@@ -1,8 +1,8 @@
 """SLSTR data preparation, with independent stage APIs.
 
-This module contains only SLSTR data-product responsibilities.  It does not
-perform temperature retrieval.  The stored NPZ is the explicit boundary
-between ``slstr-data`` and downstream products such as ``slstr-lst``.
+This module contains only SLSTR data-product responsibilities. It does not
+perform temperature retrieval. SLSTR intermediate and result products are
+stored as named-band GeoTIFF files.
 """
 
 from __future__ import annotations
@@ -11,7 +11,7 @@ from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 import json
 import os
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
 import shutil
 import stat
@@ -22,6 +22,25 @@ import numpy as np
 
 EXTRACT_SCHEMA = "ls4t.slstr-extract/v1"
 SCHEMA = "ls4t.slstr-data/v1"
+TEMPERATURE_SCHEMA = "ls4t.slstr-temperature/v1"
+LSCT_INPUT_SCHEMA = "ls4t.slstr-lsct-input/v1"
+EXTRACT_FIELD_FILES = {
+    "bt8_k": "bt8.tif",
+    "bt9_k": "bt9.tif",
+    "view_zenith_tie_deg": "vza.tif",
+    "latitude_native_deg": "lat.tif",
+    "longitude_native_deg": "lon.tif",
+    "cloud_native": "cloud.tif",
+}
+DATA_BAND_NAMES = {
+    "bt8_k": "bt8",
+    "bt9_k": "bt9",
+    "view_zenith_deg": "vza",
+    "latitude_deg": "lat",
+    "longitude_deg": "lon",
+    "cloud_mask": "cloud",
+}
+DATA_BAND_FIELDS = {value: key for key, value in DATA_BAND_NAMES.items()}
 LST_AUXILIARY_FIELDS = (
     "soil_emissivity_s8",
     "soil_emissivity_s9",
@@ -137,11 +156,17 @@ class SlstrDataProduct:
 
 def _safe_archive_target(root: Path, member: ZipInfo) -> Path:
     name = PurePosixPath(member.filename)
-    if name.is_absolute() or ".." in name.parts:
+    windows_name = PureWindowsPath(member.filename)
+    if name.is_absolute() or windows_name.drive or windows_name.root or ".." in name.parts:
         raise ValueError(f"unsafe archive member: {member.filename!r}")
     if stat.S_ISLNK(member.external_attr >> 16):
         raise ValueError(f"archive symbolic link is not allowed: {member.filename!r}")
-    return root.joinpath(*name.parts)
+    target = (root / Path(*name.parts)).resolve()
+    try:
+        target.relative_to(root.resolve())
+    except ValueError as error:
+        raise ValueError(f"unsafe archive member: {member.filename!r}") from error
+    return target
 
 
 def unpack_archive(archive: str | Path, output_directory: str | Path) -> Path:
@@ -291,143 +316,462 @@ def read_native_product(product_directory: str | Path, *, view: str = "nadir") -
 def add_lst_auxiliary(item: SlstrDataProduct, auxiliary_file: str | Path) -> SlstrDataProduct:
     """Attach grid-aligned emissivity, LAI and TCWV arrays to SLSTR-DATA."""
 
-    with np.load(auxiliary_file, allow_pickle=False) as auxiliary:
-        missing = [name for name in LST_AUXILIARY_FIELDS if name not in auxiliary.files]
-        if missing:
-            raise KeyError(f"auxiliary NPZ is missing: {', '.join(missing)}")
-        fields = {
-            name: np.broadcast_to(np.asarray(auxiliary[name], dtype=float), item.shape).copy()
-            for name in LST_AUXILIARY_FIELDS
-        }
+    auxiliary = read_auxiliary_product(auxiliary_file, item.shape)
+    fields = {
+        name: np.broadcast_to(np.asarray(auxiliary[name], dtype=float), item.shape).copy()
+        for name in LST_AUXILIARY_FIELDS
+    }
     result = replace(item, **fields, auxiliary_source=str(auxiliary_file))
     result.validate(require_lst_auxiliary=True)
     return result
 
 
-def _write_atomic(path: Path, payload: dict[str, np.ndarray]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.NamedTemporaryFile(
-        prefix=f".{path.name}.", suffix=".npz", dir=path.parent, delete=False
-    ) as temporary:
-        temporary_path = Path(temporary.name)
+def _gdal():
     try:
-        np.savez_compressed(temporary_path, **payload)
-        os.replace(temporary_path, path)
+        from osgeo import gdal
+    except ModuleNotFoundError as error:
+        raise RuntimeError(
+            "SLSTR GeoTIFF I/O requires GDAL; install the GDAL Python bindings"
+        ) from error
+    gdal.UseExceptions()
+    return gdal
+
+
+def _write_tiff(
+    path: str | Path,
+    fields: dict[str, np.ndarray],
+    metadata: dict[str, str],
+    reference_path: str | Path | None = None,
+) -> None:
+    gdal = _gdal()
+    destination = Path(path)
+    if destination.suffix.lower() not in {".tif", ".tiff"}:
+        raise ValueError(f"SLSTR raster output must be GeoTIFF: {destination}")
+    if not fields:
+        raise ValueError("GeoTIFF must contain at least one field")
+    arrays = {name: np.asarray(value) for name, value in fields.items()}
+    shape = next(iter(arrays.values())).shape
+    if any(value.ndim != 2 or value.shape != shape for value in arrays.values()):
+        raise ValueError("all GeoTIFF fields must be matching two-dimensional arrays")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(
+        prefix=f".{destination.name}.", suffix=".tif", dir=destination.parent, delete=False
+    ) as temporary_file:
+        temporary = Path(temporary_file.name)
+    temporary.unlink(missing_ok=True)
+    driver = gdal.GetDriverByName("GTiff")
+    dataset = driver.Create(
+        str(temporary),
+        int(shape[1]),
+        int(shape[0]),
+        len(arrays),
+        gdal.GDT_Float32,
+        options=["COMPRESS=DEFLATE"],
+    )
+    if dataset is None:
+        raise RuntimeError(f"cannot create GeoTIFF: {destination}")
+    try:
+        if reference_path is not None:
+            reference = gdal.Open(str(reference_path), gdal.GA_ReadOnly)
+            if reference is None:
+                raise FileNotFoundError(f"cannot open GeoTIFF reference: {reference_path}")
+            try:
+                transform = reference.GetGeoTransform()
+                projection = reference.GetProjection()
+            finally:
+                reference = None
+            if transform:
+                dataset.SetGeoTransform(transform)
+            if projection:
+                dataset.SetProjection(projection)
+        for index, (name, value) in enumerate(arrays.items(), start=1):
+            band = dataset.GetRasterBand(index)
+            band.WriteArray(np.asarray(value, dtype=np.float32))
+            band.SetDescription(name)
+            band.SetMetadataItem("LS4T_FIELD", name)
+        for key, value in metadata.items():
+            dataset.SetMetadataItem(str(key), str(value))
+        dataset.FlushCache()
     finally:
-        temporary_path.unlink(missing_ok=True)
+        dataset = None
+    try:
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _read_tiff(
+    path: str | Path,
+    default_field: str | None = None,
+) -> tuple[dict[str, np.ndarray], dict[str, str]]:
+    gdal = _gdal()
+    source = Path(path)
+    if source.suffix.lower() not in {".tif", ".tiff"} or not source.is_file():
+        raise FileNotFoundError(f"SLSTR GeoTIFF does not exist: {source}")
+    dataset = gdal.Open(str(source), gdal.GA_ReadOnly)
+    if dataset is None:
+        raise ValueError(f"cannot open SLSTR GeoTIFF: {source}")
+    try:
+        fields = {}
+        for index in range(1, dataset.RasterCount + 1):
+            band = dataset.GetRasterBand(index)
+            name = band.GetDescription() or band.GetMetadataItem("LS4T_FIELD")
+            if not name and dataset.RasterCount == 1:
+                name = default_field
+            if not name:
+                raise ValueError(f"GeoTIFF band {index} has no LS4T field name: {source}")
+            fields[name] = np.asarray(band.ReadAsArray()).copy()
+        metadata = dataset.GetMetadata_Dict()
+    finally:
+        dataset = None
+    return fields, metadata
+
+
+def _metadata(schema: str, **values: object) -> dict[str, str]:
+    return {
+        "LS4T_SCHEMA": schema,
+        "LS4T_METADATA": json.dumps(values, ensure_ascii=False, sort_keys=True),
+    }
+
+
+def write_auxiliary_product(
+    path: str | Path,
+    fields: dict[str, np.ndarray],
+) -> None:
+    """Write the six LST auxiliary fields as a named-band GeoTIFF."""
+
+    missing = [name for name in LST_AUXILIARY_FIELDS if name not in fields]
+    if missing:
+        raise KeyError(f"auxiliary GeoTIFF is missing: {', '.join(missing)}")
+    arrays = {name: np.asarray(fields[name], dtype=float) for name in LST_AUXILIARY_FIELDS}
+    _write_tiff(path, arrays, _metadata("ls4t.slstr-auxiliary/v1", fields=list(arrays)))
+
+
+def read_auxiliary_product(
+    path: str | Path,
+    shape: tuple[int, int] | None = None,
+) -> dict[str, np.ndarray]:
+    """Read named LST auxiliary fields from a GeoTIFF."""
+
+    source = Path(path)
+    if source.is_dir():
+        fields = {}
+        for name in LST_AUXILIARY_FIELDS:
+            fields_path = source / f"{name}.tif"
+            single, _ = _read_tiff(fields_path)
+            if name in single:
+                fields[name] = single[name]
+            elif len(single) == 1:
+                fields[name] = next(iter(single.values()))
+            else:
+                raise KeyError(f"auxiliary GeoTIFF is missing field {name}: {fields_path}")
+    else:
+        fields, metadata = _read_tiff(source)
+        if metadata.get("LS4T_SCHEMA") != "ls4t.slstr-auxiliary/v1":
+            raise ValueError(f"not an SLSTR auxiliary GeoTIFF: {path}")
+        missing = [name for name in LST_AUXILIARY_FIELDS if name not in fields]
+        if missing:
+            raise KeyError(f"auxiliary GeoTIFF is missing: {', '.join(missing)}")
+    result = {name: np.asarray(fields[name], dtype=float) for name in LST_AUXILIARY_FIELDS}
+    if shape is not None and any(value.shape != shape for value in result.values()):
+        raise ValueError("auxiliary GeoTIFF fields do not match the SLSTR thermal grid")
+    return result
+
+
+def write_lsct_input(
+    path: str | Path,
+    observed_radiance: np.ndarray,
+    effective_weights: np.ndarray,
+    *,
+    observation_uncertainty: np.ndarray | None = None,
+    latitude_deg: np.ndarray | None = None,
+    longitude_deg: np.ndarray | None = None,
+    metadata: dict[str, object] | None = None,
+) -> None:
+    """Write multidimensional LSCT input as a named-band GeoTIFF."""
+
+    observed = np.asarray(observed_radiance, dtype=float)
+    weights = np.asarray(effective_weights, dtype=float)
+    if observed.ndim != 3 or weights.ndim != 4 or weights.shape[:-1] != observed.shape:
+        raise ValueError(
+            "LSCT input requires radiance (row, col, observation) and weights "
+            "(row, col, observation, component)"
+        )
+    fields = {
+        **{
+            f"observed_radiance__{index}": observed[..., index]
+            for index in range(observed.shape[-1])
+        },
+        **{
+            f"effective_weights__{observation}__{component}": weights[..., observation, component]
+            for observation in range(weights.shape[-2])
+            for component in range(weights.shape[-1])
+        },
+    }
+    if observation_uncertainty is not None:
+        uncertainty = np.broadcast_to(np.asarray(observation_uncertainty, dtype=float), observed.shape)
+        fields.update(
+            {
+                f"observation_uncertainty__{index}": uncertainty[..., index]
+                for index in range(observed.shape[-1])
+            }
+        )
+    for name, value in (("latitude_deg", latitude_deg), ("longitude_deg", longitude_deg)):
+        if value is not None:
+            array = np.asarray(value, dtype=float)
+            if array.shape != observed.shape[:2]:
+                raise ValueError(f"{name} shape must match LSCT spatial grid")
+            fields[name] = array
+    values = dict(metadata or {})
+    values["observed_shape"] = list(observed.shape)
+    values["weights_shape"] = list(weights.shape)
+    _write_tiff(path, fields, _metadata(LSCT_INPUT_SCHEMA, **values))
+
+
+def read_lsct_input(path: str | Path) -> dict[str, np.ndarray | dict[str, object]]:
+    """Read named-band multidimensional LSCT input from GeoTIFF."""
+
+    fields, metadata = _read_tiff(path)
+    if metadata.get("LS4T_SCHEMA") != LSCT_INPUT_SCHEMA:
+        raise ValueError(f"not an SLSTR LSCT input GeoTIFF: {path}")
+
+    values = json.loads(metadata["LS4T_METADATA"])
+    observed_shape = tuple(values["observed_shape"])
+    weights_shape = tuple(values["weights_shape"])
+
+    def stack(prefix: str, shape: tuple[int, ...]) -> np.ndarray:
+        result = np.empty(shape, dtype=float)
+        for index in np.ndindex(shape[2:]):
+            name = prefix + "__" + "__".join(str(value) for value in index)
+            if name not in fields:
+                raise ValueError(f"LSCT input is missing field {name}")
+            result[(slice(None), slice(None), *index)] = fields[name]
+        return result
+
+    result: dict[str, np.ndarray | dict[str, object]] = {
+        "observed_radiance": stack("observed_radiance", observed_shape),
+        "effective_weights": stack("effective_weights", weights_shape),
+        "metadata": values,
+    }
+    if any(name.startswith("observation_uncertainty__") for name in fields):
+        result["observation_uncertainty"] = stack("observation_uncertainty", observed_shape)
+    for name in ("latitude_deg", "longitude_deg"):
+        if name in fields:
+            result[name] = np.asarray(fields[name], dtype=float)
+    return result
 
 
 def write_extracted_product(path: str | Path, item: SlstrExtractedProduct) -> None:
-    """Store the output of the extraction stage."""
+    """Store extraction fields as individual GeoTIFF files in one view directory."""
 
     item.validate()
-    metadata = {
-        "schema": EXTRACT_SCHEMA,
-        "sensor": "SLSTR",
-        "view": item.view,
-        "source_product": item.source_product,
-        "start_time": item.start_time,
-        "end_time": item.end_time,
-    }
-    _write_atomic(
-        Path(path),
-        {
-            "metadata": np.asarray(json.dumps(metadata, sort_keys=True)),
-            "bt8_k": np.asarray(item.bt8_k),
-            "bt9_k": np.asarray(item.bt9_k),
-            "view_zenith_tie_deg": np.asarray(item.view_zenith_tie_deg),
-            "latitude_native_deg": np.asarray(item.latitude_native_deg),
-            "longitude_native_deg": np.asarray(item.longitude_native_deg),
-            "cloud_native": np.asarray(item.cloud_native),
-        },
+    destination = Path(path)
+    destination.mkdir(parents=True, exist_ok=True)
+    metadata = _metadata(
+        EXTRACT_SCHEMA,
+        sensor="SLSTR",
+        view=item.view,
+        source_product=item.source_product,
+        start_time=item.start_time,
+        end_time=item.end_time,
     )
+    for name, value in {
+        "bt8_k": item.bt8_k,
+        "bt9_k": item.bt9_k,
+        "view_zenith_tie_deg": item.view_zenith_tie_deg,
+        "latitude_native_deg": item.latitude_native_deg,
+        "longitude_native_deg": item.longitude_native_deg,
+        "cloud_native": item.cloud_native,
+    }.items():
+        _write_tiff(destination / EXTRACT_FIELD_FILES[name], {name: value}, metadata)
 
 
 def read_extracted_product(path: str | Path) -> SlstrExtractedProduct:
-    """Load one extraction-stage product."""
+    """Load one extraction-stage view directory."""
 
-    with np.load(path, allow_pickle=False) as source:
-        metadata = json.loads(str(source["metadata"].item()))
-        if metadata.get("schema") != EXTRACT_SCHEMA:
-            raise ValueError(f"not an SLSTR extraction product: {path}")
-        item = SlstrExtractedProduct(
-            source_product=metadata["source_product"],
-            view=metadata["view"],
-            start_time=metadata.get("start_time"),
-            end_time=metadata.get("end_time"),
-            bt8_k=source["bt8_k"].copy(),
-            bt9_k=source["bt9_k"].copy(),
-            view_zenith_tie_deg=source["view_zenith_tie_deg"].copy(),
-            latitude_native_deg=source["latitude_native_deg"].copy(),
-            longitude_native_deg=source["longitude_native_deg"].copy(),
-            cloud_native=source["cloud_native"].copy(),
+    source = Path(path)
+    required = (
+        "bt8_k",
+        "bt9_k",
+        "view_zenith_tie_deg",
+        "latitude_native_deg",
+        "longitude_native_deg",
+        "cloud_native",
+    )
+    arrays = {}
+    metadata = None
+    for name in required:
+        fields, current_metadata = _read_tiff(
+            source / EXTRACT_FIELD_FILES[name], default_field=name
         )
+        if name not in fields:
+            raise ValueError(f"GeoTIFF is missing field {name}: {source}")
+        arrays[name] = fields[name]
+        metadata = current_metadata if metadata is None else metadata
+    if metadata and metadata.get("LS4T_SCHEMA") == EXTRACT_SCHEMA:
+        values = json.loads(metadata["LS4T_METADATA"])
+    else:
+        view = source.name if source.name in {"nadir", "oblique"} else "nadir"
+        product_name = source.parent.name if source.name in {"nadir", "oblique"} else source.name
+        start_time, end_time = _coverage_from_name(product_name)
+        values = {
+            "source_product": product_name,
+            "view": view,
+            "start_time": start_time,
+            "end_time": end_time,
+        }
+    item = SlstrExtractedProduct(
+        source_product=values["source_product"],
+        view=values["view"],
+        start_time=values.get("start_time"),
+        end_time=values.get("end_time"),
+        bt8_k=arrays["bt8_k"],
+        bt9_k=arrays["bt9_k"],
+        view_zenith_tie_deg=arrays["view_zenith_tie_deg"],
+        latitude_native_deg=arrays["latitude_native_deg"],
+        longitude_native_deg=arrays["longitude_native_deg"],
+        cloud_native=arrays["cloud_native"],
+    )
     item.validate()
     return item
 
 
-def write_data_product(path: str | Path, item: SlstrDataProduct) -> None:
-    """Store an SLSTR-DATA product as a non-pickle, atomic NPZ file."""
+def write_data_product(
+    path: str | Path,
+    item: SlstrDataProduct,
+    *,
+    reference_path: str | Path | None = None,
+) -> None:
+    """Store an SLSTR-DATA product as a named-band GeoTIFF."""
 
     item.validate()
-    metadata = {
-        "schema": SCHEMA,
-        "sensor": "SLSTR",
-        "view": item.view,
-        "source_product": item.source_product,
-        "start_time": item.start_time,
-        "end_time": item.end_time,
-        "auxiliary_source": item.auxiliary_source,
-        "units": {"bt8_k": "K", "bt9_k": "K", "view_zenith_deg": "degree", "tcwv_cm": "cm"},
-    }
-    payload = {
-        "metadata": np.asarray(json.dumps(metadata, sort_keys=True)),
-        **{
-            name: np.asarray(getattr(item, name))
-            for name in (
-                "bt8_k",
-                "bt9_k",
-                "view_zenith_deg",
-                "latitude_deg",
-                "longitude_deg",
-                "cloud_mask",
-            )
-        },
+    fields = {
+        DATA_BAND_NAMES[name]: np.asarray(getattr(item, name))
+        for name in (
+            "bt8_k",
+            "bt9_k",
+            "view_zenith_deg",
+            "latitude_deg",
+            "longitude_deg",
+            "cloud_mask",
+        )
     }
     for name in LST_AUXILIARY_FIELDS:
         value = getattr(item, name)
         if value is not None:
-            payload[name] = np.asarray(value)
-    _write_atomic(Path(path), payload)
+            fields[name] = np.asarray(value)
+    _write_tiff(
+        path,
+        fields,
+        _metadata(
+            SCHEMA,
+            sensor="SLSTR",
+            view=item.view,
+            source_product=item.source_product,
+            start_time=item.start_time,
+            end_time=item.end_time,
+            auxiliary_source=item.auxiliary_source,
+            units={"bt8_k": "K", "bt9_k": "K", "view_zenith_deg": "degree", "tcwv_cm": "cm"},
+        ),
+        reference_path=reference_path,
+    )
 
 
 def read_data_product(path: str | Path) -> SlstrDataProduct:
-    """Load and validate an SLSTR-DATA product."""
+    """Load and validate an SLSTR-DATA GeoTIFF."""
 
-    with np.load(path, allow_pickle=False) as source:
-        metadata = json.loads(str(source["metadata"].item()))
-        if metadata.get("schema") != SCHEMA:
-            raise ValueError(f"not an SLSTR-DATA product: {path}")
-        optional = {
-            name: source[name].copy() if name in source.files else None
-            for name in LST_AUXILIARY_FIELDS
-        }
-        item = SlstrDataProduct(
-            source_product=metadata["source_product"],
-            view=metadata["view"],
-            start_time=metadata.get("start_time"),
-            end_time=metadata.get("end_time"),
-            bt8_k=source["bt8_k"].copy(),
-            bt9_k=source["bt9_k"].copy(),
-            view_zenith_deg=source["view_zenith_deg"].copy(),
-            latitude_deg=source["latitude_deg"].copy(),
-            longitude_deg=source["longitude_deg"].copy(),
-            cloud_mask=source["cloud_mask"].copy(),
-            auxiliary_source=metadata.get("auxiliary_source"),
-            **optional,
-        )
+    fields, metadata = _read_tiff(path)
+    if metadata.get("LS4T_SCHEMA") != SCHEMA:
+        raise ValueError(f"not an SLSTR-DATA GeoTIFF: {path}")
+    required = ("bt8_k", "bt9_k", "view_zenith_deg", "latitude_deg", "longitude_deg", "cloud_mask")
+    canonical_fields = {
+        DATA_BAND_FIELDS.get(name, name): value for name, value in fields.items()
+    }
+    missing = [name for name in required if name not in canonical_fields]
+    if missing:
+        raise ValueError(f"SLSTR-DATA GeoTIFF is missing: {', '.join(missing)}")
+    values = json.loads(metadata["LS4T_METADATA"])
+    optional = {
+        name: np.asarray(canonical_fields[name]).copy() if name in canonical_fields else None
+        for name in LST_AUXILIARY_FIELDS
+    }
+    item = SlstrDataProduct(
+        source_product=values["source_product"],
+        view=values["view"],
+        start_time=values.get("start_time"),
+        end_time=values.get("end_time"),
+        bt8_k=np.asarray(canonical_fields["bt8_k"], dtype=float),
+        bt9_k=np.asarray(canonical_fields["bt9_k"], dtype=float),
+        view_zenith_deg=np.asarray(canonical_fields["view_zenith_deg"], dtype=float),
+        latitude_deg=np.asarray(canonical_fields["latitude_deg"], dtype=float),
+        longitude_deg=np.asarray(canonical_fields["longitude_deg"], dtype=float),
+        cloud_mask=np.asarray(canonical_fields["cloud_mask"], dtype=bool),
+        auxiliary_source=values.get("auxiliary_source"),
+        **optional,
+    )
     item.validate()
     return item
+
+
+def write_lst_product(
+    path: str | Path,
+    product,
+    *,
+    reference_path: str | Path | None = None,
+) -> None:
+    """Store an SLSTR LST product as a named-band GeoTIFF."""
+
+    product.validate()
+    fields = {
+        f"variable__{name}": np.asarray(value)
+        for name, value in product.variables.items()
+    }
+    fields["quality_flag"] = np.asarray(product.quality_flag)
+    fields.update(
+        {
+            f"uncertainty__{name}": np.asarray(value)
+            for name, value in product.uncertainty.items()
+        }
+    )
+    _write_tiff(
+        path,
+        fields,
+        _metadata(TEMPERATURE_SCHEMA, product_metadata=product.metadata.to_dict()),
+        reference_path=reference_path,
+    )
+
+
+def read_lst_product(path: str | Path):
+    """Load an SLSTR L2LST GeoTIFF."""
+
+    from base.product import ProductMetadata, TemperatureProduct
+
+    fields, metadata = _read_tiff(path)
+    if metadata.get("LS4T_SCHEMA") != TEMPERATURE_SCHEMA:
+        raise ValueError(f"not an SLSTR temperature GeoTIFF: {path}")
+    if "quality_flag" not in fields:
+        raise ValueError(f"SLSTR L2LST GeoTIFF has no quality_flag: {path}")
+    product_metadata = ProductMetadata.from_dict(
+        json.loads(metadata["LS4T_METADATA"])["product_metadata"]
+    )
+    variables = {
+        name.removeprefix("variable__"): np.asarray(value, dtype=float)
+        for name, value in fields.items()
+        if name.startswith("variable__")
+    }
+    uncertainty = {
+        name.removeprefix("uncertainty__"): np.asarray(value, dtype=float)
+        for name, value in fields.items()
+        if name.startswith("uncertainty__")
+    }
+    product = TemperatureProduct(
+        product_metadata,
+        variables,
+        np.asarray(fields["quality_flag"], dtype=np.uint16),
+        uncertainty,
+    )
+    product.validate()
+    return product
 
 
 def describe_data_product(item: SlstrDataProduct) -> dict[str, object]:

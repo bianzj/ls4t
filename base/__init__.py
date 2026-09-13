@@ -22,7 +22,7 @@ from .lst import (
     retrieve_dual_channel_lst,
 )
 from .product import ProductLevel, ProductMetadata, TemperatureProduct, product_filename
-from .product_io import read_product, write_product
+from .data import read_product, write_product
 from .quality import QualityFlag
 from .radiometry import decode_temperature, inverse_planck, planck_radiance
 from .spatial import (

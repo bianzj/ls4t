@@ -6,5 +6,5 @@
   两个独立区域案例。
 
 同时混有 ERA5、欧洲、南非和多台机器路径的批处理脚本已放到
-`_archive/slstr/mixed_batch/`。新案例从 `_templates/` 创建，公共读取、重建、投影、
-LST 和 LSCT 调用根目录 `slstr/` 模块。
+`_archive/slstr/mixed_batch/`。新案例从 `_templates/` 创建，公共读取、几何重建、LST、
+可选投影和 LSCT 调用根目录 `slstr/` 模块。

@@ -20,7 +20,9 @@ from .files import read_npz_payload, write_npz_atomic
 from .lst import DualChannelObservation, SplitWindowResult, retrieve_dual_channel_lst
 from .parameters import require_parameters
 from .product import ProductLevel, ProductMetadata, TemperatureProduct
-from .product_io import read_product, write_product
+from .raster import metadata as raster_metadata
+from .raster import read_raster, read_temperature_product, write_raster, write_temperature_product
+from .data import read_product
 from .spatial import (
     crop_observation,
     crop_temperature_product,
@@ -144,16 +146,21 @@ def read_prepared_product(
     spec: DualThermalSensorSpec,
     product_type: type[ProductType],
 ) -> ProductType:
-    """Convert reviewed native arrays in NPZ form into a sensor LS4T-DATA object.
+    """Convert reviewed native arrays into a sensor LS4T-DATA object.
 
-    Brightness temperatures must already be decoded to kelvin.  The input must
-    contain JSON ``metadata`` with UTC ``start_time`` and ``end_time`` plus
-    geolocation, view zenith and optional cloud mask arrays.
+    GeoTIFF is the new prepared-input format; NPZ remains readable for legacy
+    prepared arrays. Brightness temperatures must already be decoded to kelvin.
     """
 
     source_path = Path(path)
-    payload = read_npz_payload(source_path)
-    metadata = _metadata(payload, source_path)
+    if source_path.suffix.lower() in {".tif", ".tiff"}:
+        payload, file_metadata = read_raster(source_path)
+        if "LS4T_METADATA" not in file_metadata:
+            raise ValueError(f"prepared GeoTIFF has no metadata: {source_path}")
+        metadata = json.loads(file_metadata["LS4T_METADATA"])
+    else:
+        payload = read_npz_payload(source_path)
+        metadata = _metadata(payload, source_path)
     declared_sensor = str(metadata.get("sensor", spec.name)).upper()
     if declared_sensor != spec.name.upper():
         raise ValueError(
@@ -194,17 +201,32 @@ def write_data_product(
     item.validate()
     if item.sensor.upper() != spec.name.upper():
         raise ValueError(f"cannot write {item.sensor} with the {spec.name} data writer")
-    metadata = {
-        "schema": SCHEMA,
-        "sensor": spec.name.upper(),
-        "thermal_channels": list(spec.channels),
-        "source_product": item.source_product,
-        "start_time": item.start_time,
-        "end_time": item.end_time,
-        "auxiliary_source": item.auxiliary_source,
-    }
-    payload = {
-        "metadata": np.asarray(json.dumps(metadata, sort_keys=True)),
+    if Path(path).suffix.lower() == ".npz":
+        metadata = {
+            "schema": SCHEMA,
+            "sensor": spec.name.upper(),
+            "thermal_channels": list(spec.channels),
+            "source_product": item.source_product,
+            "start_time": item.start_time,
+            "end_time": item.end_time,
+            "auxiliary_source": item.auxiliary_source,
+        }
+        payload = {
+            "metadata": np.asarray(json.dumps(metadata, sort_keys=True)),
+            "bt1_k": np.asarray(item.bt1_k),
+            "bt2_k": np.asarray(item.bt2_k),
+            "view_zenith_deg": np.asarray(item.view_zenith_deg),
+            "latitude_deg": np.asarray(item.latitude_deg),
+            "longitude_deg": np.asarray(item.longitude_deg),
+            "cloud_mask": np.asarray(item.cloud_mask, dtype=bool),
+        }
+        for name in AUXILIARY_FIELDS:
+            value = getattr(item, name)
+            if value is not None:
+                payload[name] = np.asarray(value)
+        write_npz_atomic(path, payload)
+        return
+    fields = {
         "bt1_k": np.asarray(item.bt1_k),
         "bt2_k": np.asarray(item.bt2_k),
         "view_zenith_deg": np.asarray(item.view_zenith_deg),
@@ -215,8 +237,20 @@ def write_data_product(
     for name in AUXILIARY_FIELDS:
         value = getattr(item, name)
         if value is not None:
-            payload[name] = np.asarray(value)
-    write_npz_atomic(path, payload)
+            fields[name] = np.asarray(value)
+    write_raster(
+        path,
+        fields,
+        raster_metadata(
+            SCHEMA,
+            sensor=spec.name.upper(),
+            thermal_channels=list(spec.channels),
+            source_product=item.source_product,
+            start_time=item.start_time,
+            end_time=item.end_time,
+            auxiliary_source=item.auxiliary_source,
+        ),
+    )
 
 
 def read_data_product(
@@ -225,10 +259,14 @@ def read_data_product(
     product_type: type[ProductType],
 ) -> ProductType:
     source_path = Path(path)
-    payload = read_npz_payload(source_path)
-    metadata = _metadata(payload, source_path)
-    if metadata.get("schema") != SCHEMA:
-        raise ValueError(f"unsupported {spec.name} data schema: {metadata.get('schema')!r}")
+    if source_path.suffix.lower() in {".tif", ".tiff"}:
+        payload, file_metadata = read_raster(source_path)
+        if file_metadata.get("LS4T_SCHEMA") != SCHEMA:
+            raise ValueError(f"unsupported {spec.name} GeoTIFF data schema")
+        metadata = json.loads(file_metadata["LS4T_METADATA"])
+    else:
+        payload = read_npz_payload(source_path)
+        metadata = _metadata(payload, source_path)
     if str(metadata.get("sensor", "")).upper() != spec.name.upper():
         raise ValueError(f"{source_path} is not a {spec.name} data product")
     optional = {
@@ -256,14 +294,19 @@ def add_lst_auxiliary(
     item: ProductType,
     auxiliary_file: str | Path,
 ) -> ProductType:
-    with np.load(auxiliary_file, allow_pickle=False) as auxiliary:
-        missing = [name for name in AUXILIARY_FIELDS if name not in auxiliary]
-        if missing:
-            raise KeyError(f"auxiliary file is missing: {', '.join(missing)}")
-        values = {
-            name: np.broadcast_to(np.asarray(auxiliary[name], dtype=float), item.shape).copy()
-            for name in AUXILIARY_FIELDS
-        }
+    source = Path(auxiliary_file)
+    if source.suffix.lower() in {".tif", ".tiff"}:
+        auxiliary, _ = read_raster(source)
+    else:
+        with np.load(source, allow_pickle=False) as bundle:
+            auxiliary = {name: bundle[name].copy() for name in bundle.files}
+    missing = [name for name in AUXILIARY_FIELDS if name not in auxiliary]
+    if missing:
+        raise KeyError(f"auxiliary file is missing: {', '.join(missing)}")
+    values = {
+        name: np.broadcast_to(np.asarray(auxiliary[name], dtype=float), item.shape).copy()
+        for name in AUXILIARY_FIELDS
+    }
     result = replace(item, auxiliary_source=str(auxiliary_file), **values)
     result.validate(require_lst_auxiliary=True)
     return result
@@ -297,9 +340,13 @@ def extract_sensor_products(
                 if not input_day.is_dir():
                     continue
                 output_day = _day(outdir_data, year, month, day)
-                inputs = sorted(input_day.glob(spec.input_pattern))
+                inputs = sorted(input_day.glob("*.tif"))
+                if not inputs:
+                    inputs = sorted(input_day.glob(spec.input_pattern))
                 for index, input_path in enumerate(inputs):
-                    output_path = output_day / input_path.name
+                    output_path = (output_day / input_path.relative_to(input_day)).with_suffix(
+                        ".tif" if input_path.suffix.lower() != ".npz" else ".npz"
+                    )
                     if output_path.exists() and not overwrite:
                         continue
                     print(
@@ -344,9 +391,13 @@ def project_sensor_products(
                 if not input_day.is_dir():
                     continue
                 output_day = _day(outdir_project, year, month, day)
-                inputs = sorted(input_day.rglob("*.npz"))
+                inputs = sorted(input_day.rglob("*.tif"))
+                if not inputs:
+                    inputs = sorted(input_day.rglob("*.npz"))
                 for index, input_path in enumerate(inputs):
-                    output_path = output_day / input_path.relative_to(input_day)
+                    output_path = (output_day / input_path.relative_to(input_day)).with_suffix(
+                        ".tif" if input_path.suffix.lower() != ".npz" else ".npz"
+                    )
                     if output_path.exists() and not overwrite:
                         continue
                     print(
@@ -363,12 +414,14 @@ def project_sensor_products(
 def resolve_paths(value, sensor: str) -> list[Path]:
     if isinstance(value, (str, Path)):
         source = Path(value)
-        paths = sorted(source.rglob("*.npz")) if source.is_dir() else [source]
+        paths = sorted(source.rglob("*.tif")) if source.is_dir() else [source]
+        if source.is_dir() and not paths:
+            paths = sorted(source.rglob("*.npz"))
     else:
         paths = [Path(path) for path in value]
     paths = [path for path in paths if path.is_file()]
     if not paths:
-        raise FileNotFoundError(f"{sensor} stage has no input NPZ files")
+        raise FileNotFoundError(f"{sensor} stage has no input data files")
     return paths
 
 
@@ -406,12 +459,18 @@ def merge_sensor_data(
 def merge_sensor_results(input_paths, output_path, spec: DualThermalSensorSpec, bounds=None) -> None:
     require_parameters(input_paths=input_paths, output_path=output_path)
     paths = resolve_paths(input_paths, spec.name)
-    product = mosaic_temperature_products([read_product(path) for path in paths])
+    products = [
+        read_temperature_product(path)
+        if path.suffix.lower() in {".tif", ".tiff"}
+        else read_product(path)
+        for path in paths
+    ]
+    product = mosaic_temperature_products(products)
     if product.metadata.sensor.upper() != spec.name.upper():
         raise ValueError(f"result product sensor does not match {spec.name}")
     if bounds is not None:
         product = crop_temperature_product(product, tuple(bounds))
-    write_product(output_path, product)
+    write_temperature_product(output_path, product)
 
 
 def retrieve_sensor_lst(
@@ -494,7 +553,7 @@ def produce_sensor_lst(
         result.quality_flag,
         {"lst": np.full(item.shape, uncertainty_k, dtype=float)},
     )
-    write_product(output_path, product)
+    write_temperature_product(output_path, product)
 
 
 def retrieve_sensor_years(
@@ -530,11 +589,13 @@ def retrieve_sensor_years(
                 if not input_day.is_dir():
                     continue
                 output_day = _day(outdir_lst, year, month, day)
-                inputs = sorted(input_day.rglob("*.npz"))
+                inputs = sorted(input_day.rglob("*.tif"))
+                if not inputs:
+                    inputs = sorted(input_day.rglob("*.npz"))
                 for index, input_path in enumerate(inputs):
                     relative = input_path.relative_to(input_day)
                     output_path = (output_day / relative).with_name(
-                        relative.stem + "_lst.npz"
+                        relative.stem + ("_lst.tif" if input_path.suffix.lower() != ".npz" else "_lst.npz")
                     )
                     if output_path.exists() and not overwrite:
                         continue

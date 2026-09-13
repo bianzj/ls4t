@@ -10,7 +10,7 @@ from pathlib import Path
 
 from aatsr.aatsr_data import read_data_product, write_data_product
 from base.parameters import require_parameters
-from base.product_io import read_product, write_product
+from base.data import read_product, write_product
 from base.spatial import (
     crop_observation,
     crop_temperature_product,

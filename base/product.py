@@ -104,8 +104,13 @@ def product_filename(metadata: ProductMetadata, extension: str = "npz") -> str:
     def slug(value: str) -> str:
         return re.sub(r"[^A-Z0-9.-]+", "-", value.upper()).strip("-")
 
+    profile = (
+        f"_{slug(metadata.normalization_profile)}"
+        if metadata.level == ProductLevel.L3N and metadata.normalization_profile
+        else ""
+    )
     return (
-        f"LS4T_{slug(metadata.sensor)}_{metadata.level.value}_{stamp(metadata.start_time)}_"
+        f"LS4T_{slug(metadata.sensor)}_{metadata.level.value}{profile}_"
         f"{stamp(metadata.end_time)}_{slug(metadata.grid_id)}_"
         f"{slug(metadata.algorithm_version)}.{extension.lstrip('.')}"
     )
