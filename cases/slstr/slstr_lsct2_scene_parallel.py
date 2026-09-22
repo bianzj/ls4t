@@ -15,8 +15,10 @@ Two implementation details differ from ``slstr_lsct2.py`` but not the numbers:
 
 Output layout matches the existing products:
 ``<root>/<year>/lsct2/<scene>/lsct2.tif`` (2 bands, float32, oblique grid).
-Scenes without a valid pixel produce no file, exactly like the original; they
-are listed in the run report so a later run can skip them.
+Scenes without a valid pixel produce no data file, exactly like the original,
+but they get a small ``_no_valid_pixel.json`` marker in their scene directory:
+without it the discovery keeps finding the same scene in every rerun and the
+year never finishes.  Delete the marker (or pass ``--all-scenes``) to retry one.
 
 Missing ``cloud_obliq.tif`` is tolerated: the nadir cloud mask is cropped to the
 oblique grid and used for both views (the nadir term already works on exactly
@@ -75,6 +77,10 @@ LAI_ROOTS = [
 
 # honor <scene_root>/_skip/<year>.json written by slstr_scene_coverage.py
 SKIP_MARKED_SCENES = True
+
+# written next to a scene whose inversion found no valid pixel, so the scene is
+# not rediscovered (and recomputed) on every later run
+EMPTY_MARKER = "_no_valid_pixel.json"
 TYPE_REF = "base/type/type_world_1000.tif"
 
 # retrieval settings, verbatim from slstr_lsct2.py
@@ -126,6 +132,8 @@ def discover(root: Path, year: int, skip_scenes: set[str],
         if not (lst_dir / scene / "lst_nadir.tif").is_file():
             continue
         if (lsct_dir / scene / "lsct2.tif").is_file() or scene in skip_scenes:
+            continue
+        if (lsct_dir / scene / EMPTY_MARKER).is_file():
             continue
         if is_useless(no_land, scene, ("obliq",)):
             continue
@@ -344,6 +352,14 @@ def process_day(task):
         elif status == "no_valid_pixel":
             stats["empty"] += 1
             stats["empty_scenes"].append(scene)
+            marker = out_dir / scene / EMPTY_MARKER
+            try:
+                marker.parent.mkdir(parents=True, exist_ok=True)
+                marker.write_text(json.dumps(
+                    {"scene": scene, "year": year, "reason": "no valid pixel",
+                     "written": time.strftime("%Y-%m-%dT%H:%M:%S")}, indent=1))
+            except OSError:
+                pass
         else:
             stats["skipped"] += 1
     return stats
