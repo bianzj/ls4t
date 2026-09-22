@@ -4,6 +4,7 @@ id = "hero"
 [paths]
 scene_root = "/media/hero/slstr-southA-lst"
 output_root = "/media/hero/slstr-southA-lst/america_daily_0p01"
+monthly_output_root = "/media/hero/slstr-southA-lst/america_monthly_0p01"
 legacy_output_root = "/media/hero/slstr-southA-lst/south_america_tropical_nadir_lsct_time"
 auxiliary_root = "/home/hero/data/rs"
 auxiliary_fallback = "/media/hero/rs"

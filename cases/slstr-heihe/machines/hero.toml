@@ -4,6 +4,7 @@ id = "hero"
 [paths]
 scene_root = "/media/hero/slstr_heihe/heihe"
 output_root = "/media/hero/slstr_heihe/heihe_daily_0p01"
+monthly_output_root = "/media/hero/slstr_heihe/heihe_monthly_0p01"
 # 辅助数据优先用本机镜像（2026-09-19 建，见 cases/auxiliary/rs_mirror_local.py），
 # USB 辅助盘 /media/hero/rs 作为回退；黑河盘自带的 base 是 UTM 47N 裁剪版，不能用
 auxiliary_root = "/home/hero/data/rs"
