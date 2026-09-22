@@ -5,6 +5,8 @@ case_layout = "cases/<sensor>/<region>/<case-id>"
 machine_layout = "<case>/machines/<machine-id>.toml"
 active_requires = ["case.toml", "documented entrypoint", "tested LS4T revision"]
 archive_root = "_archive"
+flat_case_layout = "cases/<sensor>-<region>/"
+flat_case_note = "SLSTR 区域逐日拼接案例用单层目录 cases/slstr-<region>/，与 cases/aatsr、cases/msg 的扁平约定一致。"
 
 [[case]]
 id = "aatsr-global-001deg-2003-2012"
@@ -12,8 +14,23 @@ sensor = "aatsr"
 region = "global"
 status = "active"
 spatial_mode = "temporal-composite"
-path = "aatsr/global/001deg_2003_2012"
-entrypoints = ["aatsr_001deg_stats.py", "aatsr_monthly_3files.py"]
+path = "aatsr"
+entrypoints = [
+  "aatsr_001deg_stats.py",
+  "aatsr_data.py",
+  "aatsr_era5_tcw.py",
+  "aatsr_lsct.py",
+  "aatsr_lsct_latlon.py",
+  "aatsr_lsct_ndvi.py",
+  "aatsr_lsct_v31.py",
+  "aatsr_lst.py",
+  "aatsr_monthly_3files.py",
+  "aatsr_site_inv.py",
+  "aatsr_site_inv_bayes.py",
+  "aatsr_site_series.py",
+  "aatsr_site_validate.py",
+  "aatsr_unzip.py",
+]
 
 [[case]]
 id = "msg-europe-africa-dual-disk"
@@ -21,8 +38,33 @@ sensor = "msg"
 region = "europe-africa"
 status = "migrated"
 spatial_mode = "fixed-grid"
-path = "msg/europe_africa/dual_disk"
-entrypoints = ["lsct/msg_lsct3.2-iter.py", "lsct/msg_monthly_averaging.py"]
+path = "msg"
+entrypoints = [
+  "msg_download.py",
+  "msg_extract_euro.py",
+  "msg_extract_iodc.py",
+  "msg_lsct_2c_full.py",
+  "msg_lsct_3c_2stage_full.py",
+  "msg_lsct_3c_constrained_full.py",
+  "msg_lsct_3c_full.py",
+  "msg_lsct_3c_show_full.py",
+  "msg_lsct_iter.py",
+  "msg_lst_fit.py",
+  "msg_project_euro.py",
+  "msg_project_euro_lai.py",
+  "msg_project_iodc.py",
+  "msg_site_extract_csv.py",
+  "msg_site_extract_lai.py",
+  "msg_site_extract_lst.py",
+  "msg_site_extract_series.py",
+  "msg_site_extract_static.py",
+  "msg_site_fit.py",
+  "msg_site_repro_lsct.py",
+  "msg_site_repro_lst.py",
+  "msg_site_stats.py",
+  "msg_site_validate.py",
+  "msg_site_validate_multisite.py",
+]
 
 [[case]]
 id = "slstr-heihe-2022-study-area"
@@ -31,7 +73,9 @@ region = "heihe"
 status = "migrated"
 spatial_mode = "study-area-first"
 path = "slstr/heihe/study_area_2022"
-entrypoints = ["study_area/slstr_lst.py"]
+entrypoints = [
+  "study_area/slstr_lst.py",
+]
 
 [[case]]
 id = "slstr-europe-south-africa-scene-first"
@@ -40,34 +84,42 @@ region = "europe-south-africa"
 status = "migrated"
 spatial_mode = "scene-first"
 path = "slstr/europe_south_africa/scene_first_migrated"
-entrypoints = ["scene_first/slstr_lst.py"]
+entrypoints = [
+  "scene_first/slstr_lst.py",
+]
 
 [[case]]
-id = "modis-unclassified-legacy"
-sensor = "modis"
-region = "unclassified"
+id = "slstr-heihe-daily-mosaic"
+sensor = "slstr"
+region = "heihe"
 status = "draft"
-spatial_mode = "study-area-first"
-path = "modis/unclassified/legacy_draft"
-entrypoints = ["data/MODIS_data.py", "lst/MODIS_lst.py"]
+spatial_mode = "scene-first"
+path = "slstr-heihe"
+entrypoints = [
+  "run_standard_stage.py",
+]
 
 [[case]]
-id = "viirs-unclassified-legacy"
-sensor = "viirs"
-region = "unclassified"
+id = "slstr-europe-daily-mosaic"
+sensor = "slstr"
+region = "europe"
 status = "draft"
-spatial_mode = "study-area-first"
-path = "viirs/unclassified/legacy_draft"
-entrypoints = ["data/VIIRS_data.py", "lst/VIIRS_lst.py"]
+spatial_mode = "scene-first"
+path = "slstr-europe"
+entrypoints = [
+  "run_standard_stage.py",
+]
 
 [[case]]
-id = "ahi-unclassified-legacy"
-sensor = "ahi"
-region = "unclassified"
+id = "slstr-america-daily-mosaic"
+sensor = "slstr"
+region = "america"
 status = "draft"
-spatial_mode = "fixed-grid"
-path = "ahi/unclassified/legacy_draft"
-entrypoints = ["data/AHI_data.py", "lst/AHI_lst.py"]
+spatial_mode = "scene-first"
+path = "slstr-america"
+entrypoints = [
+  "run_standard_stage.py",
+]
 
 [[archive]]
 path = "_archive/aatsr/product_history"

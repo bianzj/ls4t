@@ -1,0 +1,46 @@
+schema_version = 1
+
+[case]
+id = "slstr-america-daily-mosaic"
+sensor = "slstr"
+region = "america"
+status = "draft"
+spatial_mode = "scene-first"
+description = "South America (Amazon focus) scene-first LST/LSCT2 daily mosaics, re-gridded from the legacy EPSG:6933 product to the shared 0.01 deg grid."
+
+[period]
+years = [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+
+[grid]
+id = "america_0p01"
+crs = "EPSG:4326"
+resolution_degree = 0.01
+# west, south, east, north - final_output_window of south_america_tropical_amazon.geojson
+# (the amazon_focus window -80/-44/-18/12 is recorded in stages/window.json)
+bounds = [-82.0, -25.0, -34.0, 20.0]
+width_px = 4800
+height_px = 4500
+
+[processing]
+views = ["nadir", "obliq"]
+products = ["lst_nadir", "lsct2", "time"]
+day_solar_zenith_threshold = 90.0
+overlap_rule = "later acquisition overwrites earlier"
+lst_cloud_mask_in_retrieval = false
+mosaic_cloud_mask = true
+lsct2_lai_min = 0.05
+overwrite = false
+
+[stages]
+window = "stages/window_coverage.py"
+mosaic = "stages/run_daily_mosaic.sh"
+
+[provenance]
+ls4t_revision = "3278a21"
+source_project = "ls4t-slstr-lsct"
+source_scripts = [
+  "cases/implementation/one_by_one/slstr_lst.py",
+  "cases/implementation/one_by_one/slstr_lsct2.py",
+  "cases/regions/south_america_daily_nadir_lsct_time.py",
+]
+note = "旧产物 south_america_tropical_nadir_lsct_time 为 EPSG:6933 1 km、不剔云、LSCT 为 uint16，本案例统一到 0.01 度后重跑。"

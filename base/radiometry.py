@@ -54,3 +54,59 @@ def decode_temperature(
     if fill_value is not None:
         result = np.where(source == fill_value, np.nan, result)
     return result
+
+
+# ---------------------------------------------------------------------------
+# SLSTR case dependencies, moved verbatim from the run project on 2026-09-16
+# ---------------------------------------------------------------------------
+import numpy as np
+
+
+planck_c1 = 11910.439340652
+
+
+planck_c2 = 14388.291040407
+
+
+temperature_threshold = 100
+
+
+temperature_zero = 273.15
+
+
+def planck(wavelength, Ts):
+    '''
+    基于planck公式，计算某个波长时候，从温度到辐射的转换
+    :param wavelength: 波长，10.5
+    :param Ts: 温度，可以是亮温，也可以是摄氏度
+    :return: 辐射
+    '''
+    c1 = planck_c1
+    c2 = planck_c2
+    if np.isscalar(Ts):
+        if Ts < temperature_threshold:
+            Ts = Ts + temperature_zero
+        wavelength = np.float64(wavelength)
+        Ts = float(Ts)
+        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
+    else:
+        Ts = np.array(Ts, dtype=np.float64)
+        Ts[Ts < temperature_threshold] = Ts[Ts < temperature_threshold] + temperature_zero
+        wavelength = float(wavelength)
+        rad = c1 / (np.power(wavelength, 5) * (np.exp(c2 / Ts / wavelength) - 1)) * 10000
+    return rad
+
+
+def inv_planck(wavelength, rad):
+    '''
+    基于planck公式，计算从辐射到亮温的转换
+    :param wavelength: 波长,10.5
+    :param rad: 辐射
+    :return: 亮温 （300）
+    '''
+    c1 = planck_c1 * 10000
+    c2 = planck_c2
+    temp = c1 / (rad * np.power((wavelength), 5)) + 1
+    Ts = c2 / (wavelength * np.log(temp))
+    return Ts
+

@@ -174,3 +174,97 @@ def read_temperature_product(path: str | Path):
     )
     product.validate()
     return product
+
+
+# ---------------------------------------------------------------------------
+# SLSTR case dependencies, moved verbatim from the run project on 2026-09-16
+# ---------------------------------------------------------------------------
+try:
+    from osgeo import osr
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    osr = None
+
+
+def getSRSPair(dataset):
+    '''
+    获得给定数据的投影参考系和地理参考系
+    :param dataset: GDAL地理数据
+    :return: 投影参考系和地理参考系
+    '''
+    prosrs = osr.SpatialReference()
+    prosrs.ImportFromWkt(dataset.GetProjection())
+    geosrs = prosrs.CloneGeogCS()
+    return prosrs, geosrs
+
+
+def writevrt_nadir(infile, datafile, xfile, yfile):
+    write_vrt(infile, datafile, xfile, yfile, 1500, 1200)
+    return 1
+
+
+def writevrt_obliq(infile, datafile, xfile, yfile):
+    write_vrt(infile, datafile, xfile, yfile, 900, 1200)
+    return 1
+
+
+def write_vrt(vrtfile, datafile, xfile, yfile, xscale, yscale, noDataValue = 65535, bandnumber = 1):
+    '''
+    导出用于gdal vrt的配置文件
+    # 与函数配合使用，outfile为转成的文件路径，resampleAlg为重采样的
+    # dst_ds = gdal.Warp(outfile, vrtfile, geoloc=True, resampleAlg=gdal.GRIORA_NearestNeighbour)
+    :param vrtfile:  该配置文件名称
+    :param datafile:  所要操作的文件名称
+    :param xfile:  经度坐标文件 lon
+    :param yfile:  纬度坐标文件 lat
+    :param xscale:  列数
+    :param yscale:  行数
+    :param noDataValue: 无值填补
+    :param bandnumber:  波段数据
+    :return: 无
+    '''
+    f = open(vrtfile, 'w')
+    f.write(r'<VRTDataset rasterXSize="%d"'%xscale + 'rasterYSize="%d">'%yscale)
+    f.write('\n')
+    f.write(r'  <Metadata domain="GEOLOCATION">')
+    f.write('\n')
+    f.write(r'    <MDI key="SRS">GEOGCS["WGS 84(DD)",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433],AXIS["Long",EAST],AXIS["Lat",NORTH]]</MDI>')
+    # f.write(r'    <MDI key="SRS">GEOGCS["WGS 84(DD)",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433],AUTHORITY["EPSG", "9122"],AUTHORITY["EPSG", "4490"]</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="X_DATASET">' + xfile + r'</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="X_BAND">1</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="PIXEL_OFFSET">0</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="PIXEL_STEP">1</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="Y_DATASET">' + yfile + r'</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="Y_BAND">1</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="LINE_OFFSET">0</MDI>')
+    f.write('\n')
+    f.write(r'    <MDI key="LINE_STEP">1</MDI>')
+    f.write('\n')
+    f.write(r'  </Metadata>')
+    f.write('\n')
+    f.write(r'  <VRTRasterBand dataType = "Float32" band = "%d">'%bandnumber)
+    f.write('\n')
+    f.write(r'    <ColorInterp>Gray</ColorInterp >')
+    f.write('\n')
+    f.write(r'    <NoDataValue>%d</NoDataValue >'%noDataValue)
+    f.write('\n')
+    f.write(r'    <SimpleSource>')
+    f.write('\n')
+    f.write(r'      <SourceFilename relativeToVRT = "1" >' + datafile + r'</SourceFilename>')
+    f.write('\n')
+    f.write(r'      <SourceBand>1</SourceBand>')
+    f.write('\n')
+    f.write(r'    </SimpleSource>')
+    f.write('\n')
+    f.write(r'  </VRTRasterBand>')
+    f.write('\n')
+    f.write('</VRTDataset>')
+    f.close()
+    return 1
+

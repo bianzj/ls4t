@@ -1,9 +1,0 @@
-[machine]
-id = "replace-me"
-scheduler = "replace-me"
-
-[paths]
-raw_root = "/replace/ahi/raw"
-project_root = "/replace/ahi/project"
-lst_root = "/replace/ahi/lst"
-auxiliary_root = "/replace/common/auxiliary"

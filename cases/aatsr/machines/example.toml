@@ -1,0 +1,11 @@
+[machine]
+id = "example"
+
+[paths]
+framework = "/path/to/ls4t"
+source_root = "/path/to/aatsr/source"
+output_root = "/path/to/aatsr/output"
+
+[runtime]
+python = "python3"
+workers = 1

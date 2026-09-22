@@ -3,6 +3,9 @@ name = "ls4t"
 repository = "git@github.com:bianzj/ls4t.git"
 local_path = "/home/hero/work/ls4t"
 source_layout = "root"
+execution_cases = "archived"
+snapshot_archive = "cases/_archive/execution_20260917"
+note = "当前没有执行计划；三个独立运行项目的生产代码快照已整体归档到 snapshot_archive，需要时再恢复。"
 
 [[source_project]]
 sensor = "AATSR"
@@ -11,7 +14,20 @@ repository = "git@github.com:bianzj/ls4t-aatsr.git"
 local_path = "/home/hero/work/ls4t-aatsr-lsct"
 source_revision = "45f89fd"
 case_root = "cases"
-case_paths = ["cases/aatsr/global/001deg_2003_2012"]
+transferred_to = [
+  "cases/aatsr/case.toml",
+  "cases/aatsr/aatsr_*.py",
+  "cases/aatsr/util_aatsr.py",
+  "base/files.py",
+  "base/lsct.py",
+  "base/lsct_window.py",
+  "base/fitting.py",
+  "base/metrics.py",
+  "base/dates.py",
+]
+flattened = "2026-09-16"
+archived_extra = "cases/_archive/aatsr/transferred_20260916"
+case_paths = ["cases/aatsr"]
 
 [[source_project]]
 sensor = "MSG"
@@ -19,8 +35,41 @@ name = "ls4t-msg"
 repository = "git@github.com:bianzj/ls4t-msg.git"
 local_path = "/home/hero/work/ls4t-msg-lsct"
 source_revision = "0070934"
+transferred_to = [
+  "cases/msg/case.toml",
+  "cases/msg/msg_download.py",
+  "cases/msg/msg_extract_euro.py",
+  "cases/msg/msg_extract_iodc.py",
+  "cases/msg/msg_project_euro.py",
+  "cases/msg/msg_project_euro_lai.py",
+  "cases/msg/msg_project_iodc.py",
+  "cases/msg/msg_lst_fit.py",
+  "cases/msg/msg_lsct_iter.py",
+  "cases/msg/msg_site_extract_lst.py",
+  "cases/msg/msg_site_extract_lai.py",
+  "cases/msg/msg_site_extract_static.py",
+  "cases/msg/msg_site_extract_csv.py",
+  "cases/msg/msg_site_fit.py",
+  "cases/msg/msg_site_validate.py",
+  "cases/msg/msg_site_stats.py",
+  "cases/msg/msg_site_extract_series.py",
+  "cases/msg/msg_site_repro_lst.py",
+  "cases/msg/msg_site_repro_lsct.py",
+  "cases/msg/msg_site_validate_multisite.py",
+  "cases/msg/msg_lsct_2c_full.py",
+  "cases/msg/msg_lsct_3c_2stage_full.py",
+  "cases/msg/msg_lsct_3c_full.py",
+  "cases/msg/msg_lsct_3c_constrained_full.py",
+  "cases/msg/msg_lsct_3c_show_full.py",
+  "base/kernel.py",
+  "base/files.py",
+  "base/spatial.py",
+  "base/dates.py",
+]
+flattened = "2026-09-16"
+archived_extra = "cases/_archive/msg/transferred_20260916"
 case_root = "cases"
-case_paths = ["cases/msg/europe_africa/dual_disk"]
+case_paths = ["cases/msg"]
 
 [[source_project]]
 sensor = "SLSTR"
@@ -28,6 +77,29 @@ name = "ls4t-slstr"
 repository = "git@github.com:bianzj/ls4t-slstr.git"
 local_path = "/home/hero/work/ls4t-slstr-lsct"
 source_revision = "b856b44"
+source_worktree = [
+  "cases/implementation/one_by_one/slstr_data.py",
+  "cases/implementation/one_by_one/slstr_data_origin.py",
+  "cases/implementation/one_by_one/run_slstr_data_origin_years.py",
+  "cases/implementation/one_by_one/slstr_lsct2_parallel.py",
+  "cases/implementation/one_by_one/slstr_lst_parallel.py",
+  "cases/regions",
+]
+transferred_to = [
+  "cases/slstr/production.toml",
+  "cases/slstr/machines",
+  "cases/slstr/slstr_*.py",
+  "base/files.py",
+  "base/raster.py",
+  "base/spatial.py",
+  "base/dates.py",
+  "base/radiometry.py",
+  "base/lsct.py",
+  "base/rt",
+  "slstr/slstr_grid.py",
+]
+flattened = "2026-09-16"
+archived_extra = "cases/_archive/slstr/transferred_20260916"
 case_root = "cases"
 case_paths = [
   "cases/slstr/heihe/study_area_2022",

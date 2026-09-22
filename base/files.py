@@ -24,3 +24,467 @@ def write_npz_atomic(path: str | Path, payload: dict[str, np.ndarray]) -> None:
         os.replace(temporary_path, destination)
     finally:
         temporary_path.unlink(missing_ok=True)
+
+
+# ---------------------------------------------------------------------------
+# SLSTR case dependencies, moved verbatim from the run project on 2026-09-16
+# ---------------------------------------------------------------------------
+import h5py
+import numpy as np
+import os
+import re
+import shutil
+import zipfile
+try:
+    from osgeo import gdal
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    gdal = None
+try:
+    import netCDF4
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    netCDF4 = None
+
+
+def search_dir(dir,specstr):
+    '''
+    查找某个路径下，含有特定标识的文件夹，需要list把标识括起来，即使只有1个
+    :param dir: 路径
+    :param specstr:
+    :return:
+    '''
+    results = []
+    num = len(specstr)
+    if num == 0:
+        results = os.listdir(dir)
+    elif num==1:
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x)) and
+                    specstr[0] in x]
+    elif num==2:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x]
+    elif num==3:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        specstr3 = specstr[2]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and specstr3 in x]
+    return results
+
+
+def search_file_rej(dir,specstr,rejstr):
+    '''
+    查找某个路径下，含有特定标识,又不含有某个标识的文件，需要list把标识括起来，即使只有1个，可以有多个“有”标识，但是只有1个“没有”标识
+    :param dir: 路径
+    :param specstr: “有”标识
+    :param rejstr: “没有”标识
+    :return: 文件名数组
+    '''
+    results = []
+    num = len(specstr)
+    if num == 0:
+        results = os.listdir(dir)
+    elif num==1:
+        specstr0 = specstr[0]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x))
+                    and specstr0 in x
+                    and rejstr not in x]
+    elif num==2:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and rejstr not in x]
+    elif num==3:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        specstr3 = specstr[2]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and specstr3 in x
+                    and rejstr not in x]
+    return results
+
+
+def search_dir_rej(dir,specstr,rejstr):
+    '''
+    查找某个路径下，含有特定标识,又不含有某个标识的文件夹，需要list把标识括起来，即使只有1个，可以有多个“有”标识，但是只有1个“没有”标识
+    :param dir: 路径
+    :param specstr: “有”标识
+    :param rejstr: “没有”标识
+    :return: 文件夹名数组
+    '''
+    results = []
+    num = len(specstr)
+    if num == 0:
+        results = os.listdir(dir)
+    elif num==1:
+        specstr0 = specstr[0]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x))
+                    and specstr0 in x
+                    and rejstr not in x]
+    elif num==2:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and rejstr not in x]
+    elif num==3:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        specstr3 = specstr[2]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isdir(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and specstr3 in x
+                    and rejstr not in x]
+    return results
+
+
+def read_txt_array(filename, num_pass, num_col):
+    '''
+    限定读取txt文本数据，考虑了要跳过的行，但是必须要给定列数
+    :param filename: 文件名
+    :param num_pass: 要跳过的行数
+    :param num_col: 数据的列数
+    :return: 返回数组
+    '''
+    f = open(filename, 'r')
+    temp = f.readlines()
+    temp = np.asarray(temp)
+    temp = temp[num_pass:]
+    num = len(temp)
+    lut = np.zeros([num, num_col])
+    for k in range(num):
+        if (temp[k] == ""): continue
+        tempp = (re.split(r'\s+', temp[k].strip()))
+        lut[k, :] = np.asarray(tempp)
+    return lut
+
+
+def read_image_gdal(filename):
+    '''
+    使用gdal,读取图像文件，并格式输出
+    :param filename:文件名
+    :return: 文件，列数，行数，波段数，地理信息，投影信息
+    '''
+    dataset = gdal.Open(filename)
+    if dataset == None:
+        print(filename + "文件无法打开")
+        return
+    im_width = dataset.RasterXSize
+    im_height = dataset.RasterYSize
+    im_bands = dataset.RasterCount
+    im_data = dataset.ReadAsArray(0, 0, im_width, im_height)
+    im_geotrans = dataset.GetGeoTransform()
+    im_proj = dataset.GetProjection()
+    return im_data,im_width,im_height,im_bands,im_geotrans,im_proj
+
+
+def read_image_dataset_gdal(filename):
+    '''
+    读取图像文件，特别的，会返回数据集
+    :param filename: 文件名
+    :return: 文件，列数，行数，波段数，地理信息，投影信息，数据集
+    '''
+    dataset = gdal.Open(filename)
+    if dataset == None:
+        print(filename + "文件无法打开")
+        return
+    im_width = dataset.RasterXSize
+    im_height = dataset.RasterYSize
+    im_bands = dataset.RasterCount
+    im_data = dataset.ReadAsArray(0, 0, im_width, im_height)
+    im_geotrans = dataset.GetGeoTransform()
+    im_proj = dataset.GetProjection()
+    return im_data,im_width,im_height,im_bands,im_geotrans,im_proj,dataset
+
+
+def getDatafromNc(fileName, objectName):
+    '''
+    读取NC文件，文件名和项目名
+    :param fileName: 文件名
+    :param objectName: 项目名
+    :return: 值
+    '''
+    try:
+        dataset = netCDF4.Dataset(fileName)
+    except (OSError, RuntimeError):
+        print(fileName + ' File Error')
+        predata = np.asarray(None)
+    else:
+        try:
+            predata = np.asarray(dataset.variables[objectName][:])
+        except RuntimeError:
+            print(fileName + ' Attribute Error')
+            predata = np.asarray(None)
+        finally:
+            dataset.close();
+    return predata
+
+
+def write_image_gdal(im_data, im_width, im_height, im_bands, im_trans, im_proj, path, imageType = 'GTiff'):
+    '''
+    保存数据，输出成tif格式
+    :param im_data: 数组
+    :param im_width:  列数
+    :param im_height:  行数
+    :param im_bands:  波段数
+    :param im_trans:  地理坐标
+    :param im_proj:  投影坐标
+    :param path:  路径
+    :return: 无
+    '''
+    if 'int8' in im_data.dtype.name:
+        datatype = gdal.GDT_Byte
+    elif 'uint16' in im_data.dtype.name:
+        datatype = gdal.GDT_UInt16
+    elif 'int16' in im_data.dtype.name:
+        datatype = gdal.GDT_Int16
+    else:
+        datatype = gdal.GDT_Float32
+    if len(im_data.shape) == 3:
+        im_bands, im_height, im_width = im_data.shape
+    elif len(im_data.shape) == 2:
+        im_data = np.array([im_data])
+    else:
+        im_bands, (im_height, im_width) = 1, im_data.shape
+    driver = gdal.GetDriverByName(imageType)
+    dataset = driver.Create(path, im_width, im_height, im_bands, datatype)
+    if (dataset != None and im_trans != '' and im_proj != ''):
+        dataset.SetGeoTransform(im_trans)
+        dataset.SetProjection(im_proj)
+    for i in range(im_bands):
+        dataset.GetRasterBand(i+1).WriteArray(im_data[i])
+    del dataset
+
+
+def read_h5py_item(infile,name):
+    '''
+    para infile: h5py
+    para name: string
+    '''
+    f = h5py.File(infile,'r')
+    data = f[name]
+    return np.array(data)
+
+
+def mkdir_if_not_exist(dir_name, is_delete=False):
+    """
+    创建文件夹
+    :param dir_name: 文件夹
+    :param is_delete: 是否删除
+    :return: 是否成功
+    """
+    try:
+        if is_delete:
+            if os.path.exists(dir_name):
+                shutil.rmtree(dir_name)
+                print("Path exists, remove and recreate")
+
+        if not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+            print("Created path:" + dir_name)
+        return True
+    except Exception as e:
+        return False
+
+
+def unzip_file(zipfilename,outdir):
+    '''
+    解压zip文件
+    :param zipfilename: 要解压文件名称
+    :param outdir: 输出位置
+    '''
+    mkdir_if_not_exist(outdir)
+    zip_file = zipfile.ZipFile(zipfilename)
+    for names in zip_file.namelist():
+        zip_file.extract(names, outdir)  # 解压到outdir目录下
+    zip_file.close()
+    print("Unzip " + zipfilename + " finished!")
+
+# --- MSG production case dependency (2026-09-16) ---
+
+def search_file(dir,specstr):
+    '''
+    查找某个路径下，含有特定标识的文件，需要list把标识括起来，即使只有1个
+    :param dir: 路径
+    :param specstr: 特定的标识
+    :return: 文件名
+    '''
+    results = []
+    num = np.size(specstr)
+    if num == 0:
+        results = os.listdir(dir)
+    elif num==1:
+        specstr0 = specstr[0]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x)) and
+                    specstr0 in x]
+    elif num==2:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x]
+    elif num==3:
+        specstr1 = specstr[0]
+        specstr2 = specstr[1]
+        specstr3 = specstr[2]
+        results += [x for x in os.listdir(dir) if
+                    os.path.isfile(os.path.join(dir, x)) \
+                    and specstr1 in x
+                    and specstr2 in x
+                    and specstr3 in x]
+    return results
+
+# --- MSG site fitting dependency (2026-09-16) ---
+
+def read_txt_str(filename, spt):
+    '''
+    读取文件数据，然后按照特定的约束进行解析，随后按照行列进行存储
+    :param filename: 文件名称
+    :param spt: 解析表示
+    :return: 解析后数组
+    '''
+    mydata = []
+    with open(filename) as f:
+        lines = f.readline()
+        while lines:
+            line = lines.split(spt)
+            mydata.append(line)
+            lines = f.readline()
+    return mydata
+
+
+# ---------------------------------------------------------------------------
+# AATSR case dependencies, moved verbatim from the run project on 2026-09-16
+# ---------------------------------------------------------------------------
+import gzip
+import h5py
+import numpy as np
+
+try:
+    import netCDF4
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    netCDF4 = None
+
+
+def read_image_Nc(fileName, objectName,ifscale):
+    '''
+    读取NC格式的数据，没有组名，也需要指定是否需要缩放
+    :param fileName:  文件名
+    :param objectName:  目标名
+    :param ifscale:  是否缩放
+    :return:  数组
+    '''
+    dataset = netCDF4.Dataset(fileName)
+    if ifscale ==0:
+        dataset.variables[objectName].set_auto_maskandscale(False)
+    predata = np.asarray(dataset.variables[objectName][:])
+    return predata
+
+
+def write_h5py_item(infile,name,data,dtype,if_overwrite=1,compression=None):
+    '''
+    Write h5py
+    para infile: h5py
+    para name: string
+    para data: numpy array
+    para dtype: string
+    para if_overwrite: 0 or 1
+    para compression: string
+    '''
+    if not os.path.exists(infile):
+        f = h5py.File(infile,'w')
+    else:
+        f = h5py.File(infile,'a')
+    if name in f and if_overwrite == 1:
+        del f[name]
+    f.create_dataset(name,data=data,dtype=dtype,compression=compression)
+    f.close()
+
+
+def write_h5py_file(infile,name_list,data_list,dtype_list,compression=None,ifcover = 0):
+    '''
+    Write h5py
+    para infile: h5py
+    para name_list:
+    para data_list:
+    para dtype_list:
+    para compression: gzip, lzf, szip, None (only applied to array data)
+    '''
+    item_num = len(name_list)
+    if item_num == 0:
+        return 0
+    if os.path.exists(infile):
+        if ifcover: mode = "w"
+        else: mode = "a"
+        f = h5py.File(infile,mode)
+    else:
+        f = h5py.File(infile,'w')
+    for i,name in enumerate(name_list):
+        data = data_list[i]
+        # Only apply compression to array/matrix data
+        if isinstance(data, (np.ndarray, list, tuple)) and len(np.shape(data)) > 0:
+            f.create_dataset(name,data=data,dtype=dtype_list[i],compression=compression)
+        else:
+            f.create_dataset(name,data=data,dtype=dtype_list[i])
+    f.close()
+
+
+def read_h5py_items(infile,names):
+    '''
+    para infile: h5py
+    para name: string
+    '''
+    # 初始化一个空列表，用于存储从h5py文件中读取的数据
+    data_list = []
+    # 打开h5py文件
+    f = h5py.File(infile)
+    # 遍历输入的名称列表
+    for name in names:
+        # 检查当前名称是否存在于h5py文件中
+        if name in f:
+            # 如果存在，将数据转换为numpy数组并添加到结果列表中
+            data_list.append(np.array(f[name]))
+        else:
+            # 如果不存在，添加一个空列表到结果列表中
+            data_list.append([])
+    # 返回包含所有数据的列表
+    return data_list
+
+
+def un_gz(file_name,infile,outdir):
+    '''
+    解压gz文件
+    :param file_name:要解压文件名称
+    :param infile:要解压文件位置
+    :param outdir:输出位置
+    '''
+    mkdir_if_not_exist(outdir)
+    f_name = outdir + file_name.replace(".gz", "")
+    # 获取文件的名称，去掉
+    g_file = gzip.GzipFile(infile + file_name)
+    # 创建gzip对象
+    open(f_name, "wb+").write(g_file.read())
+    # gzip对象用read()打开后，写入open()建立的文件里。
+    g_file.close()  # 关闭gzip对象
+    print("Unzip " + file_name + " finished!")

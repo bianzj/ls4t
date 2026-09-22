@@ -1,0 +1,82 @@
+[case]
+name = "slstr-multi-region-production"
+sensor = "SLSTR"
+status = "production"
+spatial_modes = ["region-first", "scene-first"]
+
+[framework]
+repository = "git@github.com:bianzj/ls4t.git"
+revision = "3278a21"
+default_source = "/home/hero/work/ls4t"
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-slstr.git"
+source_revision = "b856b44"
+source_worktree_changes = [
+  "cases/implementation/one_by_one/slstr_data.py",
+  "cases/implementation/one_by_one/slstr_data_origin.py",
+  "cases/implementation/one_by_one/run_slstr_data_origin_years.py",
+  "cases/implementation/one_by_one/slstr_lsct2_parallel.py",
+  "cases/implementation/one_by_one/slstr_lst_parallel.py",
+  "cases/regions",
+]
+transferred = "2026-09-16"
+flattened = "2026-09-16"
+note = "SLSTR 生产代码转入主仓库后扁平化，只依赖 base/ 与 slstr/，后续直接在 ls4t 运行。"
+
+[relationship]
+model = "ls4t-reference-and-case-object"
+reference_modules = ["base", "slstr"]
+case_root = "cases/slstr"
+
+[runtime]
+working_directory = "ls4t repository root"
+python_path = "PYTHONPATH=."
+python = "/home/hero/anaconda3/envs/env_311/bin/python3.11"
+packages = ["numpy", "scipy", "scikit-learn", "GDAL", "opencv(cv2)", "netCDF4", "h5py"]
+
+[dependencies]
+policy = "case 脚本只从 base/ 和 slstr/ 导入；不保留 support 夹层和星号导入。"
+base = [
+  "base/files.py",
+  "base/raster.py",
+  "base/spatial.py",
+  "base/dates.py",
+  "base/radiometry.py",
+  "base/lsct.py",
+  "base/lsct_window.py",
+  "base/rt/",
+]
+slstr = ["slstr/slstr_grid.py"]
+tests = "tests/test_slstr_case_dependencies.py"
+
+[scope]
+stages = ["unzip", "reformat", "project", "lst", "lsct"]
+archived = "cases/_archive/slstr/transferred_20260916"
+
+[stages.unzip]
+scene = "slstr_unzip_scene.py"
+batch = "slstr_unzip_batch.py"
+
+[stages.reformat]
+area = "slstr_data_area.py"
+scene = "slstr_data_scene.py"
+scene_origin = "slstr_data_scene_origin.py"
+scene_latlon = "slstr_data_scene_latlon.py"
+scene_years = "slstr_data_scene_years.py"
+batch = "slstr_data_batch.py"
+
+[stages.project]
+scene = "slstr_proj_scene.py"
+note = "研究区优先模式的投影在 slstr_data_area.py 内部完成。"
+
+[stages.lst]
+area = "slstr_lst_area.py"
+scene = "slstr_lst_scene.py"
+scene_parallel = "slstr_lst_scene_parallel.py"
+batch = "slstr_lst_batch.py"
+
+[stages.lsct]
+area = ["slstr_lsct2_area.py", "slstr_lsct3_area.py"]
+scene = ["slstr_lsct2_scene.py", "slstr_lsct3_scene.py"]
+scene_parallel = "slstr_lsct2_scene_parallel.py"

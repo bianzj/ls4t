@@ -1,0 +1,56 @@
+schema_version = 1
+
+[case]
+id = "aatsr-global-001deg-2003-2012"
+sensor = "aatsr"
+region = "global"
+status = "active"
+spatial_mode = "temporal-composite"
+description = "AATSR global 0.01-degree daily/monthly LST and LSCT production, flattened."
+
+[processing]
+order = ["unzip", "extract", "lst", "lsct", "daily_monthly", "analysis_stacks"]
+unzip = "aatsr_unzip.py"
+extract = "aatsr_data.py"
+lst = "aatsr_lst.py"
+lsct = "aatsr_lsct.py"
+daily_monthly = "aatsr_001deg_stats.py"
+analysis_stacks = "aatsr_monthly_3files.py"
+current_entrypoint = "aatsr_001deg_stats.py"
+standard_core = false
+
+[methods.full_disk]
+two_component = "aatsr_lsct.py"
+two_component_latlon = "aatsr_lsct_latlon.py"
+two_component_v31 = "aatsr_lsct_v31.py"
+two_component_ndvi = "aatsr_lsct_ndvi.py"
+note = "AATSR LSCT 为两组分（土壤 + 植被）；窗口拟合与约束函数来自 base/lsct.py、base/lsct_window.py、base/kernel.py。"
+
+[methods.site]
+inversion = "aatsr_site_inv.py"
+inversion_bayesian = "aatsr_site_inv_bayes.py"
+validation = "aatsr_site_validate.py"
+series = "aatsr_site_series.py"
+
+[dependencies]
+policy = "case 脚本只从 base/、aatsr/ 导入项目代码；无 support 夹层与星号导入。"
+base = [
+  "base/files.py",
+  "base/spatial.py",
+  "base/dates.py",
+  "base/metrics.py",
+  "base/fitting.py",
+  "base/radiometry.py",
+  "base/lsct.py",
+  "base/lsct_window.py",
+  "base/kernel.py",
+  "base/rt/",
+]
+case_modules = ["cases/aatsr/util_aatsr.py"]
+tests = "tests/test_aatsr_case_dependencies.py"
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-aatsr.git"
+source_revision = "45f89fd"
+flattened = "2026-09-16"
+archived = "cases/_archive/aatsr/transferred_20260916"

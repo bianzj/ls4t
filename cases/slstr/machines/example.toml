@@ -1,0 +1,9 @@
+[paths]
+framework = "/path/to/ls4t"
+source_root = "/path/to/slstr/source"
+product_root = "/path/to/slstr/products"
+reference_root = "/path/to/reference-data"
+
+[runtime]
+python = "python3"
+workers = 1

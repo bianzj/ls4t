@@ -1,0 +1,27 @@
+{
+  "sensor": "AATSR",
+  "start_time": "2006-07-01T10:00:00Z",
+  "end_time": "2006-07-01T10:05:00Z",
+  "algorithm_version": "normalization-v1",
+  "input_grid_id": "GLOBAL-0.01DEG",
+  "input_temporal_interval": "instantaneous",
+  "source_products": ["LS4T_AATSR_L2LST_example.npz"],
+  "profile": {
+    "name": "GLOBAL-0130",
+    "version": "1.0",
+    "grid_id": "GLOBAL-0.01DEG",
+    "temporal_interval": "instantaneous",
+    "reference_view_zenith_deg": 0.0,
+    "reference_solar_zenith_deg": 30.0,
+    "reference_relative_azimuth_deg": 0.0,
+    "reference_local_solar_time_hour": 13.5,
+    "unit": "K"
+  },
+  "harmonization": {
+    "sensor": "AATSR",
+    "reference_sensor": "SLSTR",
+    "slope": 1.0,
+    "offset_k": 0.0,
+    "calibration_uncertainty_k": 0.2
+  }
+}

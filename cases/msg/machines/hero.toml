@@ -1,0 +1,14 @@
+[machine]
+id = "hero"
+
+[paths]
+msg_root = "/media/hero/MSG"
+shared_remote_sensing_root = "/media/hero/rs"
+lst_output_root = "/media/hero/MSG/PRODUCTS/MSG/MLST/GEOTIFF"
+lsct_output_root = "/media/hero/MSG/PRODUCTS/LSCT/MLST_COMPONENT"
+
+[runtime]
+python = "/home/hero/anaconda3/envs/env_311/bin/python3.11"
+
+[notes]
+paths = "脚本顶部仍保留具体年份、分区和输入路径，运行前先与该 profile 核对。"

@@ -1,0 +1,88 @@
+schema_version = 1
+
+[case]
+id = "msg-europe-africa-dual-disk"
+sensor = "msg"
+region = "europe-africa"
+status = "migrated"
+spatial_mode = "fixed-grid"
+description = "MSG/SEVIRI LST fitting and LSCT inversion, flat production tree."
+
+[processing]
+order = ["download", "extract", "project", "lst-fit", "lsct-inversion"]
+download_lai = "msg_download.py"
+extract_euro = "msg_extract_euro.py"
+extract_iodc = "msg_extract_iodc.py"
+project_euro = "msg_project_euro.py"
+project_euro_lai = "msg_project_euro_lai.py"
+project_iodc = "msg_project_iodc.py"
+lst_fit = "msg_lst_fit.py"
+lsct_inversion = "msg_lsct_iter.py"
+site_extract_lst = "msg_site_extract_lst.py"
+site_extract_lai = "msg_site_extract_lai.py"
+site_extract_static = "msg_site_extract_static.py"
+site_extract_csv = "msg_site_extract_csv.py"
+site_angle_fit = "msg_site_fit.py"
+site_validate = "msg_site_validate.py"
+site_stats = "msg_site_stats.py"
+site_extract_series = "msg_site_extract_series.py"
+site_repro_lst = "msg_site_repro_lst.py"
+site_repro_lsct = "msg_site_repro_lsct.py"
+site_validate_multisite = "msg_site_validate_multisite.py"
+lsct_2c_full = "msg_lsct_2c_full.py"
+lsct_3c_full = "msg_lsct_3c_full.py"
+lsct_3c_2stage_full = "msg_lsct_3c_2stage_full.py"
+lsct_3c_constrained_full = "msg_lsct_3c_constrained_full.py"
+lsct_3c_show_full = "msg_lsct_3c_show_full.py"
+current_entrypoint = "msg_lsct_iter.py"
+standard_core = false
+
+[scope]
+processes = ["download", "extract", "project", "lst-fit", "lsct-inversion", "site-test"]
+site_tests = ["component temperature validation", "angle fitting (DTC/DTCRL/DTCLSFRL)"]
+note = "保留真实在跑的下载、提取、投影、LST 拟合、LSCT 反演，以及站点上的组分温度测试和角度拟合；ERA5 GRIB→TCWV 转换不再需要，月合成/绘图和旧版本反演已归档。"
+
+[methods]
+lsct_script = "msg_lsct_iter.py"
+lsct_switch = "METHOD"
+# 正式版：A 阶段先分[光照土壤]与[阴影土壤+植被]，B 阶段在残差中分[阴影土壤]与[植被]并加硬约束，
+#         C 阶段强先验联合平差；大批量产品走这条。
+lsct_formal = "METHOD='formal' lambda=100 constraints=True dif=3 outdir=PRODUCTS/LSCT/MLST_COMPONENT"
+# 测试/对照档：同一套 A/C 流程，但 B 阶段不加硬约束、C 阶段弱先验。
+lsct_test = "METHOD='test' lambda=0.1 constraints=False outdir=PRODUCTS/LSCT/MLST_COMPONENT2"
+alternatives_archived = [
+  "util_lsct winconst/winquad/winquad_constraint (SLSQP / Bayesian ridge)",
+  "reference: msg/msg_lsct.py + base.lsct.retrieve_components(_window)",
+  "lsct3.1 non-iter (superseded by msg_lsct_iter.py METHOD='test')",
+  "lsct3.2 non-iter (superseded by msg_lsct_iter.py METHOD='formal')",
+  "lsct3.2-iter-site* point solutions",
+]
+
+# 全图（full disk）反演方法，全部在 cases/msg 内：
+[methods.full_disk]
+two_component = "msg_lsct_2c_full.py"                 # 2 组分（土壤 + 植被），5x5 窗口最小二乘，逐分量 tif
+three_component = "msg_lsct_3c_full.py"               # 3 组分（光照土壤 + 阴影土壤 + 植被），3x3 窗口最小二乘
+three_component_2stage = "msg_lsct_3c_2stage_full.py" # 3 组分两阶段：先[光照土壤]vs[阴影土壤+植被]，再分[阴影土壤]vs[植被]（无约束）
+three_component_production = "msg_lsct_iter.py"       # 正式 METHOD='formal' / 测试 METHOD='test'（含硬约束 + 先验平差）
+three_component_constrained = "msg_lsct_3c_constrained_full.py"  # 同一硬约束的全向量化实现（对照）
+three_component_show = "msg_lsct_3c_show_full.py"     # 正式算法 + 逐景 4 分量对比出图（对照）
+
+[dependencies]
+policy = "case 脚本只从 base/ 导入项目代码，不再有 support 夹层和星号导入。"
+base = [
+  "base/files.py",
+  "base/spatial.py",
+  "base/dates.py",
+  "base/lsct.py",
+  "base/radiometry.py",
+  "base/rt/gap.py",
+  "base/kernel.py",
+]
+tests = "tests/test_msg_case_dependencies.py"
+
+[provenance]
+source_repository = "git@github.com:bianzj/ls4t-msg.git"
+source_revision = "0070934"
+flattened = "2026-09-16"
+archived = "cases/_archive/msg/transferred_20260916"
+note = "LST 拟合取自 cases/ingest/msg_data_lst_euro.py，LSCT 反演取自 cases/implementation/msg_lsct3.2-iter.py。"

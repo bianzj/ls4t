@@ -1,74 +1,47 @@
 # LS4T cases
 
-这里是实际研究和生产入口。项目采用固定的三层边界：
-
-```text
-根目录模块                 标准、可复用的处理能力
-tests/                     合成数据自动化测试
-cases/<sensor>/<region>/   真实数据、研究区、机器和运行实现
-```
-
-## 当前工作区
+这里就是**执行案例区**：`cases/<sensor>/<region>/<case-id>/` 下的脚本用真实数据、真实
+机器路径跑生产。参考实现不在这里——参考是根目录的传感器包（`slstr/`、`msg/`、`aatsr/`、
+`base/` 等），`cases/` 下不再分"参考"和"案例"。
 
 ```text
 cases/
-├── _templates/                         新案例模板和生成工具
-├── _archive/                           非活动、重复或混杂材料
-├── ahi/
-│   └── unclassified/legacy_draft/      AHI 历史方法，draft
-├── aster/                              ASTER 待导入说明，暂无真实案例
-├── aatsr/
-│   └── global/001deg_2003_2012/        全球 0.01° 日/月统计
-├── modis/
-│   └── unclassified/legacy_draft/      MODIS 历史方法，draft
-├── msg/
-│   └── europe_africa/dual_disk/        MSG + IODC 双星盘案例
-├── slstr/
-    ├── heihe/study_area_2022/          黑河，研究区优先
-    └── europe_south_africa/
-        └── scene_first_migrated/       欧洲/南非，逐景优先迁移快照
-└── viirs/
-    └── unclassified/legacy_draft/      VIIRS 历史方法，draft
+├── _templates/                    新建案例的脚手架（工具，不是参考实现）
+│   ├── README.md                  案例结构、运行方式和模板说明
+│   ├── new_case.py                从模板生成 cases/<sensor>/<region>/<case-id>/
+│   ├── audit_cases.py             结构审计，不执行科学代码
+│   └── case/                      案例骨架（case.toml、machines、stages）
+├── _archive/                      归档区
+│   ├── aatsr/、msg/、slstr/       逐次迁移留下的历史归档
+│   └── legacy/、shared/、compatibility/  更早的旧实现与兼容层
+├── aatsr/  msg/  slstr/  aster/   执行案例
+├── catalog.toml                   案例登记
+└── projects.toml                  独立运行项目的来源索引
 ```
 
-只有带 `case.toml` 的目录才算一个已登记案例。`draft` 表示代码已经归到案例，但区域、
-机器路径、依赖和结果还没有完成验证，不能当作生产入口。当前状态和入口见
-`catalog.toml`；三个独立运行项目的来源提交见 `projects.toml`。
+执行案例目前有：`aatsr/`（全球 0.01° 日/月生产 + 全图 LSCT 变体 + 站点）、
+`msg/`（下载/提取/投影/LST/LSCT + 站点测试与复现）、
+`slstr/`（解压/重整/投影/LST/LSCT 五环节 + 两个旧区域快照）、`aster/`（待导入说明）。
+每个案例里有什么见各自的 `README.md`、`case.toml`，以及 `catalog.toml`、`projects.toml`。
 
-## 一个案例应包含什么
+## 三层边界仍然有效
 
 ```text
-cases/slstr/heihe/summer-2022/
-├── README.md                 目的、输入、输出和运行顺序
-├── case.toml                 传感器、区域、时期、空间路线、算法版本
-├── machines/
-│   ├── hero.toml             可提交的某台机器路径/并行设置
-│   └── local.toml            本机临时配置，Git 忽略
-└── stages/
-    ├── 01_download.py
-    ├── 02_prepare.py
-    ├── 03_retrieve.py
-    └── 04_validate.py
+根目录模块（base/、aatsr/、msg/、slstr/、…）   标准、可复用的参考实现
+tests/                                          合成数据自动化测试
+cases/_templates/                               新建案例的模板与审计工具
 ```
 
-同一研究可以有多台机器配置，不必复制算法；黑河、非洲、欧洲或不同产品版本则分别建立
-案例。案例可以采用旧 HDF5/GeoTIFF 实现，也可以调用标准 NPZ 模块，但必须在
-`case.toml` 的 `standard_core` 中如实记录。
+参考侧（根目录模块）保存解压、投影、提取、LST/LSCT 反演、角度拟合核等的标准实现；
+`base/` 里为执行案例补的 `kernel.py`、`lsct_window.py`、`metrics.py`、`fitting.py`、
+`rt/` 等也属于参考侧，案例脚本只从这些模块导入。
 
-## 两种空间路线
-
-1. `study-area-first`：相邻影像先投影、拼接或裁剪为完整研究区，再反演 LST/LSCT。
-2. `scene-first`：逐景完成 LST/LSCT，再拼接或裁剪结果。
-
-MSG 固定网格案例还可标记 `fixed-grid`；全球日/月统计可标记 `temporal-composite`。
-轨道和时次分组是科学条件，必须由案例显式提供，标准代码不会猜测。
-
-## 新建与归档
+## 新建案例
 
 ```bash
-python cases/_templates/new_case.py slstr heihe summer-2022 \
-  --mode study-area-first
+python cases/_templates/new_case.py slstr heihe summer-2022 --mode study-area-first
+python cases/_templates/audit_cases.py
 ```
 
-不再使用的脚本先移到 `_archive/`，不立即删除。归档内容不作为生产入口，不参与当前
-案例的默认检查；需要恢复时按模板重新登记和验证。
+审计只会检查带 `case.toml` 的登记案例；`_archive/` 下的目录会被跳过，所以当前
+4 个在用案例会输出 `OK: 4 registered cases`。

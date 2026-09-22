@@ -1,0 +1,61 @@
+{
+  "type": "FeatureCollection",
+  "name": "south_america_tropical_amazon",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "south_america_tropical_final_window",
+        "role": "final_output_window",
+        "west": -82.0,
+        "east": -34.0,
+        "south": -25.0,
+        "north": 20.0,
+        "target_crs": "EPSG:4326",
+        "grid_resolution_degree": 0.01,
+        "daily_key": "UTC acquisition date",
+        "notes": "Use land and cloud quality masks before daily compositing."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-82.0, -25.0],
+          [-34.0, -25.0],
+          [-34.0, 20.0],
+          [-82.0, 20.0],
+          [-82.0, -25.0]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "amazon_forest_focus_window",
+        "role": "amazon_focus",
+        "west": -80.0,
+        "east": -44.0,
+        "south": -18.0,
+        "north": 12.0,
+        "target_crs": "EPSG:4326",
+        "grid_resolution_degree": 0.01,
+        "notes": "Amazon basin and adjacent forest-transition zone; use a land-cover mask for the biome boundary."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-80.0, -18.0],
+          [-44.0, -18.0],
+          [-44.0, 12.0],
+          [-80.0, 12.0],
+          [-80.0, -18.0]
+        ]]
+      }
+    }
+  ]
+}

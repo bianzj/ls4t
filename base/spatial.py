@@ -432,3 +432,123 @@ def mosaic_temperature_products(
     result = TemperatureProduct(metadata, variables, quality, uncertainty)
     result.validate()
     return result
+
+
+# ---------------------------------------------------------------------------
+# SLSTR case dependencies, moved verbatim from the run project on 2026-09-16
+# ---------------------------------------------------------------------------
+import numpy as np
+try:
+    from osgeo import osr
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    osr = None
+try:
+    import cv2
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    cv2 = None
+from base.raster import getSRSPair
+
+
+def resize_data(preArray, nl, ns, method = 'cv2.INTER_NEAREST'):
+    '''
+    数组的缩放，用到了cv2库，方法主要有：
+    ‘最邻近‘cv2.INTER_NEAREST，‘双线性插值’cv2.INTER_LINEAR，‘三次立方’cv2.INTER_CUBIC，’等面积’cv2.INTER_AREA
+    :param preArray: 原有数组
+    :param nl: 目标行数
+    :param ns: 目标列数
+    :param method:  缩放方法,默认是双线性插值
+    :return: 返回缩放后的数组
+    '''
+    ns = np.int_(ns)
+    nl = np.int_(nl)
+    data = cv2.resize(preArray,(ns,nl),interpolation=0)
+    return data
+
+
+def geo2lonlat(dataset, x, y):
+        '''
+        将投影坐标转为经纬度坐标（具体的投影坐标系由给定数据确定）
+        :param dataset: GDAL地理数据
+        :param x: 投影坐标x
+        :param y: 投影坐标y
+        :return: 投影坐标(x, y)对应的经纬度坐标(lon, lat)
+        '''
+        prosrs, geosrs = getSRSPair(dataset)
+        ct = osr.CoordinateTransformation(prosrs, geosrs)
+        x = np.reshape(x, [-1])
+        y = np.reshape(y, [-1])
+        temp = np.asarray([x, y])
+        temp = np.transpose(temp)
+        coords = np.asarray(ct.TransformPoints(temp))
+        return coords[:,0],coords[:,1]
+
+
+def lonlat2geo(dataset,lat,lon):
+    '''
+        将经纬度坐标转为投影坐标（具体的投影坐标系由给定数据确定），尤其注意，不同版本经度和纬度是反的
+        :param dataset: GDAL地理数据
+        :param lon: 地理坐标lon经度
+        :param lat: 地理坐标lat纬度
+        :return: 经纬度坐标(lon, lat)对应的投影坐标
+    '''
+    # dataset = gdal.Open(fileName, gdal.GA_ReadOnly)
+    prosrs, geosrs = getSRSPair(dataset)
+    ct = osr.CoordinateTransformation(geosrs, prosrs)
+    lon = np.reshape(lon,[-1])
+    lat = np.reshape(lat,[-1])
+    temp = np.asarray([lon,lat])
+    temp = np.transpose(temp)
+    # temp = np.asarray([lat[0:2],lon[0:2]])
+    coords = np.asarray(ct.TransformPoints(temp))
+
+    return coords[:,0],coords[:,1]
+
+
+def geo2imagexy(dataset, x, y):
+    '''
+    根据GDAL的六 参数模型将给定的投影或地理坐标转为影像图上坐标（行列号）
+    :param dataset: GDAL地理数据
+    :param x: 投影或地理坐标x
+    :param y: 投影或地理坐标y
+    :return: 影坐标或地理坐标(x, y)对应的影像图上行列号(row, col) nl ns
+    '''
+    trans = dataset.GetGeoTransform()
+    a = np.array([[trans[2], trans[1]], [trans[5], trans[4]]])
+    b = np.array([x - trans[0], y - trans[3]])
+    return np.linalg.solve(a, b)  # 使用numpy的linalg.solve进行二元一次方程的求解
+
+
+def imagexy2geo(dataset, row,col):
+    '''
+    根据GDAL的六参数模型将影像图上坐标（行列号）转为投影坐标或地理坐标（根据具体数据的坐标系统转换）
+    :param dataset: GDAL地理数据
+    :param row: 像素的行号
+    :param col: 像素的列号
+    :return: 行列号(row, col)对应的投影坐标或地理坐标(x, y)
+    '''
+    trans = dataset.GetGeoTransform()
+    px = trans[0] + col * trans[1] + row * trans[2]
+    py = trans[3] + col * trans[4] + row * trans[5]
+    return px, py
+
+
+def loc2map(lat, lon, dataset):
+    '''
+    经纬度转图上行列号
+    :param lat: 纬度
+    :param lon: 经度
+    :param dataset: 数据集，提供了地理和投影信息
+    :return: 行列号
+    '''
+    ns2 = dataset.RasterXSize
+    nl2 = dataset.RasterYSize
+    nb2 = dataset.RasterCount
+    data2 = dataset.ReadAsArray(0, 0, ns2, nl2)
+    temp21, temp22 = lonlat2geo(dataset, lat, lon)
+    imagex, imagey = geo2imagexy(dataset, temp21, temp22)
+    # imagex = np.asarray(imagex+0.5, np.int_)
+    # imagey = np.asarray(imagey+0.5, np.int_)
+    imagex = np.asarray(imagex, np.int_)
+    imagey = np.asarray(imagey, np.int_)
+    return imagex,imagey
+

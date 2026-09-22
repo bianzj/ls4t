@@ -1,0 +1,9 @@
+[paths]
+framework = "/home/hero/work/ls4t"
+source_root = "/media/hero/SLSTR_download3"
+product_root = "/media/hero/slstr-euro"
+reference_root = "/media/hero/rs"
+
+[runtime]
+python = "/home/hero/anaconda3/envs/env_311/bin/python3.11"
+workers = 1

@@ -59,6 +59,11 @@ ls4t/
 机器路径，也不提供直接执行的 `__main__`。`tests/` 使用合成数据和临时目录验证算法；
 输入目录、输出目录、年份、研究区、覆盖策略和本次启用的阶段全部放在 `cases/`。
 
+参考与执行的分工是**按目录**划的：根目录的传感器包（`slstr/`、`msg/`、`aatsr/`、
+`modis/`、`base/` 等）是参考实现，示范这些算法怎么调用；`cases/<sensor>/...` 是执行案例，
+真实数据、机器路径、年份区间、并行方式和调度都写在那里。`cases/` 下不再另分"参考"和
+"案例"，`cases/_templates/` 只是新建案例的脚手架工具。
+
 每个阶段仍保持独立，不自动调用下一阶段。案例脚本显式传入运行参数，例如：
 
 ```python
@@ -76,8 +81,8 @@ slstr_extract(
 ```
 
 如果缺少执行所需的路径或年份，核心批处理函数会提示到 `cases/` 中配置，而不会使用
-开发者机器上的隐式默认值。当前案例位于 `cases/<sensor>/<region>/`，模板位于
-`cases/_templates/`，非活动历史材料统一位于 `cases/_archive/`。详细结构见
+开发者机器上的隐式默认值。执行案例位于 `cases/<sensor>/<region>/`（当前 AATSR、MSG、
+SLSTR、ASTER 各一套），非活动历史材料在 `cases/_archive/`。详细结构见
 [cases/README.md](cases/README.md)。
 
 ## 产品层级
