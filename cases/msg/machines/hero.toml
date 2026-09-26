@@ -4,11 +4,22 @@ id = "hero"
 [paths]
 msg_root = "/media/hero/MSG"
 shared_remote_sensing_root = "/media/hero/rs"
+euro_lst_hdf5_root = "/media/hero/MSG/PRODUCTS/MSG/MLST/HDF5"
+euro_lst_geotiff_root = "/media/hero/MSG/PRODUCTS/MSG/MLST/GEOTIFF"
+iodc_lst_hdf5_root = "/media/hero/MSG/PRODUCTS/MSG-IODC/MLST/HDF5"
+iodc_lst_geotiff_root = "/media/hero/MSG/PRODUCTS/MSG-IODC/MLST/GEOTIFF"
+euro_lai_hdf5_root = "/media/hero/MSG/PRODUCTS/MSG/MDLAI/HDF5"
+euro_lai_geotiff_root = "/media/hero/MSG/PRODUCTS/MSG/MDLAI/GEOTIFF"
+global_tcwv_root = "/home/hero/data/rs/tcwv"
+ls4t_euro_lst_hdf5_root = "/media/hero/MSG/PRODUCTS/LS4T/MSG/MLST/HDF5"
+ls4t_iodc_lst_hdf5_root = "/media/hero/MSG/PRODUCTS/LS4T/MSG-IODC/MLST/HDF5"
 lst_output_root = "/media/hero/MSG/PRODUCTS/MSG/MLST/GEOTIFF"
 lsct_output_root = "/media/hero/MSG/PRODUCTS/LSCT/MLST_COMPONENT"
 
 [runtime]
 python = "/home/hero/anaconda3/envs/env_311/bin/python3.11"
+pythonpath = "/home/hero/work/ls4t"
+proj_lib = "/usr/share/proj"
 
 [notes]
-paths = "脚本顶部仍保留具体年份、分区和输入路径，运行前先与该 profile 核对。"
+paths = "正常生产使用下载的 LSASAF MLST；自研 MSG LST 仅作备用，运行时必须显式指定 MSG 专用昼夜系数文件。"

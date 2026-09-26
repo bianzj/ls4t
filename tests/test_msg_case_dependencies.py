@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+from datetime import datetime, timezone
 import importlib
 from pathlib import Path
 
@@ -18,7 +19,9 @@ SCRIPTS = (
     "msg_extract_iodc.py",
     "msg_project_euro.py",
     "msg_project_euro_lai.py",
+    "msg_project_hdf5.py",
     "msg_project_iodc.py",
+    "msg_smoke_test.py",
     "msg_lst_fit.py",
     "msg_lsct_iter.py",
     "msg_site_extract_lst.py",
@@ -133,3 +136,70 @@ def test_resize_data_available_for_msg_grids():
     source = np.arange(20.0).reshape(4, 5)
     resized = resize_data(source.copy(), 8, 10)
     assert resized.shape == (8, 10)
+
+
+def test_msg_projection_profiles_use_mounted_disk_layout():
+    from cases.msg.msg_project_hdf5 import PRODUCTS, parse_hours
+
+    assert PRODUCTS["euro-lst"].input_relative == "PRODUCTS/MSG/MLST/HDF5"
+    assert PRODUCTS["iodc-lst"].input_relative == "PRODUCTS/MSG-IODC/MLST/HDF5"
+    assert PRODUCTS["euro-lai"].variable == "LAI"
+    assert parse_hours("0,9,16") == {0, 9, 16}
+
+
+def test_active_msg_projection_scripts_have_no_legacy_machine_paths():
+    for name in (
+        "msg_project_hdf5.py",
+        "msg_project_euro.py",
+        "msg_project_euro_lai.py",
+        "msg_project_iodc.py",
+        "msg_lst_fit.py",
+        "msg_lsct_iter.py",
+        "msg_smoke_test.py",
+    ):
+        source = (CASE / name).read_text(encoding="utf-8")
+        assert "/mnt/h/" not in source, name
+        assert "/Users/" not in source, name
+
+
+def test_msg_lst_uses_scaled_global_tcwv(tmp_path):
+    import h5py
+
+    from cases.msg.msg_lst_fit import load_tcwv_slice
+
+    tcwv_root = tmp_path / "tcwv" / "2017"
+    tcwv_root.mkdir(parents=True)
+    with h5py.File(tcwv_root / "tcwv_20170803.h5", "w") as handle:
+        field = handle.create_dataset("data", data=np.full((24, 2, 3), 2500, dtype=np.uint16))
+        field.attrs["scale_factor"] = 0.01
+        field.attrs["_FillValue"] = 65535
+
+    result = load_tcwv_slice(tmp_path / "tcwv", datetime(2017, 8, 3, 9, tzinfo=timezone.utc))
+    assert np.allclose(result, 2.5)
+
+
+def test_msg_lst_selects_day_and_night_coefficients():
+    from cases.msg.msg_lst_fit import retrieve_lst
+
+    shape = (1, 2)
+    day_coefficients = np.zeros((66, 8), dtype=np.float32)
+    night_coefficients = np.zeros((66, 8), dtype=np.float32)
+    day_coefficients[:, 1] = 1.0
+    night_coefficients[:, 1] = 1.0
+    night_coefficients[:, 0] = 5.0
+    result = retrieve_lst(
+        np.full(shape, 300.0),
+        np.full(shape, 300.0),
+        np.full(shape, 10.0),
+        np.full(shape, 2.0),
+        np.full(shape, 0.98),
+        np.full(shape, 0.98),
+        np.full(shape, 0.98),
+        np.full(shape, 0.98),
+        np.full(shape, 1.0),
+        np.ones(shape, dtype=bool),
+        np.asarray([[True, False]]),
+        day_coefficients,
+        night_coefficients,
+    )
+    assert np.allclose(result, [[300.0, 305.0]])

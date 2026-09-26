@@ -9,7 +9,10 @@ spatial_mode = "fixed-grid"
 description = "MSG/SEVIRI LST fitting and LSCT inversion, flat production tree."
 
 [processing]
-order = ["download", "extract", "project", "lst-fit", "lsct-inversion"]
+order = ["official-mlst-mdlai", "project", "lsct-inversion"]
+optional = ["extract-native", "lst-fit-fallback"]
+primary_lst_source = "downloaded LSASAF MLST"
+fallback_lst = "msg_lst_fit.py"
 download_lai = "msg_download.py"
 extract_euro = "msg_extract_euro.py"
 extract_iodc = "msg_extract_iodc.py"
@@ -35,26 +38,28 @@ lsct_3c_2stage_full = "msg_lsct_3c_2stage_full.py"
 lsct_3c_constrained_full = "msg_lsct_3c_constrained_full.py"
 lsct_3c_show_full = "msg_lsct_3c_show_full.py"
 current_entrypoint = "msg_lsct_iter.py"
+smoke_test = "msg_smoke_test.py"
 standard_core = false
 
 [scope]
-processes = ["download", "extract", "project", "lst-fit", "lsct-inversion", "site-test"]
+processes = ["official-product", "project", "lsct-inversion", "optional-native-lst", "site-test"]
 site_tests = ["component temperature validation", "angle fitting (DTC/DTCRL/DTCLSFRL)"]
-note = "保留真实在跑的下载、提取、投影、LST 拟合、LSCT 反演，以及站点上的组分温度测试和角度拟合；ERA5 GRIB→TCWV 转换不再需要，月合成/绘图和旧版本反演已归档。"
+note = "正常生产使用下载的 LSASAF MLST/MDLAI；native 提取和自研 LST 仅作备用或算法对照。"
 
 [methods]
+lst_script = "msg_lst_fit.py"
+lst_role = "fallback only; normal production uses downloaded LSASAF MLST"
+lst_algorithm = "MSG/SEVIRI IR_108+IR_120 generalized split-window with MSG-specific day/night coefficients"
+lst_tcwv = "/home/hero/data/rs/tcwv/<year>/tcwv_YYYYMMDD.h5 (rs-h5 v1, converted from kg m-2 to cm)"
+lst_output = "PRODUCTS/LS4T/MSG{,-IODC}/MLST/HDF5"
 lsct_script = "msg_lsct_iter.py"
-lsct_switch = "METHOD"
-# 正式版：A 阶段先分[光照土壤]与[阴影土壤+植被]，B 阶段在残差中分[阴影土壤]与[植被]并加硬约束，
-#         C 阶段强先验联合平差；大批量产品走这条。
-lsct_formal = "METHOD='formal' lambda=100 constraints=True dif=3 outdir=PRODUCTS/LSCT/MLST_COMPONENT"
-# 测试/对照档：同一套 A/C 流程，但 B 阶段不加硬约束、C 阶段弱先验。
-lsct_test = "METHOD='test' lambda=0.1 constraints=False outdir=PRODUCTS/LSCT/MLST_COMPONENT2"
+lsct_formal = "lambda=100 constraints=True dif=3 outdir=PRODUCTS/LSCT/MLST_COMPONENT"
+lsct_test = "historical separate implementation; archived products remain in PRODUCTS/LSCT/MLST_COMPONENT2"
 alternatives_archived = [
   "util_lsct winconst/winquad/winquad_constraint (SLSQP / Bayesian ridge)",
   "reference: msg/msg_lsct.py + base.lsct.retrieve_components(_window)",
-  "lsct3.1 non-iter (superseded by msg_lsct_iter.py METHOD='test')",
-  "lsct3.2 non-iter (superseded by msg_lsct_iter.py METHOD='formal')",
+  "lsct3.1 non-iter (historical weak-prior test implementation)",
+  "lsct3.2 non-iter (superseded by the formal msg_lsct_iter.py)",
   "lsct3.2-iter-site* point solutions",
 ]
 
@@ -63,7 +68,7 @@ alternatives_archived = [
 two_component = "msg_lsct_2c_full.py"                 # 2 组分（土壤 + 植被），5x5 窗口最小二乘，逐分量 tif
 three_component = "msg_lsct_3c_full.py"               # 3 组分（光照土壤 + 阴影土壤 + 植被），3x3 窗口最小二乘
 three_component_2stage = "msg_lsct_3c_2stage_full.py" # 3 组分两阶段：先[光照土壤]vs[阴影土壤+植被]，再分[阴影土壤]vs[植被]（无约束）
-three_component_production = "msg_lsct_iter.py"       # 正式 METHOD='formal' / 测试 METHOD='test'（含硬约束 + 先验平差）
+three_component_production = "msg_lsct_iter.py"       # 正式版（硬约束 + lambda=100 先验平差）
 three_component_constrained = "msg_lsct_3c_constrained_full.py"  # 同一硬约束的全向量化实现（对照）
 three_component_show = "msg_lsct_3c_show_full.py"     # 正式算法 + 逐景 4 分量对比出图（对照）
 

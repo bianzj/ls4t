@@ -1,4 +1,11 @@
+import argparse
+from datetime import date as calendar_date
 import os
+from pathlib import Path
+
+if not (Path(os.environ.get("PROJ_LIB", "")) / "proj.db").is_file():
+    if Path("/usr/share/proj/proj.db").is_file():
+        os.environ["PROJ_LIB"] = "/usr/share/proj"
 from pvlib.location import Location
 from scipy.ndimage import uniform_filter
 import h5py
@@ -324,25 +331,76 @@ def solve_joint_vectorized_with_prior(rad_e, rad_i, w, x_prior, lmbda=0.5):
 
     return bs1, bs2, bv
 
-# ================= 配置路径 =================
-indir = "/media/hero/MSG/"
-indir0_euro = indir + '/PRODUCTS/MSG/MLST/GEOTIFF'
-indir0_euro_lai = indir + '/PRODUCTS/MSG/MDLAI/GEOTIFF'
-indir0_iodc = indir + '/PRODUCTS/MSG-IODC/MLST/GEOTIFF'
-indir0_lai = indir + '/lai/'
-outdir_root = indir + '/PRODUCTS/LSCT/MLST_COMPONENT/'
+def parse_hours(value):
+    hours = sorted({int(item) for item in value.split(",") if item.strip()})
+    if not hours or any(hour < 0 or hour > 23 for hour in hours):
+        raise argparse.ArgumentTypeError("hours must be comma-separated values from 0 to 23")
+    return hours
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Run the formal MSG LSCT inversion.")
+    parser.add_argument("--start-date", type=calendar_date.fromisoformat, required=True)
+    parser.add_argument("--end-date", type=calendar_date.fromisoformat)
+    parser.add_argument("--hours", type=parse_hours, default=list(range(9, 17)))
+    parser.add_argument("--msg-root", type=Path, default=Path("/media/hero/MSG"))
+    parser.add_argument("--euro-lst-root", type=Path)
+    parser.add_argument("--iodc-lst-root", type=Path)
+    parser.add_argument("--lai-root", type=Path)
+    parser.add_argument("--output-root", type=Path)
+    parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
+    parsed = parser.parse_args()
+    if parsed.end_date is None:
+        parsed.end_date = parsed.start_date
+    if parsed.end_date < parsed.start_date:
+        parser.error("--end-date must not be earlier than --start-date")
+    return parsed
+
+
+args = parse_args()
+msg_root = args.msg_root.resolve()
+indir = str(msg_root)
+indir0_euro = str(args.euro_lst_root or msg_root / "PRODUCTS/MSG/MLST/GEOTIFF")
+indir0_euro_lai = str(args.lai_root or msg_root / "PRODUCTS/MSG/MDLAI/GEOTIFF")
+indir0_iodc = str(args.iodc_lst_root or msg_root / "PRODUCTS/MSG-IODC/MLST/GEOTIFF")
+indir0_lai = str(msg_root / "lai")
+outdir_root = str(args.output_root or msg_root / "PRODUCTS/LSCT/MLST_COMPONENT")
 altitude = 0
 lambda_val = 100.0
 dif = 3
 hspot_val = 0.2
 # ================= 读取静态数据 =================
-print("正在读取静态数据及坐标映射...")
 infile_source = indir + "/map/MCD12C1_2011_0.01.tif"
 infile_vza_e = indir + "/Static/combined_euro_vza.tif"
 infile_vaa_e = indir + "/Static/combined_euro_vaa.tif"
 infile_vza_i = indir + "/Static/combined_iodc_vza.tif"
 infile_vaa_i = indir + "/Static/combined_iodc_vaa.tif"
 
+required_paths = [
+    Path(indir0_euro),
+    Path(indir0_euro_lai),
+    Path(indir0_iodc),
+    Path(infile_source),
+    Path(infile_vza_e),
+    Path(infile_vaa_e),
+    Path(infile_vza_i),
+    Path(infile_vaa_i),
+    msg_root / "lse/AG1km.v003.SoilEmi.ABI.Global.001D_LSE12.tif",
+    msg_root / "lse/IGBP_Emi.txt",
+]
+missing_paths = [str(path) for path in required_paths if not path.exists()]
+if missing_paths:
+    raise SystemExit("missing required inputs:\n" + "\n".join(missing_paths))
+if args.dry_run:
+    print(
+        f"formal LSCT: {args.start_date}..{args.end_date}, hours={args.hours}, "
+        f"EURO={indir0_euro}, IODC={indir0_iodc}, LAI={indir0_euro_lai}, "
+        f"output={outdir_root}"
+    )
+    raise SystemExit(0)
+
+print("正在读取静态数据及坐标映射...")
 # 读取并校正角度
 [vza_euro, nss, nll, nb, _, _, dataset_ref] = read_image_dataset_gdal(infile_vza_e)
 [vaa_euro, _, _, _, _, _, _] = read_image_dataset_gdal(infile_vaa_e)
@@ -386,9 +444,15 @@ emis_v = emis_v_table[land_type, 0] / 1000.0
 
 # ================= 循环处理 =================
 isfirst = True
-for kyear in range(2017, 2018):
-    for kmonth in range(8, 13):
+for kyear in range(args.start_date.year, args.end_date.year + 1):
+    for kmonth in range(1, 13):
         for kday in range(1, 32):
+            try:
+                current_day = calendar_date(kyear, kmonth, kday)
+            except ValueError:
+                continue
+            if current_day < args.start_date or current_day > args.end_date:
+                continue
 
             # --- 1. 处理 LAI 和 权重 w ---
             kdoy = date2DOY(kyear, kmonth, kday)
@@ -435,7 +499,7 @@ for kyear in range(2017, 2018):
             #         continue
 
             # --- 3. 逐小时处理 ---
-            for khour in range(9, 17):
+            for khour in args.hours:
                 for kmin in range(0, 1):
                     file_id = "%04d%02d%02d%02d00" % (kyear, kmonth, kday, khour)
                     date_str = "%04d%02d%02d" % (kyear, kmonth, kday)
@@ -449,7 +513,7 @@ for kyear in range(2017, 2018):
                         print(f"正在处理: {file_id}")
 
                         outfile_h5 = os.path.join(outdir, f"MSG_LSCT_{file_id}.h5")
-                        if os.path.exists(outfile_h5):
+                        if os.path.exists(outfile_h5) and not args.overwrite:
                             continue
 
                         lst_e, _, _, _, _, _ = read_image_gdal(infile_e)
