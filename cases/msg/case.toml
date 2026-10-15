@@ -32,11 +32,11 @@ site_extract_series = "msg_site_extract_series.py"
 site_repro_lst = "msg_site_repro_lst.py"
 site_repro_lsct = "msg_site_repro_lsct.py"
 site_validate_multisite = "msg_site_validate_multisite.py"
-lsct_2c_full = "msg_lsct_2c_full.py"
-lsct_3c_full = "msg_lsct_3c_full.py"
-lsct_3c_2stage_full = "msg_lsct_3c_2stage_full.py"
-lsct_3c_constrained_full = "msg_lsct_3c_constrained_full.py"
-lsct_3c_show_full = "msg_lsct_3c_show_full.py"
+lsct_2c_full = "experiments/msg_lsct_2c_window.py"
+lsct_3c_full = "experiments/msg_lsct_3c_window.py"
+lsct_3c_2stage_full = "experiments/msg_lsct_3c_two_stage.py"
+lsct_3c_constrained_full = "experiments/msg_lsct_3c_constrained.py"
+lsct_3c_show_full = "experiments/msg_lsct_3c_diagnostics.py"
 current_entrypoint = "msg_lsct_iter.py"
 smoke_test = "msg_smoke_test.py"
 standard_core = false
@@ -57,20 +57,20 @@ lsct_formal = "lambda=100 constraints=True dif=3 outdir=PRODUCTS/LSCT/MLST_COMPO
 lsct_test = "historical separate implementation; archived products remain in PRODUCTS/LSCT/MLST_COMPONENT2"
 alternatives_archived = [
   "util_lsct winconst/winquad/winquad_constraint (SLSQP / Bayesian ridge)",
-  "reference: msg/msg_lsct.py + base.lsct.retrieve_components(_window)",
+  "reference: base/msg/msg_lsct.py + base.lsct.retrieve_components(_window)",
   "lsct3.1 non-iter (historical weak-prior test implementation)",
   "lsct3.2 non-iter (superseded by the formal msg_lsct_iter.py)",
   "lsct3.2-iter-site* point solutions",
 ]
 
-# 全图（full disk）反演方法，全部在 cases/msg 内：
+# 正式入口在 cases/msg；其余对照方法在 experiments/：
 [methods.full_disk]
-two_component = "msg_lsct_2c_full.py"                 # 2 组分（土壤 + 植被），5x5 窗口最小二乘，逐分量 tif
-three_component = "msg_lsct_3c_full.py"               # 3 组分（光照土壤 + 阴影土壤 + 植被），3x3 窗口最小二乘
-three_component_2stage = "msg_lsct_3c_2stage_full.py" # 3 组分两阶段：先[光照土壤]vs[阴影土壤+植被]，再分[阴影土壤]vs[植被]（无约束）
+two_component = "experiments/msg_lsct_2c_window.py"                 # 2 组分（土壤 + 植被），5x5 窗口最小二乘，逐分量 tif
+three_component = "experiments/msg_lsct_3c_window.py"               # 3 组分（光照土壤 + 阴影土壤 + 植被），3x3 窗口最小二乘
+three_component_2stage = "experiments/msg_lsct_3c_two_stage.py" # 3 组分两阶段：先[光照土壤]vs[阴影土壤+植被]，再分[阴影土壤]vs[植被]（无约束）
 three_component_production = "msg_lsct_iter.py"       # 正式版（硬约束 + lambda=100 先验平差）
-three_component_constrained = "msg_lsct_3c_constrained_full.py"  # 同一硬约束的全向量化实现（对照）
-three_component_show = "msg_lsct_3c_show_full.py"     # 正式算法 + 逐景 4 分量对比出图（对照）
+three_component_constrained = "experiments/msg_lsct_3c_constrained.py"  # 同一硬约束的全向量化实现（对照）
+three_component_show = "experiments/msg_lsct_3c_diagnostics.py"     # 正式算法 + 逐景 4 分量对比出图（对照）
 
 [dependencies]
 policy = "case 脚本只从 base/ 导入项目代码，不再有 support 夹层和星号导入。"

@@ -6,7 +6,7 @@ from base.lsct import cal_fvc_from_lai, ndvi_max_g, ndvi_min_g
 from base.radiometry import inv_planck, planck
 from base.rt.hotspot import hotspot_layer
 from base.spatial import loc2map
-from slstr.slstr_grid import adjust_xmax_no_g, adjust_xmin_no_g, adjust_ymax_no_g
+from base.slstr.slstr_grid import adjust_xmax_no_g, adjust_xmin_no_g, adjust_ymax_no_g
 
 import sys
 import os

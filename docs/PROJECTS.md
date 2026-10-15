@@ -3,14 +3,16 @@
 ## 主项目
 
 `/home/hero/work/ls4t` 是通用算法、产品结构、测试和文档的主项目，对应私有仓库
-`bianzj/ls4t`。源码直接位于项目根目录：
+`bianzj/ls4t`。项目只分 `base/` 和 `cases/` 两部分：
 
-- `aatsr/`、`slstr/`、`msg/`：传感器数据、投影、LST 和 LSCT；
-- `modis/`、`viirs/`、`ahi/`、`aster/`：双热通道数据、投影、拼接和 LST；
-- `base/`：公共反演、质量控制、产品读写和空间算法；
-- `normalization/`：角度、时间、空间和传感器归一化；
-- `composite/`、`applications/`：时间合成和 L4 应用；
-- `cases/`：按传感器组织的实际执行快照、历史实验和独立项目索引。
+- `base/`：函数库和案例模板——
+  - 顶层模块和 `rt/`：公共反演、质量控制、产品读写和空间算法；
+  - `aatsr/`、`slstr/`、`msg/`：传感器数据、投影、LST 和 LSCT；
+  - `modis/`、`viirs/`、`ahi/`、`aster/`：双热通道数据、投影、拼接和 LST；
+  - `normalization/`：角度、时间、空间和传感器归一化；
+  - `composite/`、`applications/`：时间合成和 L4 应用；
+  - `templates/`：案例模板、新建和审计工具；
+- `cases/`：单个执行案例、历史实验和独立项目索引。
 
 ## 独立 case 项目
 
@@ -34,11 +36,11 @@
 MODIS、VIIRS、AHI 尚无独立 case 仓库。已有脚本已经放入各自的
 `cases/<sensor>/unclassified/legacy_draft/` 并登记为 `draft`；完成区域、机器路径、
 依赖和结果验证后才可标记 `migrated` 或 `active`。四类传感器的机器无关处理接口已在
-根目录建立；ASTER 当前没有可迁移的真实案例，`cases/aster/` 只保留待导入说明。
+`base/` 中建立；ASTER 当前没有可迁移的真实案例，`cases/aster/` 只保留待导入说明。
 
 ## 代码流动原则
 
-1. 在 case 中经过实际数据验证的通用改进，整理后移入主项目根目录的传感器模块。
+1. 在 case 中经过实际数据验证的通用改进，整理后移入 `base/` 中对应的传感器模块。
 2. 独立项目更新主仓库快照时，整体同步对应 case，并更新 `source_revision`，不做无版本
    记录的零散双向复制。
 3. case 可以保留本机绝对路径，但必须集中在脚本顶部；认证信息不能写入源码。

@@ -18,13 +18,13 @@ raw
 
 | 传感器 | 投影（可选） | 形成研究区数据 |
 |---|---|---|
-| AATSR | `aatsr/aatsr_project.py` | `aatsr_data_region()` |
-| SLSTR | `slstr/slstr_project.py` | `slstr_data_region()` |
-| MSG | `msg/msg_project.py`（可选） | `msg_data_region()` |
-| MODIS | `modis/modis_project.py` | `modis_data_region()` |
-| VIIRS | `viirs/viirs_project.py` | `viirs_data_region()` |
-| AHI | `ahi/ahi_project.py`（可选） | `ahi_data_region()` |
-| ASTER | `aster/aster_project.py` | `aster_data_region()` |
+| AATSR | `base/aatsr/aatsr_project.py` | `aatsr_data_region()` |
+| SLSTR | `base/slstr/slstr_project.py` | `slstr_data_region()` |
+| MSG | `base/msg/msg_project.py`（可选） | `msg_data_region()` |
+| MODIS | `base/modis/modis_project.py` | `modis_data_region()` |
+| VIIRS | `base/viirs/viirs_project.py` | `viirs_data_region()` |
+| AHI | `base/ahi/ahi_project.py`（可选） | `ahi_data_region()` |
+| ASTER | `base/aster/aster_project.py` | `aster_data_region()` |
 
 当前 SLSTR 单景流程必须先执行 `slstr_reconstruct.py`，生成 `SLSTR-DATA` 后才能添加
 辅助数据和执行 LST。`slstr_project.py` 和 `slstr_data_region()` 仍是可选的空间处理阶段。

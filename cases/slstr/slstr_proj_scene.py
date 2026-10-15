@@ -1,6 +1,6 @@
 from osgeo import gdal
 from base.lsct import ndvi_max_g, ndvi_min_g
-from slstr.slstr_grid import nl_nadir_g, nl_obliq_g, ns_nadir_g, ns_obliq_g
+from base.slstr.slstr_grid import nl_nadir_g, nl_obliq_g, ns_nadir_g, ns_obliq_g
 
 import sys
 import os

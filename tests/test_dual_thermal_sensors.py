@@ -5,28 +5,28 @@ import pytest
 
 from base.calibration import save_split_window_model
 from base.lst import SplitWindowModel
-from ahi.ahi_data import (
+from base.ahi.ahi_data import (
     AhiDataProduct,
     read_data_product as read_ahi_data,
     read_native_product as read_ahi_native,
     write_data_product as write_ahi_data,
 )
-from aster.aster_data import (
+from base.aster.aster_data import (
     AsterDataProduct,
     read_data_product as read_aster_data,
     read_native_product as read_aster_native,
     write_data_product as write_aster_data,
 )
-from modis.modis_data import (
+from base.modis.modis_data import (
     ModisDataProduct,
     read_data_product as read_modis_data,
     read_native_product as read_modis_native,
     write_data_product as write_modis_data,
 )
-from modis.modis_extract import modis_extract
-from modis.modis_lst import retrieve_modis_lst
-from modis.modis_merge import modis_merge
-from viirs.viirs_data import (
+from base.modis.modis_extract import modis_extract
+from base.modis.modis_lst import retrieve_modis_lst
+from base.modis.modis_merge import modis_merge
+from base.viirs.viirs_data import (
     ViirsDataProduct,
     read_data_product as read_viirs_data,
     read_native_product as read_viirs_native,

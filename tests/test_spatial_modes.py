@@ -1,6 +1,6 @@
 import numpy as np
 
-from aatsr.aatsr_data import AatsrDataProduct
+from base.aatsr.aatsr_data import AatsrDataProduct
 from base.product import ProductLevel, ProductMetadata, TemperatureProduct
 from base.quality import QualityFlag
 from base.spatial import (

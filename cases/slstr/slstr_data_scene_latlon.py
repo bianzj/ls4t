@@ -2,7 +2,7 @@ from osgeo import gdal
 from numpy import uint
 from base.dates import date2DOY
 from base.files import getDatafromNc, mkdir_if_not_exist, search_dir_rej
-from slstr.slstr_grid import nl_nadir_g, nl_nadir_v_g, nl_obliq_g, ns_nadir_g, ns_nadir_v_g, ns_obliq_g
+from base.slstr.slstr_grid import nl_nadir_g, nl_nadir_v_g, nl_obliq_g, ns_nadir_g, ns_nadir_v_g, ns_obliq_g
 
 import sys
 import os

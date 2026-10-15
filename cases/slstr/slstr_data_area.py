@@ -6,7 +6,7 @@ from base.dates import date2DOY
 from base.files import getDatafromNc, mkdir_if_not_exist, read_image_gdal, search_dir_rej, write_image_gdal
 from base.raster import write_vrt
 from base.spatial import geo2imagexy, geo2lonlat, imagexy2geo, lonlat2geo, resize_data
-from slstr.slstr_grid import nl_nadir_g, nl_obliq_g, ns_nadir_g, ns_obliq_g
+from base.slstr.slstr_grid import nl_nadir_g, nl_obliq_g, ns_nadir_g, ns_obliq_g
 
 import sys
 import os

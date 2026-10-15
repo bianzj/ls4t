@@ -33,7 +33,7 @@ usage:
 
 from __future__ import annotations
 from base.files import read_image_gdal, read_txt_array, write_image_gdal
-from slstr.slstr_scene_skip import is_useless, load_scene_skip
+from base.slstr.slstr_scene_skip import is_useless, load_scene_skip
 
 import argparse
 import builtins

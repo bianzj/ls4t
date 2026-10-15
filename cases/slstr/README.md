@@ -1,7 +1,7 @@
 # SLSTR cases
 
 SLSTR 生产代码从独立运行项目 `ls4t-slstr` 转入后已扁平化：一个文件一个环节，全部
-直接放在本目录，只从根目录 `base/`、`slstr/` 导入，没有 `support/` 夹层、没有
+直接放在本目录，只从 `base/`（含 `base/slstr/`）导入，没有 `support/` 夹层、没有
 `sys.path` 技巧、没有 `import *`。后续直接在 ls4t 仓库根目录运行。
 
 ## 五个环节
@@ -44,7 +44,7 @@ scipy、scikit-learn；`tests/test_slstr_case_dependencies.py` 可以在没有�
 
 ## 依赖来源
 
-case 脚本用到的每个函数都来自根目录模块，迁移时逐字搬运、行为保持一致（数值已用
+case 脚本用到的每个函数都来自 `base/`，迁移时逐字搬运、行为保持一致（数值已用
 golden 测试锁定）：
 
 | 依赖 | 位置 | 内容 |
@@ -57,7 +57,7 @@ golden 测试锁定）：
 | 组分温度内核 | `base/lsct.py` | `cal_fvc_from_lai`、`cal_effective_emissivity_hom`、`cal_rad_from_lst`、`sample_hom_Emis*` |
 | 窗口反演 | `base/lsct_window.py` | `inv_lsct2_window`、`inv_lsct3_window` 及约束/权重/求解依赖（由 `base/lsct.py` 转出） |
 | 冠层辐射传输 | `base/rt/` | `Hom` 模型与 gap/hotspot/散射/发射率/辐亮度 |
-| SLSTR 网格常量 | `slstr/slstr_grid.py` | `nl_*`、`ns_*`、`adjust_*` |
+| SLSTR 网格常量 | `base/slstr/slstr_grid.py` | `nl_*`、`ns_*`、`adjust_*` |
 
 ## 已知问题与已修复
 
@@ -74,6 +74,6 @@ golden 测试锁定）：
 
 五个环节之外的 ERA5/TCWV 预处理、区域拼接出图、覆盖率报告、shell 驱动、文件检查、
 未被依赖的 support 模块，以及迁移前的嵌套脚本和整个 support 夹层，都在
-`cases/_archive/slstr/transferred_20260916/`。旧快照
-`heihe/study_area_2022/`、`europe_south_africa/scene_first_migrated/` 仍在原处，导入的
+`cases/_archive/slstr/transferred_20260916/`。两个旧区域快照已移到
+`cases/_archive/slstr/retired_20261013/`，并退出 catalog 登记。它们导入的
 `base.util_*` 已不存在，仅作历史参考。
