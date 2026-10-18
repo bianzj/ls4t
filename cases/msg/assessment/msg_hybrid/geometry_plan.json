@@ -1,0 +1,99 @@
+{
+  "status": "configured_dynamic_first_static_fallback",
+  "position_policy": "per_view_dynamic_MEAN_SS_then_declared_static_slot",
+  "geometry_helper_sha256": "dadac4495bd9408dc89c4d74a1ba5d57df65eb44a98778f2d3a877fabd26dafe",
+  "authorization": "User requested per-view dynamic orbit with static fallback and one collection; production stopped pending code review.",
+  "nominal_satellite_latitude_deg": 0.0,
+  "declarations": {
+    "euro": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\EURO_Lon.tif",
+      "sha256": "e62c789afec652162821c9367466d2e2e7acbc9716f143e3ba4eb1dccbddec32",
+      "bytes": 28923001,
+      "orbital_slot_longitude_deg": 0.0,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+000.0)",
+        "IMAGE_ACQUISITION_TIME": "20230321090000",
+        "SATELLITE": "MSG3                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    },
+    "iodc_old": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon.tif",
+      "sha256": "d54c8f90452e9f463d031fb75eb097a8351e348cfc72abf0666a86750b5e04b1",
+      "bytes": 28919693,
+      "orbital_slot_longitude_deg": 41.5,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+041.5)",
+        "IMAGE_ACQUISITION_TIME": "20171130000000",
+        "SATELLITE": "MSG1                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    },
+    "iodc_new": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon-2022.tif",
+      "sha256": "6afc20bb0eb228a95fbfdb3e71d7504e10692e63968097484aee34eb89c5c672",
+      "bytes": 28922379,
+      "orbital_slot_longitude_deg": 45.5,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+045.5)",
+        "IMAGE_ACQUISITION_TIME": "20220701100000",
+        "SATELLITE": "MSG2                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    }
+  },
+  "iodc_projection_epochs": [
+    {
+      "first_stamp": "201708010000",
+      "last_stamp": "202205312359",
+      "native_grid_longitude_deg": 41.5,
+      "declaration_key": "iodc_old"
+    },
+    {
+      "first_stamp": "202207010000",
+      "last_stamp": "202512312359",
+      "native_grid_longitude_deg": 45.5,
+      "declaration_key": "iodc_new"
+    }
+  ],
+  "excluded_input_geolocation_months": [
+    "202206"
+  ],
+  "exclusion_reason": "Existing June IODC TIFF maps to45.5, but native declaration41.5 conflicts; relaxed orbit accuracy does not correct that input geolocation.",
+  "source_files": [
+    "E:\\AUXILIARY\\GEOMETRY\\EURO_Lon.tif",
+    "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon.tif",
+    "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon-2022.tif",
+    "C:/Users/jiank/Documents/ChatGPT/ls4tmsg/production/msg_compatible/geometry_audit.json",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\static_geometry.h5",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\build_static_geometry.py",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\dynamic_identity.json",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\static_identity.json"
+  ],
+  "geometry_model": {
+    "ellipsoid": "WGS84",
+    "radius_m": 42164000.0,
+    "ground_height_m": 0.0,
+    "azimuth": "north0 east90 clockwise [0,360)"
+  },
+  "input_root": "E:/",
+  "euro_position_longitude_bounds_deg": [
+    -10.0,
+    10.0
+  ],
+  "iodc_position_longitude_tolerance_deg": 1.5,
+  "static_geometry_file": "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\static_geometry.h5",
+  "static_geometry_sha256": "237935200c3e0723feef2025a5707bf0f3fb466b5dc655c6813a920440f124c6",
+  "static_geometry_bytes": 271302423,
+  "legacy_native_projection_placeholder": "Geos<000.0>",
+  "compatible_legacy_identities": [
+    {
+      "path": "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\dynamic_identity.json",
+      "sha256": "2edc754a632033f91ea75a4bfa04b5f3865c5a635b67114dcb7a7f1fc28b5847"
+    },
+    {
+      "path": "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\static_identity.json",
+      "sha256": "de7ab16c30224951d8bed6dbf5232ec0db8afc63ef7eb043edd3d838f853823d"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "reviewed_UTC": "2026-10-12T02:44:00.032426+00:00",
+  "scope": "Independent 8x12 private file fixtures only; no real migration or production invoked.",
+  "producer_sha256": "4a1d02321e9c9352822eae7def49136d1ea0dac92729fd977dc3d5c7e044bb36",
+  "lineage_sha256": "7d41c344e67d9c02aebb27aaac4ac4a061ff22002110a30c29cc8f5cb7497094",
+  "merge_sha256": "99d84ea3b7531951165d3ea00a4f0df6095528166f22880aef2cddfbf18b109b",
+  "checks": [
+    "Dynamic/static legacy scenes preserve original pair/marker bytes and calculation identity when inputs, positions and model are equivalent",
+    "Mixed view, changed position/model/input require recomputation after verified provenance copies; originals remain byte-identical",
+    "Unapproved identities, legacy instantaneous reuse without physical context, and HDF/marker signature mismatch rejected",
+    "Legacy monthly inputs require path/timestamp/hash-bound current-collection scene validation",
+    "Union of static/dynamic/current scenes refreshes source_count, mean, n_obs, calendar/low-support flags and omissions",
+    "Private merge preserves source/destination product bytes, original calculation identity/signature and marker snapshot; repeat is idempotent; altered controller/migration-code SHA rejects"
+  ]
+}

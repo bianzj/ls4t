@@ -1,0 +1,75 @@
+{
+  "status": "approved_declared_slots",
+  "position_policy": "declared_geostationary_slots_nominal_latitude_zero",
+  "geometry_helper_sha256": "15103c4034ca29875295d8ed41e47abaf5e9cc4daeb0a836b974dbd763b62143",
+  "authorization": "User explicitly requested computing from declared satellite orbital positions and accepts lower angle precision on 2026-10-12.",
+  "nominal_satellite_latitude_deg": 0.0,
+  "declarations": {
+    "euro": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\EURO_Lon.tif",
+      "sha256": "e62c789afec652162821c9367466d2e2e7acbc9716f143e3ba4eb1dccbddec32",
+      "bytes": 28923001,
+      "orbital_slot_longitude_deg": 0.0,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+000.0)",
+        "IMAGE_ACQUISITION_TIME": "20230321090000",
+        "SATELLITE": "MSG3                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    },
+    "iodc_old": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon.tif",
+      "sha256": "d54c8f90452e9f463d031fb75eb097a8351e348cfc72abf0666a86750b5e04b1",
+      "bytes": 28919693,
+      "orbital_slot_longitude_deg": 41.5,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+041.5)",
+        "IMAGE_ACQUISITION_TIME": "20171130000000",
+        "SATELLITE": "MSG1                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    },
+    "iodc_new": {
+      "path": "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon-2022.tif",
+      "sha256": "6afc20bb0eb228a95fbfdb3e71d7504e10692e63968097484aee34eb89c5c672",
+      "bytes": 28922379,
+      "orbital_slot_longitude_deg": 45.5,
+      "metadata": {
+        "PROJECTION_NAME": "GEOS(+045.5)",
+        "IMAGE_ACQUISITION_TIME": "20220701100000",
+        "SATELLITE": "MSG2                                                                            -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -                                                                               -"
+      },
+      "source_role": "provider static-coordinate declared projection; nominal orbital slot, not acquisition ephemeris"
+    }
+  },
+  "iodc_projection_epochs": [
+    {
+      "first_stamp": "201708010000",
+      "last_stamp": "202205312359",
+      "native_grid_longitude_deg": 41.5,
+      "declaration_key": "iodc_old"
+    },
+    {
+      "first_stamp": "202207010000",
+      "last_stamp": "202512312359",
+      "native_grid_longitude_deg": 45.5,
+      "declaration_key": "iodc_new"
+    }
+  ],
+  "excluded_input_geolocation_months": [
+    "202206"
+  ],
+  "exclusion_reason": "Existing June IODC TIFF maps to45.5, but native declaration41.5 conflicts; relaxed orbit accuracy does not correct that input geolocation.",
+  "source_files": [
+    "E:\\AUXILIARY\\GEOMETRY\\EURO_Lon.tif",
+    "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon.tif",
+    "E:\\AUXILIARY\\GEOMETRY\\IODC_Lon-2022.tif",
+    "C:/Users/jiank/Documents/ChatGPT/ls4tmsg/production/msg_compatible/geometry_audit.json"
+  ],
+  "geometry_model": {
+    "ellipsoid": "WGS84",
+    "radius_m": 42164000.0,
+    "ground_height_m": 0.0,
+    "azimuth": "north0 east90 clockwise [0,360)"
+  }
+}

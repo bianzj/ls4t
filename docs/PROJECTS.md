@@ -27,6 +27,16 @@
 生产实现；旧目录名仅作为兼容符号链接。AATSR 的历史产品开发脚本已移到其独立仓库的
 `cases/_archive/product_history/`。
 
+> **2026-10-18 收编**：三个仓库的剩余内容已按主仓库风格并入，工作副本删除，
+> `.git` 存档到 `D:/cases/ls4t/_source-repos/`。详见 `cases/projects.toml` 的 `[absorbed]` 段。
+>
+> | 仓库 | 结果 |
+> |---|---|
+> | `ls4t-aatsr` | 无独有代码或数据，直接收编 |
+> | `ls4t-slstr` | `datapro_fileremove.py` → `cases/slstr/auxiliary/` |
+> | `ls4t-msg` | 128 个评估脚本 → `cases/msg/assessment/`；1,089 个结果（335.8 MB）→ `cases/msg/outputs/official-results/`（已被 `.gitignore` 排除）；23 份稿件（194 MB）→ `D:/cases/ls4t/msg/manuscript_history/` |
+
+
 主仓库同时在 `cases/aatsr/`、`cases/msg/`、`cases/slstr/` 保存指定提交的执行脚本快照，
 因此单独克隆主仓库也能查看和复现流程。它们不是 submodule；同步关系由
 `cases/projects.toml` 中的 `source_revision` 和 `official_path` 明确记录。修改主 LS4T

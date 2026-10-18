@@ -1,0 +1,426 @@
+{
+  "protocol_hash": "b4e1d7d4a0f14a8e20808c420e4c03f82e08757199d642f7cef9c85e04a71010",
+  "code_sha256": "4a1d02321e9c9352822eae7def49136d1ea0dac92729fd977dc3d5c7e044bb36",
+  "implementation_sha256": "d23334ea9300db0d013dd96df13a1df7242c2b2fad366581dbf8b38ced4659e5",
+  "code_files": {
+    "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_hybrid\\produce_msg_ls4t.py": {
+      "sha256": "4a1d02321e9c9352822eae7def49136d1ea0dac92729fd977dc3d5c7e044bb36",
+      "bytes": 52959
+    },
+    "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_hybrid\\msg_view_geometry.py": {
+      "sha256": "dadac4495bd9408dc89c4d74a1ba5d57df65eb44a98778f2d3a877fabd26dafe",
+      "bytes": 10964
+    },
+    "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_hybrid\\collection_lineage.py": {
+      "sha256": "7d41c344e67d9c02aebb27aaac4ac4a061ff22002110a30c29cc8f5cb7497094",
+      "bytes": 5871
+    }
+  },
+  "static_sources": {
+    "E:\\Static\\combined_euro_vza.tif": {
+      "sha256": "1a47c129759ce61fbf1cf9ac2bfaa5772f894eb63d3ca001e3437cf8e2ea3355",
+      "bytes": 2491275
+    },
+    "E:\\Static\\combined_euro_vaa.tif": {
+      "sha256": "44455c218bee5479257f166509de59b38dfcb33299f9e67edeee2670e071467b",
+      "bytes": 2924234
+    },
+    "E:\\map\\MCD12C1_2011_0.01.tif": {
+      "sha256": "835ed5ac1aea4a1e7e8239b0724e657d8384bd6a2bfa82f1e8dc9da46ffaff8e",
+      "bytes": 53050227
+    },
+    "E:\\lse\\AG1km.v003.SoilEmi.ABI.Global.001D_LSE12.tif": {
+      "sha256": "7c338deea410ddb3a0f42f76125f45aaa3d8569608f3423c5725f03809bd7621",
+      "bytes": 1296144385
+    },
+    "E:\\lse\\IGBP_Emi.txt": {
+      "sha256": "fcfa08f256e4b99e5959a931ab72d5ff592a49c26bfef991ed902a0e5c952cac",
+      "bytes": 160
+    },
+    "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_lsct3.2-iter.py": {
+      "sha256": "763de469c6023b2b830061658d9130fcc851b7f7e9397903c27ac2fa159df9c3",
+      "bytes": 28649
+    },
+    "C:\\work\\ls4t-msg\\cases\\official\\implementation\\produce_msg_5x5.py": {
+      "sha256": "1389e4c519bc737ac42b69ba30507ae88ec80b7c0f00cb7c6786048022ace176",
+      "bytes": 21009
+    },
+    "E:\\Static\\EURO_Lon.tif": {
+      "sha256": "e62c789afec652162821c9367466d2e2e7acbc9716f143e3ba4eb1dccbddec32",
+      "bytes": 28923001
+    },
+    "E:\\Static\\IODC_Lon.tif": {
+      "sha256": "d54c8f90452e9f463d031fb75eb097a8351e348cfc72abf0666a86750b5e04b1",
+      "bytes": 28919693
+    },
+    "E:\\Static\\IODC_Lon-2022.tif": {
+      "sha256": "6afc20bb0eb228a95fbfdb3e71d7504e10692e63968097484aee34eb89c5c672",
+      "bytes": 28922379
+    },
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_compatible\\geometry_audit.json": {
+      "sha256": "7c394de52dfa62885d797a706a0c3ca23d14a0a561d063def29878ea80997f4f",
+      "bytes": 997276
+    },
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\static_geometry.h5": {
+      "sha256": "237935200c3e0723feef2025a5707bf0f3fb466b5dc655c6813a920440f124c6",
+      "bytes": 271302423
+    },
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\build_static_geometry.py": {
+      "sha256": "e913f432d382bbadea0f3bf301612802dd19ed4451dbdcbc15dfbd26e18c2375",
+      "bytes": 5143
+    },
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\dynamic_identity.json": {
+      "sha256": "2edc754a632033f91ea75a4bfa04b5f3865c5a635b67114dcb7a7f1fc28b5847",
+      "bytes": 7337
+    },
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_hybrid\\lineage\\static_identity.json": {
+      "sha256": "de7ab16c30224951d8bed6dbf5232ec0db8afc63ef7eb043edd3d838f853823d",
+      "bytes": 6044
+    }
+  },
+  "static_source_hash": "63bde7229feef5e0ad4a8080b8f9cc8544f697fb48b4b6e2d6cc1926d0be16a2",
+  "geometry_plan_sha256": "bb9c4598cdff7cd70f1b61adfee8c1668378fc895ebd8ab8c3bd448ac78a1410",
+  "geometry_module_sha256": "dadac4495bd9408dc89c4d74a1ba5d57df65eb44a98778f2d3a877fabd26dafe",
+  "grid": {
+    "shape": [
+      3333,
+      2633
+    ],
+    "GeoTransform": [
+      -18.0,
+      0.030003797949107482,
+      0.0,
+      65.0,
+      0.0,
+      -0.030003000300030003
+    ],
+    "Projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]",
+    "EPSG": 4326
+  },
+  "compatible_legacy_identities": {
+    "ff9f3c6c41674a3d42e4dfd8eefdf4cf1998ac2a7bc50241bda3982ea69516c4": {
+      "protocol_hash": "4013898f1b0710eef30f4354d309c09b5342099243000de6dd02e8c3f8f0601f",
+      "code_sha256": "e3c0db78d3443840b6f8da58501a91326fb25f2719c66c2cb6c254202659069c",
+      "implementation_sha256": "08c90a6a6425316705e6a09f1f7c4c7afb96ff64ce1b4e00d95e4cfda8d34588",
+      "code_files": {
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_compatible\\produce_msg_ls4t.py": {
+          "sha256": "e3c0db78d3443840b6f8da58501a91326fb25f2719c66c2cb6c254202659069c",
+          "bytes": 48155
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_compatible\\msg_view_geometry.py": {
+          "sha256": "d9513dd736e5a3c3b4c97fdc4fd754b8d8dab737018c59ccddc3d2e5f1beed0a",
+          "bytes": 6520
+        }
+      },
+      "static_sources": {
+        "E:\\Static\\combined_euro_vza.tif": {
+          "sha256": "1a47c129759ce61fbf1cf9ac2bfaa5772f894eb63d3ca001e3437cf8e2ea3355",
+          "bytes": 2491275
+        },
+        "E:\\Static\\combined_euro_vaa.tif": {
+          "sha256": "44455c218bee5479257f166509de59b38dfcb33299f9e67edeee2670e071467b",
+          "bytes": 2924234
+        },
+        "E:\\map\\MCD12C1_2011_0.01.tif": {
+          "sha256": "835ed5ac1aea4a1e7e8239b0724e657d8384bd6a2bfa82f1e8dc9da46ffaff8e",
+          "bytes": 53050227
+        },
+        "E:\\lse\\AG1km.v003.SoilEmi.ABI.Global.001D_LSE12.tif": {
+          "sha256": "7c338deea410ddb3a0f42f76125f45aaa3d8569608f3423c5725f03809bd7621",
+          "bytes": 1296144385
+        },
+        "E:\\lse\\IGBP_Emi.txt": {
+          "sha256": "fcfa08f256e4b99e5959a931ab72d5ff592a49c26bfef991ed902a0e5c952cac",
+          "bytes": 160
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_lsct3.2-iter.py": {
+          "sha256": "763de469c6023b2b830061658d9130fcc851b7f7e9397903c27ac2fa159df9c3",
+          "bytes": 28649
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\produce_msg_5x5.py": {
+          "sha256": "1389e4c519bc737ac42b69ba30507ae88ec80b7c0f00cb7c6786048022ace176",
+          "bytes": 21009
+        },
+        "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_compatible\\geometry_audit.json": {
+          "sha256": "7c394de52dfa62885d797a706a0c3ca23d14a0a561d063def29878ea80997f4f",
+          "bytes": 997276
+        },
+        "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_compatible\\geometry_validation.json": {
+          "sha256": "4cf2b07de84f1c2693be4e5472a430f14a3a6a494ff826578ec24146eeb12da6",
+          "bytes": 4367
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\results\\production_assessment\\geolocation_sample_indices.npz": {
+          "sha256": "5595e40f8d6fd0c6716ca7a0574760fe565abad3a2533b4024c9e8b96cb06e94",
+          "bytes": 66722
+        },
+        "E:\\Static\\EURO\\HDF5_LSASAF_MSG_LAT_MSG-Disk_202303210900": {
+          "sha256": "ae2c4037343976745b33c03dd49a81def986a3fbc06f7c8e4dc372c6d7f31283",
+          "bytes": 1611989
+        },
+        "E:\\Static\\EURO\\HDF5_LSASAF_MSG_LON_MSG-Disk_202303210900": {
+          "sha256": "5bd5ea7c6dcdb4e121d72c657be5556623675c7f02fb456d30de53a118c25ca3",
+          "bytes": 3313546
+        },
+        "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VAA_MSG-Disk": {
+          "sha256": "f73762d7a9f98beb1942c4f7fc5d99f2b5db79a2e9ee2bba5e87a47a86820725",
+          "bytes": 6858625
+        },
+        "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VZA_MSG-Disk": {
+          "sha256": "4f7a3c9b217714eeb4c12014ff8f635f96edee95512992176387a207558ba151",
+          "bytes": 5268530
+        },
+        "E:\\Static\\IODC\\HDF5_LSASAF_MSG_LAT_IODC-Disk_202207011000": {
+          "sha256": "f84db1dcf6af4b21b4e963980826da14b4f4bd1f9195822163a328d3f5661381",
+          "bytes": 1611997
+        },
+        "E:\\Static\\IODC\\HDF5_LSASAF_MSG_LON_IODC-Disk_202207011000": {
+          "sha256": "80227f704d7e81ba606339d2c1d978793aa7c045701b41494aee6cdd73e514f3",
+          "bytes": 3313626
+        },
+        "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VAA_IODC-Disk_202406041200": {
+          "sha256": "3935a8aa511319caadbaaea64f88dd0c7b2dc308f86b390f2caff63f7049b05b",
+          "bytes": 6757444
+        },
+        "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VZA_IODC-Disk_202406041200": {
+          "sha256": "7e1d944be5b74f0c7893b6d81b5ad1da96d155e7437e9109e6c2e484656ce308",
+          "bytes": 5299983
+        }
+      },
+      "static_source_hash": "56dd5faedaef0220605091dfb09d2ebc7fee80f8afc6b916b39670658f1ce06a",
+      "geometry_plan_sha256": "1c23f7918ef4655385f61d8b77667a8edcab7215342c1b821513fc6cf1e8c5eb",
+      "geometry_module_sha256": "d9513dd736e5a3c3b4c97fdc4fd754b8d8dab737018c59ccddc3d2e5f1beed0a",
+      "grid": {
+        "shape": [
+          3333,
+          2633
+        ],
+        "GeoTransform": [
+          -18.0,
+          0.030003797949107482,
+          0.0,
+          65.0,
+          0.0,
+          -0.030003000300030003
+        ],
+        "Projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]",
+        "EPSG": 4326
+      },
+      "runtime": {
+        "numpy": "2.2.6",
+        "h5py": "3.16.0",
+        "GDAL": "3120400",
+        "pvlib": "0.16.1",
+        "opencv": "4.13.0"
+      },
+      "identity_hash": "ff9f3c6c41674a3d42e4dfd8eefdf4cf1998ac2a7bc50241bda3982ea69516c4",
+      "protocol": {
+        "version": "MSG_LS4T_H025_5X5_V1",
+        "first_window": 5,
+        "second_window": 5,
+        "hotspot": 0.25,
+        "lambda": 1000.0,
+        "delta_radiance": 3.0,
+        "radiance_units": "W m-2 sr-1 um-1",
+        "wavelength_m": 1.05e-05,
+        "residual_mode": "center_constant_sunlit_over_entire_5x5",
+        "minimum_valid_neighbors": 10,
+        "determinant_threshold": 1e-08,
+        "neighborhood_boundary": "nearest with 2-row halos between processing tiles",
+        "observation_mask": "common finite dual-view radiances and all six weights; daylight; valid land/emissivity/angles",
+        "source_LST": "signed int16 Celsius*100; uint16 storage reinterpreted int16; zero/-8000/declared NoData excluded",
+        "temperature_limits_K": [
+          250.0,
+          350.0
+        ],
+        "minimum_LAI": 0.05,
+        "output_mask": "all four components finite and within limits; no observation-reference-dependent rejection",
+        "instant_encoding": "uint16 Kelvin*100 rounded; 0=NoData",
+        "monthly": "arithmetic mean of encoded instantaneous values on common four-band support, each UTC hour separately",
+        "monthly_encoding": "float32 Kelvin*100; NaN=NoData; scale_factor=0.01",
+        "minimum_monthly_observations": 1,
+        "low_support": "1-2 observations flagged; no gap filling",
+        "solar_geometry": "legacy pixel-corner coordinates; 10x coarse nearest pvlib zenith/azimuth; altitude 0 m",
+        "view_geometry": "audited timestamp-aware provider; unresolved metadata deferred, never guessed",
+        "auxiliary_sampling": "land and soil emissivity sampled separately using their declared CRS/grid; legacy cell truncation",
+        "grid": "existing MSG 3333 rows x 2633 columns, EPSG:4326",
+        "ownership": "derived LS4T component temperatures; source MSG/MSG-IODC LST and MSG LAI attribution retained",
+        "limitations": [
+          "Projected zero/NoData ambiguity excludes unrecoverable 0 Celsius observations.",
+          "Land-cover Clarke 1866 datum has no specified transformation; auxiliary alignment follows declared CRS.",
+          "Monthly values describe available clear-sky samples, not all-weather averages."
+        ]
+      }
+    },
+    "6c06c9a229753fbf0543c57591a15b6f34615724fef94b745d9e8cb89f8fa64d": {
+      "protocol_hash": "6b39707bca78b09290f4ca988c7f550ac6ecc5f84a993ba48a2c2726ebb571be",
+      "code_sha256": "73bb2a84c3f6a9acb0b1ddffb3eb3a284605cf5ab504e5433d0a68ba3f3bbe26",
+      "implementation_sha256": "100eafb0977cfa32680d77e24df08575b87005f84595ccf1c5841374db6673e6",
+      "code_files": {
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_declared\\produce_msg_ls4t.py": {
+          "sha256": "73bb2a84c3f6a9acb0b1ddffb3eb3a284605cf5ab504e5433d0a68ba3f3bbe26",
+          "bytes": 49361
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_declared\\msg_view_geometry.py": {
+          "sha256": "15103c4034ca29875295d8ed41e47abaf5e9cc4daeb0a836b974dbd763b62143",
+          "bytes": 4349
+        }
+      },
+      "static_sources": {
+        "E:\\Static\\combined_euro_vza.tif": {
+          "sha256": "1a47c129759ce61fbf1cf9ac2bfaa5772f894eb63d3ca001e3437cf8e2ea3355",
+          "bytes": 2491275
+        },
+        "E:\\Static\\combined_euro_vaa.tif": {
+          "sha256": "44455c218bee5479257f166509de59b38dfcb33299f9e67edeee2670e071467b",
+          "bytes": 2924234
+        },
+        "E:\\map\\MCD12C1_2011_0.01.tif": {
+          "sha256": "835ed5ac1aea4a1e7e8239b0724e657d8384bd6a2bfa82f1e8dc9da46ffaff8e",
+          "bytes": 53050227
+        },
+        "E:\\lse\\AG1km.v003.SoilEmi.ABI.Global.001D_LSE12.tif": {
+          "sha256": "7c338deea410ddb3a0f42f76125f45aaa3d8569608f3423c5725f03809bd7621",
+          "bytes": 1296144385
+        },
+        "E:\\lse\\IGBP_Emi.txt": {
+          "sha256": "fcfa08f256e4b99e5959a931ab72d5ff592a49c26bfef991ed902a0e5c952cac",
+          "bytes": 160
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\msg_lsct3.2-iter.py": {
+          "sha256": "763de469c6023b2b830061658d9130fcc851b7f7e9397903c27ac2fa159df9c3",
+          "bytes": 28649
+        },
+        "C:\\work\\ls4t-msg\\cases\\official\\implementation\\produce_msg_5x5.py": {
+          "sha256": "1389e4c519bc737ac42b69ba30507ae88ec80b7c0f00cb7c6786048022ace176",
+          "bytes": 21009
+        },
+        "E:\\Static\\EURO_Lon.tif": {
+          "sha256": "e62c789afec652162821c9367466d2e2e7acbc9716f143e3ba4eb1dccbddec32",
+          "bytes": 28923001
+        },
+        "E:\\Static\\IODC_Lon.tif": {
+          "sha256": "d54c8f90452e9f463d031fb75eb097a8351e348cfc72abf0666a86750b5e04b1",
+          "bytes": 28919693
+        },
+        "E:\\Static\\IODC_Lon-2022.tif": {
+          "sha256": "6afc20bb0eb228a95fbfdb3e71d7504e10692e63968097484aee34eb89c5c672",
+          "bytes": 28922379
+        },
+        "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_compatible\\geometry_audit.json": {
+          "sha256": "7c394de52dfa62885d797a706a0c3ca23d14a0a561d063def29878ea80997f4f",
+          "bytes": 997276
+        }
+      },
+      "static_source_hash": "a8b74d836d5e3fd2ed831c8c20fa201ab4182f8969f5cce65395aa8bc78007eb",
+      "geometry_plan_sha256": "2a688f6bf9bd78321e63363464b27d92f046df7a75a6e1aa3f76ab3f0b63080a",
+      "geometry_module_sha256": "15103c4034ca29875295d8ed41e47abaf5e9cc4daeb0a836b974dbd763b62143",
+      "grid": {
+        "shape": [
+          3333,
+          2633
+        ],
+        "GeoTransform": [
+          -18.0,
+          0.030003797949107482,
+          0.0,
+          65.0,
+          0.0,
+          -0.030003000300030003
+        ],
+        "Projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AXIS[\"Latitude\",NORTH],AXIS[\"Longitude\",EAST],AUTHORITY[\"EPSG\",\"4326\"]]",
+        "EPSG": 4326
+      },
+      "runtime": {
+        "numpy": "2.2.6",
+        "h5py": "3.16.0",
+        "GDAL": "3120400",
+        "pvlib": "0.16.1",
+        "opencv": "4.13.0"
+      },
+      "identity_hash": "6c06c9a229753fbf0543c57591a15b6f34615724fef94b745d9e8cb89f8fa64d",
+      "protocol": {
+        "version": "MSG_LS4T_H025_5X5_DECLARED_V1",
+        "first_window": 5,
+        "second_window": 5,
+        "hotspot": 0.25,
+        "lambda": 1000.0,
+        "delta_radiance": 3.0,
+        "radiance_units": "W m-2 sr-1 um-1",
+        "wavelength_m": 1.05e-05,
+        "residual_mode": "center_constant_sunlit_over_entire_5x5",
+        "minimum_valid_neighbors": 10,
+        "determinant_threshold": 1e-08,
+        "neighborhood_boundary": "nearest with 2-row halos between processing tiles",
+        "observation_mask": "common finite dual-view radiances and all six weights; daylight; valid land/emissivity/angles",
+        "source_LST": "signed int16 Celsius*100; uint16 storage reinterpreted int16; zero/-8000/declared NoData excluded",
+        "temperature_limits_K": [
+          250.0,
+          350.0
+        ],
+        "minimum_LAI": 0.05,
+        "output_mask": "all four components finite and within limits; no observation-reference-dependent rejection",
+        "instant_encoding": "uint16 Kelvin*100 rounded; 0=NoData",
+        "monthly": "arithmetic mean of encoded instantaneous values on common four-band support, each UTC hour separately",
+        "monthly_encoding": "float32 Kelvin*100; NaN=NoData; scale_factor=0.01",
+        "minimum_monthly_observations": 1,
+        "low_support": "1-2 observations flagged; no gap filling",
+        "solar_geometry": "legacy pixel-corner coordinates; 10x coarse nearest pvlib zenith/azimuth; altitude 0 m",
+        "view_geometry": "declared orbital slots: Europe 0E, IODC 41.5E/45.5E by audited input epoch; nominal latitude zero; relative geometry approximation",
+        "auxiliary_sampling": "land and soil emissivity sampled separately using their declared CRS/grid; legacy cell truncation",
+        "grid": "existing MSG 3333 rows x 2633 columns, EPSG:4326",
+        "ownership": "derived LS4T component temperatures; source MSG/MSG-IODC LST and MSG LAI attribution retained",
+        "limitations": [
+          "Projected zero/NoData ambiguity excludes unrecoverable 0 Celsius observations.",
+          "Land-cover Clarke 1866 datum has no specified transformation; auxiliary alignment follows declared CRS.",
+          "Monthly values describe available clear-sky samples, not all-weather averages.",
+          "Viewing angles use declared slots and nominal latitude zero; precision ephemeris is not asserted."
+        ]
+      }
+    }
+  },
+  "runtime": {
+    "numpy": "2.2.6",
+    "h5py": "3.16.0",
+    "GDAL": "3120400",
+    "pvlib": "0.16.1",
+    "opencv": "4.13.0"
+  },
+  "identity_hash": "4a7b42b7ce4b995da5ef86a28b5f5f1a499a27bf75ac144091a5f20b289ad41a",
+  "protocol": {
+    "version": "MSG_LS4T_H025_5X5_V1",
+    "first_window": 5,
+    "second_window": 5,
+    "hotspot": 0.25,
+    "lambda": 1000.0,
+    "delta_radiance": 3.0,
+    "radiance_units": "W m-2 sr-1 um-1",
+    "wavelength_m": 1.05e-05,
+    "residual_mode": "center_constant_sunlit_over_entire_5x5",
+    "minimum_valid_neighbors": 10,
+    "determinant_threshold": 1e-08,
+    "neighborhood_boundary": "nearest with 2-row halos between processing tiles",
+    "observation_mask": "common finite dual-view radiances and all six weights; daylight; valid land/emissivity/angles",
+    "source_LST": "signed int16 Celsius*100; uint16 storage reinterpreted int16; zero/-8000/declared NoData excluded",
+    "temperature_limits_K": [
+      250.0,
+      350.0
+    ],
+    "minimum_LAI": 0.05,
+    "output_mask": "all four components finite and within limits; no observation-reference-dependent rejection",
+    "instant_encoding": "uint16 Kelvin*100 rounded; 0=NoData",
+    "monthly": "arithmetic mean of encoded instantaneous values on common four-band support, each UTC hour separately",
+    "monthly_encoding": "float32 Kelvin*100; NaN=NoData; scale_factor=0.01",
+    "minimum_monthly_observations": 1,
+    "low_support": "1-2 observations flagged; no gap filling",
+    "solar_geometry": "legacy pixel-corner coordinates; 10x coarse nearest pvlib zenith/azimuth; altitude 0 m",
+    "view_geometry": "per view: dynamic MEAN_SS first; missing orbit uses declared static slot; input geolocation conflicts deferred",
+    "auxiliary_sampling": "land and soil emissivity sampled separately using their declared CRS/grid; legacy cell truncation",
+    "grid": "existing MSG 3333 rows x 2633 columns, EPSG:4326",
+    "ownership": "derived LS4T component temperatures; source MSG/MSG-IODC LST and MSG LAI attribution retained",
+    "limitations": [
+      "Projected zero/NoData ambiguity excludes unrecoverable 0 Celsius observations.",
+      "Land-cover Clarke 1866 datum has no specified transformation; auxiliary alignment follows declared CRS.",
+      "Monthly values describe available clear-sky samples, not all-weather averages."
+    ]
+  }
+}

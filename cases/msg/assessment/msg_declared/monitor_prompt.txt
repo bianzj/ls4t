@@ -1,0 +1,9 @@
+每小时检查本对话的LS4T–MSG声明轨位近似产品重算进度。当前生产根目录是 E:/PRODUCTS/LSCT/MSG_LS4T_H025_5X5_DECLARED_V1；实现位于 C:/work/ls4t-msg/cases/official/implementation/msg_declared/，启动脚本为该目录的 run_msg_ls4t.ps1。日志在 C:/work/ls4t-msg/cases/official/results/msg_declared_20261012/production_stdout.log 和 production_stderr.log。
+
+用户已明确授权用声明的卫星轨道位置和较低角度精度：欧洲0°E，IODC截至2022年5月为41.5°E、2022年7月起45.5°E，名义纬度0°。此处欧洲0/0是明确的名义槽位，不是缺失轨位占位值。整批统一使用声明位置近似，不再要求每景MEAN_SS字段非零；不得擅自恢复旧的严格MEAN_SS筛选。数值算法冻结：hotspot=0.25、两个5×5窗口、lambda=1000、delta=3、共同有效掩膜、MSG网格、UTC10–16、原配套温标，不得使用地面10 K验证筛选。
+
+输入预分类：日历21,525时次，三输入齐全21,040，其中声明轨位方案可处理20,843；2022年6月197个时次因native声明41.5°与现有IODC TIFF的45.5°地理映射冲突继续暂缓；另485个缺输入。可处理数不等于完成数，已知源文件坏块仍可能失败。预计707个月小时组，其中700个非空组、7个六月空组，最终以实际清单为准。原 E:/PRODUCTS/LSCT/MSG_LS4T_H025_5X5_V1 的11,501景/392月均以及 DECLARED_V1_ACCEPTANCE_20261012 验收目录均不能计入新版本完成量。
+
+读取 status.json、production_identity.json、inventory.json、eligible_inventory.json、scene_manifest.jsonl、monthly_manifest.jsonl、failed_scenes.json、failed_monthly_groups.json、deferred_geometry.json，核对主进程和8个工作进程、状态更新时间、*.h5.complete.json标志及成对HDF5/GeoTIFF。按唯一时间或月份+UTC小时计数，区分本轮写入/复用与集合累计；不计.partial、无标志文件或空组。与上次检查相比有增长时简洁中文报告累计影像/月均、最近一小时增量、处理年月/UTC小时及失败、缺失、暂缓；无变化且无异常保持安静。
+
+若进程异常退出或长时间不更新，读日志诊断；仅在进程已退出且本版本冻结producer/helper/plan、静态声明源和输入哈希一致时续算，避免重复进程，不改冻结数值实现或原始数据。若707组均已遍历，成功+源失败覆盖20,843可处理时次，说明本轮已结束；已知六月暂缓或确定损坏输入造成的终态无需反复重启。结束后核验真实提交产品、月均源清单、缺样QA和成功/失败/暂缓/缺失分区，报告最终覆盖及近似几何性质，然后停用本计划。不得把有缺失/失败/暂缓的子集称为2017–2025完整无缺交付，不得把声明槽位角度称为逐景精密轨位。

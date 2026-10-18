@@ -1,0 +1,11 @@
+每小时检查本对话的唯一LS4T–MSG产品集合 E:/PRODUCTS/LSCT/MSG_LS4T_H025_5X5_V1。正式实现 C:/work/ls4t-msg/cases/official/implementation/msg_hybrid，启动脚本 run_msg_ls4t.ps1；日志 C:/work/ls4t-msg/cases/official/results/msg_hybrid_20261012/production_stdout.log 和 production_stderr.log。
+
+用户已授权继续计算，一套集合，欧洲和IODC分别优先使用有效动态MEAN_SS轨位；动态轨位缺失才读取已预建静态角度缓存（欧洲0E、IODC截至2022-05为41.5E、2022-07起45.5E，名义纬度0）。不要改成全静态或恢复缺动态即暂缓。静态经纬度/VZA/VAA缓存位于冻结geometry_plan.json的static_geometry_file。数值固定hotspot=.25、两个5×5、lambda1000、delta3、共同有效掩膜、MSG网格和配套温标、UTC10–16，不使用地面10K验证筛选，不改源文件。
+
+读取status.json、production_identity.json、inventory.json、eligible_inventory.json、scene_manifest.jsonl、monthly_manifest.jsonl、failed_scenes.json、failed_monthly_groups.json、deferred_geometry.json及_PROVENANCE/unification_20261012/migration_report.json。旧动态11501景/392月均与早期静态提交景经输入哈希、模型、逐视角模式/位置一致的兼容审核后保留原HDF/TIF字节及原计算identity；新的collection identity包含完整批准的旧身份。不要因单个文件identity与controller不同就误认损坏，也不允许未经白名单/等价核验的旧产品。原计算来源保留，运行manifest可记录validated_collection_identity、canonical_source_signature、geometry_modes。补样月份月均由有效来源并集合并刷新，不能导入原静态月均。
+
+仅在INSTANTANEOUS和MONTHLY_HOUR两个正式树内按*.h5.complete.json唯一时次/月份+UTC小时统计成对真实提交HDF/TIF。不要递归把_PROVENANCE备份、_ARCHIVE、旧DECLARED阶段、ACCEPTANCE试验、.partial、无提交标志和空组算入。区分集合累计已提交、本轮written/resumed、迁入旧景数量、每小时真正新增量；旧景迁入/复用不是重新计算。保存检查快照以比较小时增量，当前根内累计可包含此前已提交景，本轮进度不是整批累计。
+
+输入基准日历21525，三输入齐全21040，预期可计算20843，202206有197个IODC原生声明/投影定位冲突暂缓，另485缺输入；坏块等源文件错误可能失败，可计算不等于成功。核对主进程与8个worker、更新时间、正式代码/plan/静态缓存/完整旧身份及输入哈希；与上次相比实际增长时简洁中文报告累计影像/月均、小时新增、当前年月/UTC小时、失败/缺失/暂缓。无变化且无异常保持安静。
+
+异常退出或长时间不更新时读取日志。只在进程完全退出、冻结代码与code review报告、geometry plan、静态源/缓存、完整旧身份及相关输入哈希一致后通过run_msg_ls4t.ps1续算，不重复运行，不重新执行迁移或归档。若707组均遍历且成功+失败覆盖最终eligible计数，即本轮终态；已知六月定位冲突或确定坏源不应反复重启。结束核验正式真实提交产品与源清单、成功/失败/缺失/暂缓分区，报告最终覆盖和仍暂缓范围，再停用计划；不称为2017–2025完整无缺交付。

@@ -1,0 +1,82 @@
+{
+  "pass": true,
+  "helper_sha256": "d9513dd736e5a3c3b4c97fdc4fd754b8d8dab737018c59ccddc3d2e5f1beed0a",
+  "native_angle_checks": [
+    {
+      "view": "IODC",
+      "variable": "VZA",
+      "native_angle_file": "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VZA_IODC-Disk_202406041200",
+      "timestamp_native": "20240604120000",
+      "source_position": "MEAN_SS",
+      "satellite_latitude": 9.400849359856602,
+      "satellite_longitude": 45.48211938619613,
+      "n": 38884,
+      "mean_abs_error_deg": 0.051853468126807446,
+      "p95_abs_error_deg": 0.12937628266106244,
+      "max_abs_error_deg": 0.1569594756233954,
+      "native_latlon_orientation": "unflipped native HDF5 latitude and longitude",
+      "native_pixel_reference": "native LAT/LON pixel coordinates",
+      "pass": true
+    },
+    {
+      "view": "IODC",
+      "variable": "VAA",
+      "native_angle_file": "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VAA_IODC-Disk_202406041200",
+      "timestamp_native": "20240604120000",
+      "source_position": "MEAN_SS",
+      "satellite_latitude": 9.400849359856602,
+      "satellite_longitude": 45.48211938619613,
+      "n": 38884,
+      "mean_abs_error_deg": 0.057839581999174154,
+      "p95_abs_error_deg": 0.12922104092925785,
+      "max_abs_error_deg": 2.997085515614799,
+      "native_latlon_orientation": "unflipped native HDF5 latitude and longitude",
+      "native_pixel_reference": "native LAT/LON pixel coordinates",
+      "pass": true
+    },
+    {
+      "view": "EURO",
+      "variable": "VZA",
+      "native_angle_file": "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VZA_MSG-Disk",
+      "timestamp_native": "20140306150000",
+      "source_position": "MEAN_SS",
+      "satellite_latitude": 0.054657301420135744,
+      "satellite_longitude": 0.20176680711414952,
+      "n": 39861,
+      "mean_abs_error_deg": 0.006365388645881959,
+      "p95_abs_error_deg": 0.015563905860254579,
+      "max_abs_error_deg": 0.020959874507354925,
+      "native_latlon_orientation": "unflipped native HDF5 latitude and longitude",
+      "native_pixel_reference": "native LAT/LON pixel coordinates",
+      "pass": true
+    },
+    {
+      "view": "EURO",
+      "variable": "VAA",
+      "native_angle_file": "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VAA_MSG-Disk",
+      "timestamp_native": "20140306051500",
+      "source_position": "MEAN_SS",
+      "satellite_latitude": 0.30302622862201994,
+      "satellite_longitude": 0.1962829029780953,
+      "n": 39859,
+      "mean_abs_error_deg": 0.0057855846226636245,
+      "p95_abs_error_deg": 0.011786896082151086,
+      "max_abs_error_deg": 0.028668930936987636,
+      "native_latlon_orientation": "unflipped native HDF5 latitude and longitude",
+      "native_pixel_reference": "native LAT/LON pixel coordinates",
+      "pass": true
+    }
+  ],
+  "source_files_sha256": {
+    "E:\\Static\\EURO\\HDF5_LSASAF_MSG_LAT_MSG-Disk_202303210900": "ae2c4037343976745b33c03dd49a81def986a3fbc06f7c8e4dc372c6d7f31283",
+    "E:\\Static\\EURO\\HDF5_LSASAF_MSG_LON_MSG-Disk_202303210900": "5bd5ea7c6dcdb4e121d72c657be5556623675c7f02fb456d30de53a118c25ca3",
+    "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VAA_MSG-Disk": "f73762d7a9f98beb1942c4f7fc5d99f2b5db79a2e9ee2bba5e87a47a86820725",
+    "E:\\Static\\EURO\\HDF5_LSASAF_MSG_VZA_MSG-Disk": "4f7a3c9b217714eeb4c12014ff8f635f96edee95512992176387a207558ba151",
+    "E:\\Static\\IODC\\HDF5_LSASAF_MSG_LAT_IODC-Disk_202207011000": "f84db1dcf6af4b21b4e963980826da14b4f4bd1f9195822163a328d3f5661381",
+    "E:\\Static\\IODC\\HDF5_LSASAF_MSG_LON_IODC-Disk_202207011000": "80227f704d7e81ba606339d2c1d978793aa7c045701b41494aee6cdd73e514f3",
+    "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VAA_IODC-Disk_202406041200": "3935a8aa511319caadbaaea64f88dd0c7b2dc308f86b390f2caff63f7049b05b",
+    "E:\\Static\\IODC\\HDF5_LSASAF_MSG_VZA_IODC-Disk_202406041200": "7e1d944be5b74f0c7893b6d81b5ad1da96d155e7437e9109e6c2e484656ce308"
+  },
+  "geometry": "WGS84 ellipsoid; ground height zero; satellite geocentric radius42164km; azimuth ground-to-satellite clockwise from north",
+  "interpretation": "Agreement is with native provider angles at their stated source timestamps. It does not validate missing early ephemeris or override inconsistent scene metadata. Small differences include native 0.01 degree quantization, specified orbit radius and ground height approximation."
+}

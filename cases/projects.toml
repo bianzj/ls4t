@@ -106,3 +106,33 @@ case_paths = [
   "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first",
   "cases/_archive/slstr/mixed_batch",
 ]
+
+# 2026-10-18 收编：三个独立仓库的剩余内容已并入主仓库，工作副本删除，
+# `.git` 存档到 D:\cases\ls4t\_source-repos\。三个 GitHub 私有仓库本身保留不动。
+[absorbed]
+date = "2026-10-18"
+note = "搬运判据：主仓库无同名文件才搬运，避免覆盖已演进的版本。"
+
+[[absorbed.repo]]
+name = "ls4t-aatsr"
+result = "无需搬运：127 个 .py 全部与主仓库同名，没有独有代码或数据"
+git_archive = "D:/cases/ls4t/_source-repos/ls4t-aatsr.git"
+
+[[absorbed.repo]]
+name = "ls4t-slstr"
+moved = ["cases/slstr/auxiliary/datapro_fileremove.py"]
+result = "58 个 .py 中仅 1 个主仓库没有"
+git_archive = "D:/cases/ls4t/_source-repos/ls4t-slstr.git"
+
+[[absorbed.repo]]
+name = "ls4t-msg"
+moved = [
+  "cases/msg/assessment/  128 个文件（101 个 .py、6 个 .ps1 及 msg_compatible/msg_declared/msg_hybrid 三个变体）",
+  "cases/msg/outputs/official-results/  1089 个文件 335.8 MB（已被 .gitignore 的 cases/**/outputs/ 排除）",
+]
+manuscripts = "D:/cases/ls4t/msg/manuscript_history/  23 个文件 194.0 MB"
+skipped = [
+  "cases/official/paths.local.json（机器本地路径配置）",
+  "旧目录名占位符：aatsr_lst、msg-lsct、slstr_lst、data",
+]
+git_archive = "D:/cases/ls4t/_source-repos/ls4t-msg.git"

@@ -1,0 +1,66 @@
+{
+  "pass": true,
+  "checked_UTC": "2026-10-12T01:28:47.279152+00:00",
+  "acceptance_identity_hash": "6c06c9a229753fbf0543c57591a15b6f34615724fef94b745d9e8cb89f8fa64d",
+  "producer_sha256": "73bb2a84c3f6a9acb0b1ddffb3eb3a284605cf5ab504e5433d0a68ba3f3bbe26",
+  "geometry_helper_sha256": "15103c4034ca29875295d8ed41e47abaf5e9cc4daeb0a836b974dbd763b62143",
+  "geometry_plan_sha256": "2a688f6bf9bd78321e63363464b27d92f046df7a75a6e1aa3f76ab3f0b63080a",
+  "auditor_sha256": "b40a1c288437dec0ac5a87bde0aba88682ca73b1015604a1c1e479eef6426dc3",
+  "main_diff_review": "Only added protection for original frozen output root and updated eligibility-definition text; no numerical/runtime/retry/masking change.",
+  "actual_scenes": [
+    {
+      "stamp": "201708151200",
+      "valid_pixels": 914525,
+      "scalar_checks": 16,
+      "valid_scalar_checks": 12,
+      "all_4band_DN_N_QA_exact": true,
+      "all_pixels_HDF5_TIFF_byte_equal": true
+    },
+    {
+      "stamp": "202001151200",
+      "valid_pixels": 795945,
+      "scalar_checks": 16,
+      "valid_scalar_checks": 12,
+      "all_4band_DN_N_QA_exact": true,
+      "all_pixels_HDF5_TIFF_byte_equal": true
+    },
+    {
+      "stamp": "202407151200",
+      "valid_pixels": 752760,
+      "scalar_checks": 16,
+      "valid_scalar_checks": 12,
+      "all_4band_DN_N_QA_exact": true,
+      "all_pixels_HDF5_TIFF_byte_equal": true
+    }
+  ],
+  "monthly": [
+    {
+      "month": "201708",
+      "hour_UTC": 12,
+      "sources": 1,
+      "all_pixels_format_scale_mask_N_QA_pass": true,
+      "direct_mean_checks": 16
+    },
+    {
+      "month": "202001",
+      "hour_UTC": 12,
+      "sources": 2,
+      "all_pixels_format_scale_mask_N_QA_pass": true,
+      "direct_mean_checks": 16
+    },
+    {
+      "month": "202407",
+      "hour_UTC": 12,
+      "sources": 1,
+      "all_pixels_format_scale_mask_N_QA_pass": true,
+      "direct_mean_checks": 16
+    }
+  ],
+  "evidence_files": {
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_declared\\acceptance_audit_201708151200.json": "da9305c7e121863fef834849ae1c0f9d4a412a047ce3466c886b07f8651975e7",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_declared\\acceptance_audit_202001151200.json": "382faff07b706ba594a45b21be20facf263957ca3a5f4cdf375c7e290c9e2e04",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_declared\\acceptance_audit_202407151200.json": "baab867033c2e4d659348619cc28fb5f18a7e9924a65bdbd55b2c2d076d69462",
+    "C:\\Users\\jiank\\Documents\\ChatGPT\\ls4tmsg\\production\\msg_declared\\independent_implementation_review.json": "18bb9d9ce86f49988dcb44e0660f9c0618e911c2f1d48547700984ed299f2d2c"
+  },
+  "scope": "Isolated acceptance product only, containing four instantaneous scenes and three partial-sample months. Whole-scene checks cover three scenes; winter monthly checks use both winter sources. Forty-eight source-window scalar checks exactly match encoded results, neighborN and allQA. Nominal slots are an authorized approximation, not verified precision ephemeris. June2022 input geolocation conflicts remain excluded. Default GeoTIFF scale1/offset0 may be unstored; physicalK arrays were checked across all pixels. No producer/helper/plan/raw files changed and no production run was launched by the reviewer."
+}

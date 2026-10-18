@@ -1,0 +1,426 @@
+{
+  "pass": true,
+  "status": "passed",
+  "checked_UTC": "2026-10-11T10:15:23.147078+00:00",
+  "identity_hash": "ff9f3c6c41674a3d42e4dfd8eefdf4cf1998ac2a7bc50241bda3982ea69516c4",
+  "producer_sha256": "e3c0db78d3443840b6f8da58501a91326fb25f2719c66c2cb6c254202659069c",
+  "actual_scalar_scene": {
+    "pass": true,
+    "timestamp_UTC": "202407151200",
+    "hdf5_sha256": "af773a04f842548c03499575065078bdba6a44b281ce3b7b5da6c31ab5580fbb",
+    "pixel_checks": [
+      {
+        "row": 0,
+        "column": 0,
+        "stored_DN": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "encoded_match": true,
+        "valid": false,
+        "neighbors": 0,
+        "qa": 3
+      },
+      {
+        "row": 254,
+        "column": 1217,
+        "stored_DN": [
+          28655,
+          29699,
+          28655,
+          28655
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 22,
+        "qa": 0
+      },
+      {
+        "row": 255,
+        "column": 1215,
+        "stored_DN": [
+          27539,
+          29761,
+          27539,
+          27539
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 23,
+        "qa": 0
+      },
+      {
+        "row": 256,
+        "column": 1215,
+        "stored_DN": [
+          27774,
+          29759,
+          27774,
+          27774
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 20,
+        "qa": 0
+      },
+      {
+        "row": 257,
+        "column": 1214,
+        "stored_DN": [
+          27814,
+          29724,
+          30593,
+          27448
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 15,
+        "qa": 16
+      },
+      {
+        "row": 510,
+        "column": 1053,
+        "stored_DN": [
+          30720,
+          30690,
+          34110,
+          29918
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 0
+      },
+      {
+        "row": 510,
+        "column": 1077,
+        "stored_DN": [
+          31096,
+          30591,
+          32911,
+          30532
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 18,
+        "qa": 0
+      },
+      {
+        "row": 511,
+        "column": 1047,
+        "stored_DN": [
+          31398,
+          30727,
+          34252,
+          30076
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 0
+      },
+      {
+        "row": 511,
+        "column": 1069,
+        "stored_DN": [
+          29950,
+          30725,
+          30709,
+          29711
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 21,
+        "qa": 0
+      },
+      {
+        "row": 512,
+        "column": 1051,
+        "stored_DN": [
+          30854,
+          30753,
+          33693,
+          30111
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 0
+      },
+      {
+        "row": 512,
+        "column": 1071,
+        "stored_DN": [
+          29186,
+          30788,
+          29336,
+          29141
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 22,
+        "qa": 0
+      },
+      {
+        "row": 513,
+        "column": 1049,
+        "stored_DN": [
+          30931,
+          30753,
+          33606,
+          29957
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 0
+      },
+      {
+        "row": 513,
+        "column": 1196,
+        "stored_DN": [
+          30531,
+          30470,
+          32869,
+          30069
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 16,
+        "qa": 0
+      },
+      {
+        "row": 766,
+        "column": 1051,
+        "stored_DN": [
+          31762,
+          31228,
+          33579,
+          31185
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 0
+      },
+      {
+        "row": 766,
+        "column": 1094,
+        "stored_DN": [
+          32373,
+          31884,
+          32466,
+          32220
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 14,
+        "qa": 0
+      },
+      {
+        "row": 767,
+        "column": 1016,
+        "stored_DN": [
+          31992,
+          32033,
+          32970,
+          30223
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 16
+      },
+      {
+        "row": 767,
+        "column": 1092,
+        "stored_DN": [
+          32116,
+          32212,
+          32751,
+          30507
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 21,
+        "qa": 0
+      },
+      {
+        "row": 768,
+        "column": 1017,
+        "stored_DN": [
+          32268,
+          32227,
+          33132,
+          30447
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 25,
+        "qa": 16
+      },
+      {
+        "row": 768,
+        "column": 1097,
+        "stored_DN": [
+          32127,
+          31652,
+          33537,
+          30265
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 20,
+        "qa": 0
+      },
+      {
+        "row": 769,
+        "column": 1090,
+        "stored_DN": [
+          32110,
+          31683,
+          33320,
+          30624
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 23,
+        "qa": 0
+      },
+      {
+        "row": 769,
+        "column": 1251,
+        "stored_DN": [
+          31146,
+          31530,
+          31260,
+          31112
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 23,
+        "qa": 0
+      },
+      {
+        "row": 881,
+        "column": 333,
+        "stored_DN": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "encoded_match": true,
+        "valid": false,
+        "neighbors": 5,
+        "qa": 2
+      },
+      {
+        "row": 1023,
+        "column": 491,
+        "stored_DN": [
+          32796,
+          30056,
+          33121,
+          31889
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 20,
+        "qa": 16
+      },
+      {
+        "row": 1023,
+        "column": 1792,
+        "stored_DN": [
+          31767,
+          30780,
+          33318,
+          30678
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 22,
+        "qa": 0
+      },
+      {
+        "row": 1024,
+        "column": 716,
+        "stored_DN": [
+          32577,
+          30929,
+          32577,
+          32577
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 22,
+        "qa": 16
+      },
+      {
+        "row": 1024,
+        "column": 1790,
+        "stored_DN": [
+          31765,
+          30340,
+          34580,
+          30455
+        ],
+        "encoded_match": true,
+        "valid": true,
+        "neighbors": 17,
+        "qa": 0
+      },
+      {
+        "row": 1666,
+        "column": 1316,
+        "stored_DN": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "encoded_match": true,
+        "valid": false,
+        "neighbors": 0,
+        "qa": 7
+      },
+      {
+        "row": 3332,
+        "column": 2632,
+        "stored_DN": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "encoded_match": true,
+        "valid": false,
+        "neighbors": 0,
+        "qa": 3
+      }
+    ],
+    "valid_actual_pixels": 24,
+    "seam_rows": [
+      254,
+      255,
+      256,
+      257,
+      510,
+      511,
+      512,
+      513,
+      766,
+      767,
+      768,
+      769,
+      881,
+      1023,
+      1024
+    ],
+    "inputs_reconstruction": "Independent source signed decode, separate ancillary CRS sampling, scene MEAN_SS geometry, exact global coarse solar lookup, unedited historical scalar-center functions. Stored roundedDN, neighbor count and all QA bits must each agree exactly."
+  },
+  "scope": "Actual source-to-output scalar replay around tile boundaries and explicit missing/edge positions. Whole-image schema and monthly statistics are audited separately by root. No inputs altered."
+}
