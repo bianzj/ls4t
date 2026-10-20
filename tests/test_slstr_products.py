@@ -6,7 +6,7 @@ import pytest
 
 from base.calibration import save_split_window_model
 from base.lst import SplitWindowModel
-from slstr.slstr_data import (
+from base.slstr.slstr_data import (
     SlstrDataProduct,
     add_lst_auxiliary,
     read_data_product,
@@ -15,8 +15,8 @@ from slstr.slstr_data import (
     write_auxiliary_product,
     write_data_product,
 )
-from slstr.slstr_lst import produce_slstr_lst
-from slstr.slstr_merge import _merge_products
+from base.slstr.slstr_lst import produce_slstr_lst
+from base.slstr.slstr_merge import _merge_products
 
 
 def observation() -> SlstrDataProduct:

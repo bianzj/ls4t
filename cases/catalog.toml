@@ -52,11 +52,11 @@ entrypoints = [
   "msg_download.py",
   "msg_extract_euro.py",
   "msg_extract_iodc.py",
-  "msg_lsct_2c_full.py",
-  "msg_lsct_3c_2stage_full.py",
-  "msg_lsct_3c_constrained_full.py",
-  "msg_lsct_3c_full.py",
-  "msg_lsct_3c_show_full.py",
+  "experiments/msg_lsct_2c_window.py",
+  "experiments/msg_lsct_3c_two_stage.py",
+  "experiments/msg_lsct_3c_constrained.py",
+  "experiments/msg_lsct_3c_window.py",
+  "experiments/msg_lsct_3c_diagnostics.py",
   "msg_lsct_iter.py",
   "msg_lst_fit.py",
   "msg_project_euro.py",
@@ -75,27 +75,7 @@ entrypoints = [
   "msg_site_validate_multisite.py",
 ]
 
-[[case]]
-id = "slstr-heihe-2022-study-area"
-sensor = "slstr"
-region = "heihe"
-status = "migrated"
-spatial_mode = "study-area-first"
-path = "slstr/heihe/study_area_2022"
-entrypoints = [
-  "study_area/slstr_lst.py",
-]
 
-[[case]]
-id = "slstr-europe-south-africa-scene-first"
-sensor = "slstr"
-region = "europe-south-africa"
-status = "migrated"
-spatial_mode = "scene-first"
-path = "slstr/europe_south_africa/scene_first_migrated"
-entrypoints = [
-  "scene_first/slstr_lst.py",
-]
 
 [[case]]
 id = "slstr-heihe-daily-mosaic"
@@ -130,6 +110,24 @@ entrypoints = [
   "run_standard_stage.py",
 ]
 
+[[case]]
+id = "slstr-huailai-scene-first"
+sensor = "slstr"
+region = "huailai"
+status = "active"
+spatial_mode = "scene-first"
+path = "slstr-huailai"
+entrypoints = ["stages/run_scene_pipeline.sh", "stages/prepare_reuse.py", "stages/audit_outputs.py"]
+
+[[case]]
+id = "slstr-xizang-scene-first"
+sensor = "slstr"
+region = "xizang"
+status = "active"
+spatial_mode = "scene-first"
+path = "slstr-xizang"
+entrypoints = ["stages/run_scene_pipeline.sh", "stages/inventory_and_reuse.py", "stages/stage_raw.py"]
+
 [[archive]]
 path = "_archive/aatsr/product_history"
 reason = "duplicate historical product implementations and backups"
@@ -145,3 +143,7 @@ reason = "mixed Europe, South Africa and machine-specific paths"
 [[archive]]
 path = "_archive/shared"
 reason = "unverified cross-sensor and download scripts"
+
+[[archive]]
+path = "_archive/slstr/retired_20261013"
+reason = "Retired nested SLSTR snapshots; imports reference removed base.util_* modules. No active entrypoints."

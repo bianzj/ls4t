@@ -1,75 +1,53 @@
 # LS4T
 
-LS4T 按产品组织可复用代码，并用自动化测试和最小样例验证。项目不提供统一 CLI，
-也不把不同传感器强制包装成相同接口；真实生产运行统一由 `cases/` 中的脚本配置。
+LS4T 只分两部分：
 
-`/home/hero/work/ls4t` 是通用算法和产品结构的主项目。AATSR、MSG、SLSTR、MODIS、
-VIIRS、AHI、ASTER 都在根目录提供标准处理接口；地区、年份、机器和真实运行脚本统一
-放在 `cases/`。AATSR、MSG、SLSTR 的三个独立私有项目继续作为运行项目和同步来源。
-项目关系、执行入口和状态见 [cases/README.md](cases/README.md)、
-`cases/projects.toml` 和 `cases/catalog.toml`。
+- **`base/`**：函数库和案例模板。通用算法、各传感器的标准处理函数都在这里，
+  `base/templates/` 是可以复制到 `cases/` 的案例模板；
+- **`cases/`**：单个执行案例。一个案例对应一个传感器、研究区和时间范围，真实数据路径、
+  年份、机器和并行方式都写在案例里。
 
-## 源码结构
+在案例中怎么用 `base/` 不做限制：可以复制 `base/templates/` 里的模板改配置后运行，
+也可以直接写脚本调用 `base/` 中的通用函数。
 
 ```text
 ls4t/
-├── base/                    公共数值、质量、产品读写和空间算法
-├── aatsr/
-│   ├── aatsr_data.py        AATSR 解压与数据提取
-│   ├── aatsr_project.py     AATSR 逐景投影
-│   ├── aatsr_region.py      AATSR 研究区前处理/结果后处理
-│   ├── aatsr_lst.py         AATSR 地表温度
-│   └── aatsr_lsct.py        AATSR 组分温度
-├── slstr/
-│   ├── slstr_data.py        SLSTR 数据模型、单景读写和兼容入口
-│   ├── slstr_unzip.py       SLSTR 压缩包解压
-│   ├── slstr_extract.py     SLSTR 原生数组提取
-│   ├── slstr_reconstruct.py SLSTR 网格重建
-│   ├── slstr_project.py     SLSTR 投影到目标栅格
-│   ├── slstr_merge.py       SLSTR 按日合并
-│   ├── slstr_region.py      SLSTR 研究区前处理/结果后处理
-│   ├── slstr_lst.py         SLSTR 地表温度
-│   └── slstr_lsct.py        SLSTR 组分温度
-├── msg/
-│   ├── msg_data.py          MSG 数据读取
-│   ├── msg_project.py       MSG 投影（目标网格不同时使用）
-│   ├── msg_region.py        MSG 研究区前处理/结果后处理
-│   ├── msg_lst.py           MSG 地表温度
-│   └── msg_lsct.py          MSG 组分温度
-├── modis/                   MODIS 31/32 提取、投影、拼接、研究区和 LST
-├── viirs/                   VIIRS M15/M16 提取、投影、拼接、研究区和 LST
-├── ahi/                     AHI 14/15 提取、投影、拼接、研究区和 LST
-├── aster/                   ASTER 13/14 提取、投影、拼接、研究区和 LST
-├── normalization/
-│   ├── angle.py             角度归一化
-│   ├── time.py              地方太阳时归一化
-│   ├── space.py             空间归一化
-│   ├── sensor.py            传感器归一化
-│   └── fusion.py            多传感器融合
-├── composite/               时间合成
-├── applications/            TVDI 等 L4 应用
-└── cases/                    各传感器实际执行、参数、历史实验及项目索引
+├── base/                        函数库 + 案例模板
+│   ├── *.py、rt/                公共数值、质量、产品读写、空间算法、辐射传输
+│   ├── aatsr/                   AATSR 解压、提取、投影、研究区、LST、LSCT
+│   ├── slstr/                   SLSTR 解压、提取、重建、投影、合并、研究区、LST、LSCT
+│   ├── msg/                     MSG 读取、投影、研究区、LST、LSCT
+│   ├── modis/ viirs/ ahi/ aster/  双热通道提取、投影、拼接、研究区和 LST
+│   ├── normalization/           角度、时间、空间、传感器归一化和融合
+│   ├── composite/               时间合成
+│   ├── applications/            TVDI 等 L4 应用
+│   └── templates/               案例模板（case/ 骨架、new_case.py、audit_cases.py）
+├── cases/                       执行案例（aatsr/、msg/、slstr/、slstr-heihe/ …）
+│   └── _archive/                不再使用的历史脚本
+├── tests/                       合成与真实输入自动化测试
+├── docs/                        设计与流程说明
+└── old/                         尚未分类的旧代码，不作为运行入口
 ```
 
-源码直接从项目根目录开始，不再增加名为 `src/` 的中间层，也不使用统一流程包。
+## 新建并运行一个案例
 
-## 代码、测试和案例边界
+两种方式任选，也可以混用。
 
-根目录模块只保存函数、数据模型和稳定算法，不保存 `/home/...`、`/media/...` 等
-机器路径，也不提供直接执行的 `__main__`。`tests/` 使用合成数据和临时目录验证算法；
-输入目录、输出目录、年份、研究区、覆盖策略和本次启用的阶段全部放在 `cases/`。
+**1. 复制模板**（标准阶段 + 配置文件）：
 
-参考与执行的分工是**按目录**划的：根目录的传感器包（`slstr/`、`msg/`、`aatsr/`、
-`modis/`、`base/` 等）是参考实现，示范这些算法怎么调用；`cases/<sensor>/...` 是执行案例，
-真实数据、机器路径、年份区间、并行方式和调度都写在那里。`cases/` 下不再另分"参考"和
-"案例"，`cases/_templates/` 只是新建案例的脚手架工具。
+```bash
+python base/templates/new_case.py slstr heihe summer-2022 --mode study-area-first
+# 编辑 cases/slstr/heihe/summer-2022/case.toml 与 machines/local.toml
+python cases/slstr/heihe/summer-2022/run_standard_stage.py --list
+python cases/slstr/heihe/summer-2022/run_standard_stage.py extract --machine local
+```
 
-每个阶段仍保持独立，不自动调用下一阶段。案例脚本显式传入运行参数，例如：
+**2. 直接写脚本调用函数**：
 
 ```python
 from pathlib import Path
 
-from slstr.slstr_extract import slstr_extract
+from base.slstr.slstr_extract import slstr_extract
 
 CASE_ROOT = Path("data/slstr-example")
 
@@ -80,10 +58,40 @@ slstr_extract(
 )
 ```
 
-如果缺少执行所需的路径或年份，核心批处理函数会提示到 `cases/` 中配置，而不会使用
-开发者机器上的隐式默认值。执行案例位于 `cases/<sensor>/<region>/`（当前 AATSR、MSG、
-SLSTR、ASTER 各一套），非活动历史材料在 `cases/_archive/`。详细结构见
-[cases/README.md](cases/README.md)。
+在项目根目录运行案例脚本（或先 `pip install -e .`），`base` 即可直接导入。
+
+## 边界
+
+- `base/` 中除 `templates/` 外只放函数、数据模型和稳定算法，不写 `/home/...`、`/media/...`
+  等机器路径，也没有 `__main__` 入口；
+- 缺少路径或年份时，批处理函数会报错提示到 `cases/` 中配置，不使用隐式默认值；
+- 每个阶段独立，不自动调用下一阶段；
+- 在案例中验证过、且两个以上案例都需要的计算，整理后移入 `base/` 并补测试。
+
+案例登记在 `cases/catalog.toml`；AATSR、MSG、SLSTR 三个独立私有运行项目的来源索引在
+`cases/projects.toml`。登记后可以只检查结构、不执行科学代码：
+
+```bash
+python base/templates/audit_cases.py
+```
+
+详细结构见 [cases/README.md](cases/README.md) 和 [base/templates/README.md](base/templates/README.md)。
+
+## MSG 真实数据测试样例
+
+`tests/data/msg_evo_201710_10x10/` 保存 EVO 站点周围 10×10 像元的 2017 年 10 月
+真实 MSG 数据：EURO/IODC 各 744 个逐小时 LST、31 个每日 LAI、观测角与发射率，
+以及计算的太阳角和来源记录。输入沿用真实投影产品的 `PRODUCTS/.../年/月/日/`
+目录和原文件名：一个时次一个单波段 UInt16 TIFF，保留原始定标编码与 NoData，
+仅裁剪空间窗口。可直接离线运行土壤/植被组分反演，不依赖原始数据盘。
+
+```bash
+python tests/examples/msg_evo_sample.py run
+python -m pytest tests/test_msg_evo_sample.py -q
+```
+
+需要 GDAL 和科学计算依赖；安装可使用 `pip install -e '.[msg-sample]'`。数据定义、
+三组分参考解、重新提取命令和科学限制见 [样例说明](tests/examples/README.md)。
 
 ## 产品层级
 
@@ -93,10 +101,8 @@ L1O → L2LST / L2LSCT → L3N → L3C → L4A
 
 角度、时间、空间和传感器归一化分别手工执行。融合只接受已经处于相同网格和归一化基准的 L3N 数据。
 
-旧目录保留尚未完成分类的迁移和回归依据，不作为新源码运行入口。所有真实任务都从
-`cases/<sensor>/<region>/<case-id>/` 查找。MODIS、VIIRS、AHI 的现有旧任务状态为
-`draft`；ASTER 尚无真实任务，但根目录已经提供标准产品与处理接口。
-详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
+MODIS、VIIRS、AHI 的现有旧任务状态为 `draft`；ASTER 尚无真实任务，但 `base/aster/`
+已经提供标准产品与处理接口。详细边界见 [docs/PRODUCT_ARCHITECTURE.md](docs/PRODUCT_ARCHITECTURE.md) 和
 [docs/PIPELINE.md](docs/PIPELINE.md)。实际案例的新建、机器配置、版本升级和归档流程见
 [docs/CASE_WORKFLOW.md](docs/CASE_WORKFLOW.md)。
 

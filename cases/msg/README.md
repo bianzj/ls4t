@@ -1,9 +1,9 @@
 # MSG cases
 
-MSG 只保留真实在跑、并且反演链真正用到的环节，各自一个脚本，扁平放在本目录，项目代码
-只从根目录 `base/` 导入；没有 `support/` 夹层、没有 `import *`、没有 `sys.path` 技巧。
-月合成、站点验证、绘图和旧版本反演脚本都移到
-`cases/_archive/msg/transferred_20260916/`。
+本目录保留 MSG 数据准备、正式反演和站点验证入口；公共科学计算从 `base/` 导入。
+`msg_lsct_iter.py` 是当前正式 LSCT 入口，五个方法对照脚本集中在 `experiments/`，
+按窗口解、两阶段、约束解和诊断出图命名。更早的月合成、实验和验证快照位于
+`cases/_archive/msg/`。
 
 | 环节 | 脚本 | 来源 |
 | --- | --- | --- |
@@ -158,16 +158,16 @@ pvlib、pandas、h5py 和 scipy；投影需要 rasterio、pyresample 和 GDAL。
 当前正式脚本没有 `METHOD` 开关，不能直接重建该目录；相关站点 CSV 脚本仍读取历史
 `MLST_COMPONENT2`，因此该目录继续保留。要逐位复现测试产品需使用归档脚本。
 
-### 全图（full disk）反演方法一览（都在 `cases/msg/`）
+### 正式反演与方法对照（对照文件位于 `cases/msg/experiments/`）
 
 | ls4t 文件 | 来源 | 组分 | 方法 |
 | --- | --- | --- | --- |
-| `msg_lsct_2c_full.py` | `msg_lsct2.0.py` | **2 组分**（土壤 + 植被） | 5×5 窗口最小二乘，逐分量写 tif |
-| `msg_lsct_3c_full.py` | `msg_lsct3.0.py` | 3 组分 | 3×3 窗口最小二乘（基线） |
-| `msg_lsct_3c_2stage_full.py` | `msg_lsct2.1.py` | 3 组分 | 两阶段：先 [光照土壤] vs [阴影土壤+植被]，再分 [阴影土壤] vs [植被]（无约束） |
+| `experiments/msg_lsct_2c_window.py` | `msg_lsct2.0.py` | **2 组分**（土壤 + 植被） | 5×5 窗口最小二乘，逐分量写 tif |
+| `experiments/msg_lsct_3c_window.py` | `msg_lsct3.0.py` | 3 组分 | 3×3 窗口最小二乘（基线） |
+| `experiments/msg_lsct_3c_two_stage.py` | `msg_lsct2.1.py` | 3 组分 | 两阶段：先 [光照土壤] vs [阴影土壤+植被]，再分 [阴影土壤] vs [植被]（无约束） |
 | `msg_lsct_iter.py` | `msg_lsct3.2-iter.py` | 3 组分 | **正式版**（硬约束 + λ=100）；日期和小时由命令行指定 |
-| `msg_lsct_3c_constrained_full.py` | `msg_lsct3.2-cons.py` | 3 组分 | 同一硬约束的**全向量化实现**（对照，修了边界 `dif` 逻辑） |
-| `msg_lsct_3c_show_full.py` | `msg_lsct3.2-iter-show.py` | 3 组分 | 正式算法 + 逐景 4 分量对比出图（对照） |
+| `experiments/msg_lsct_3c_constrained.py` | `msg_lsct3.2-cons.py` | 3 组分 | 同一硬约束的**全向量化实现**（对照，修了边界 `dif` 逻辑） |
+| `experiments/msg_lsct_3c_diagnostics.py` | `msg_lsct3.2-iter-show.py` | 3 组分 | 正式算法 + 逐景 4 分量对比出图（对照） |
 
 ### 备选/历史方法（归档）
 
@@ -181,7 +181,7 @@ pvlib、pandas、h5py 和 scipy；投影需要 rasterio、pyresample 和 GDAL。
 | 站点点解 | `msg_lsct3.2-iter-site*.py` | 站点位置的直接/约束/中心解 |
 | 老窗口族 | `support/util_lsct.py`：`inv_lsct2/3_winconst`、`winquad`、`winquad_constraint` | SLSQP 非线性窗口 / 贝叶斯岭回归 |
 | 逐像元点解 | `inv_lsct_point`（ridge） | 单点回归 |
-| 参考实现 | 根目录 `msg/msg_lsct.py` + `base/lsct.py: retrieve_components(_window)` | 读标准 NPZ 观测；与在用版输入格式不同，需先做「MLST+LAI+角度 → NPZ」准备步骤才能对拍 |
+| 参考实现 | `base/msg/msg_lsct.py` + `base/lsct.py: retrieve_components(_window)` | 读标准 NPZ 观测；与在用版输入格式不同，需先做「MLST+LAI+角度 → NPZ」准备步骤才能对拍 |
 
 ## 依赖来源
 
@@ -202,4 +202,4 @@ pvlib、pandas、h5py 和 scipy；投影需要 rasterio、pyresample 和 GDAL。
 
 `cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/` 保存了原来的
 `dual_disk` 快照（投影、LSCT 各版本、月合成、站点验证、绘图、下载、support 兼容层）。
-需要复现旧流程时从那里取回，但生产只走上面两个脚本。
+需要复现旧流程时从那里取回，正式流程使用本目录投影入口与 `msg_lsct_iter.py`，站点验证单独执行。

@@ -21,7 +21,7 @@ from base.radiometry import inv_planck, planck
 from base.rt.gap import gap_probability_hom_analytical
 from base.rt.hom import Hom
 from base.rt.hotspot import hotspot_layer
-from slstr import slstr_grid
+from base.slstr import slstr_grid
 
 
 LAI = np.array([0.5, 1.5, 3.0, 5.0])

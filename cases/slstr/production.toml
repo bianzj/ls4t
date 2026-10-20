@@ -47,7 +47,7 @@ base = [
   "base/lsct_window.py",
   "base/rt/",
 ]
-slstr = ["slstr/slstr_grid.py"]
+slstr = ["base/slstr/slstr_grid.py"]
 tests = "tests/test_slstr_case_dependencies.py"
 
 [scope]

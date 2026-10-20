@@ -2,12 +2,12 @@ import numpy as np
 import pytest
 
 from base.quality import QualityFlag
-from normalization.angle import normalize_directional
-from normalization.fusion import NormalizedField, fuse_l3n
-from normalization.profile import NormalizationProfile
-from normalization.sensor import SensorHarmonization
-from normalization.space import aggregate_to_grid, space_normalize_years
-from normalization.time import normalize_local_solar_time
+from base.normalization.angle import normalize_directional
+from base.normalization.fusion import NormalizedField, fuse_l3n
+from base.normalization.profile import NormalizationProfile
+from base.normalization.sensor import SensorHarmonization
+from base.normalization.space import aggregate_to_grid, space_normalize_years
+from base.normalization.time import normalize_local_solar_time
 
 
 def profile(name="OPS"):

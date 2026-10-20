@@ -3,9 +3,9 @@ name = "ls4t"
 repository = "git@github.com:bianzj/ls4t.git"
 local_path = "/home/hero/work/ls4t"
 source_layout = "root"
-execution_cases = "archived"
+execution_cases = "mixed: active, migrated and draft; see cases/catalog.toml"
 snapshot_archive = "cases/_archive/execution_20260917"
-note = "当前没有执行计划；三个独立运行项目的生产代码快照已整体归档到 snapshot_archive，需要时再恢复。"
+note = "当前案例状态以 cases/catalog.toml 为准；snapshot_archive 仅记录较早快照归档，不能代表当前所有入口状态。"
 
 [[source_project]]
 sensor = "AATSR"
@@ -56,11 +56,11 @@ transferred_to = [
   "cases/msg/msg_site_repro_lst.py",
   "cases/msg/msg_site_repro_lsct.py",
   "cases/msg/msg_site_validate_multisite.py",
-  "cases/msg/msg_lsct_2c_full.py",
-  "cases/msg/msg_lsct_3c_2stage_full.py",
-  "cases/msg/msg_lsct_3c_full.py",
-  "cases/msg/msg_lsct_3c_constrained_full.py",
-  "cases/msg/msg_lsct_3c_show_full.py",
+  "cases/msg/experiments/msg_lsct_2c_window.py",
+  "cases/msg/experiments/msg_lsct_3c_two_stage.py",
+  "cases/msg/experiments/msg_lsct_3c_window.py",
+  "cases/msg/experiments/msg_lsct_3c_constrained.py",
+  "cases/msg/experiments/msg_lsct_3c_diagnostics.py",
   "base/kernel.py",
   "base/files.py",
   "base/spatial.py",
@@ -96,13 +96,13 @@ transferred_to = [
   "base/radiometry.py",
   "base/lsct.py",
   "base/rt",
-  "slstr/slstr_grid.py",
+  "base/slstr/slstr_grid.py",
 ]
 flattened = "2026-09-16"
 archived_extra = "cases/_archive/slstr/transferred_20260916"
 case_root = "cases"
 case_paths = [
-  "cases/slstr/heihe/study_area_2022",
-  "cases/slstr/europe_south_africa/scene_first_migrated",
+  "cases/_archive/slstr/retired_20261013/heihe_study_area_2022",
+  "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first",
   "cases/_archive/slstr/mixed_batch",
 ]

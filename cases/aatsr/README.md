@@ -1,7 +1,7 @@
 # AATSR cases
 
 AATSR 生产和实验代码已从独立运行项目 `ls4t-aatsr` 转入本目录并扁平化：一个文件一个环节，
-放在本目录根部，项目代码只从 `base/`、`aatsr/` 导入；没有 `support/` 夹层、没有
+放在本目录根部，项目代码只从 `base/`（含 `base/aatsr/`）导入；没有 `support/` 夹层、没有
 `import *`、没有 `sys.path` 技巧。
 
 | 环节 | 脚本 | 来源 |
@@ -25,8 +25,12 @@ AATSR 生产和实验代码已从独立运行项目 `ls4t-aatsr` 转入本目录
 
 `aatsr_lsct.py` 是正式生产版（`number_component = 2`，两组分：土壤 + 植被），
 `aatsr_lsct_latlon.py` 是同一算法的经纬度读取版，`aatsr_lsct_v31.py` 是全图 2 组分的
-v3.1 历史版，`aatsr_lsct_ndvi.py` 用 NDVI 代替 LAI 求植被覆盖度。三者的窗口拟合与
-约束函数都来自 `base/lsct.py`、`base/lsct_window.py`、`base/kernel.py`。
+v3.1 历史版，`aatsr_lsct_ndvi.py` 用 NDVI 求植被覆盖度，并采用带组分温差约束的
+窗口 SLSQP。正式版使用窗口 Ridge；v3.1 比较单像元、窗口常量、空间二次曲面及
+空间先验与中心角度观测的贝叶斯融合，不能把这些分支统一称为约束拟合。
+
+结构权重、空间温度差异、组分温差约束、贝叶斯融合及当前实现限制，见
+[AATSR 方法整理](../../docs/AATSR_METHODS.md)。
 
 ## 依赖来源
 

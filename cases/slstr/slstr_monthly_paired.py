@@ -30,7 +30,7 @@ if str(REPO_ROOT) not in sys.path:
 
 import rasterio  # noqa: E402
 
-from composite.monthly_paired import monthly_paired, write_monthly_paired  # noqa: E402
+from base.composite.monthly_paired import monthly_paired, write_monthly_paired  # noqa: E402
 
 
 def load_case(case_dir: Path, machine: str) -> dict:

@@ -26,7 +26,7 @@ from osgeo import gdal
 
 from base.radiometry import inv_planck, planck
 from base.rt.hotspot import hotspot_layer
-from slstr.slstr_grid import adjust_xmin_no_g, adjust_xmax_no_g
+from base.slstr.slstr_grid import adjust_xmin_no_g, adjust_xmax_no_g
 from cases.slstr import slstr_lst_scene_parallel as lst_module
 
 WL = 10.8

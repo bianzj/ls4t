@@ -8,6 +8,7 @@ __MACOSX/
 *.egg-info/
 build/
 dist/
+tests/outputs/
 
 # Case-local machine settings and generated products
 cases/**/machines/local.toml
@@ -15,3 +16,8 @@ cases/**/.case-state/
 cases/**/runs/
 cases/**/outputs/
 cases/**/logs/
+
+# Local environments and editor preferences
+.venv/
+.idea/
+.vscode/

@@ -1,0 +1,4122 @@
+{
+  "root": "C:\\work\\ls4t",
+  "backup": "C:\\work\\ls4t-cleanup-backups\\20261013T192006",
+  "snapshot_files": 4247,
+  "delete_files": [
+    {
+      "path": ".pytest_cache/.gitignore",
+      "bytes": 37,
+      "sha256": "3ed731b65d06150c138e2dadb0be0697550888a6b47eb8c45ecc9adba8b8e9bd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": ".pytest_cache/CACHEDIR.TAG",
+      "bytes": 191,
+      "sha256": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": ".pytest_cache/README.md",
+      "bytes": 302,
+      "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": ".pytest_cache/v/cache/lastfailed",
+      "bytes": 209,
+      "sha256": "7d68cf97a1eaac18dd53fcb4d1741f123b56bc539f4f6855f7eecdd5b8fe85cd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": ".pytest_cache/v/cache/nodeids",
+      "bytes": 10592,
+      "sha256": "ab7654a9141838ce6a71d98c591197f656a9b13b1321f1a206d4635183fef12d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 2053,
+      "sha256": "a8ba9d8d271707fddaec8d7d32fa4c01248341ee70b3f141894de62c4dc1b98b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 1710,
+      "sha256": "789035db279da132752d1cfbace87d28982bc1b0a88612bc488dedc3c6ce227f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 2131,
+      "sha256": "c2639eac990df014faa3bdc5422c9f5941aed0b8da03c8929f261d660a86e731",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/calibration.cpython-311.pyc",
+      "bytes": 4725,
+      "sha256": "4c833e3d5e51df2d3072e2cc2b50c0d827e4ef22e096c02a982036f5d2501327",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/calibration.cpython-312.pyc",
+      "bytes": 4333,
+      "sha256": "cc885f9329f447f50faa4aebbe825385ecea363b56cfeee89d0ad2c185248bc6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/calibration.cpython-314.pyc",
+      "bytes": 4880,
+      "sha256": "67ca5bbd4773d3ab6bdb774aded335d5fedd1bb77031b0786b15d796a7211623",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/data.cpython-311.pyc",
+      "bytes": 4886,
+      "sha256": "ee6cba7bc30025264bf457ee07de001b96ca9ade83fe86b08ec3a0a9ee762e90",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/data.cpython-312.pyc",
+      "bytes": 3841,
+      "sha256": "16ab1c4a0af5ea552555ac5731c561a249e3fc99b7a70fe988f2137063b782c7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/data.cpython-314.pyc",
+      "bytes": 4327,
+      "sha256": "3d6abafbb296f8f1f8c9c24e0affd182e00b210afbf7f71c3eba059379d46092",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/dates.cpython-311.pyc",
+      "bytes": 2937,
+      "sha256": "93557dfd3ff75334b3bb33bb9454bab023f9bf992ce51e496c9824498eb757ea",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/dates.cpython-312.pyc",
+      "bytes": 2738,
+      "sha256": "9c59514392d0a1e5986e8045a8774eaf741000e2f9181bb24b6f2436f757c988",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/dual_thermal.cpython-311.pyc",
+      "bytes": 33635,
+      "sha256": "610815d8243fe1d7fbe4a1c10a9e31d308a7db4900569d52fa21363c69d54db5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/dual_thermal.cpython-312.pyc",
+      "bytes": 29277,
+      "sha256": "19a0799e007f4638402c8475736be9932cc1c6a5427fe788b9415ac0a9c0db75",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/dual_thermal.cpython-314.pyc",
+      "bytes": 33197,
+      "sha256": "ee6bb2f856271428b62d68ef35d7aa2ffc0bee80ed8de0bf9e0acd56f914a7eb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/files.cpython-311.pyc",
+      "bytes": 24905,
+      "sha256": "b5a218238c896b636aeb1fc2ddf46b210892d390b470b2297dd7f4e0af965914",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/files.cpython-312.pyc",
+      "bytes": 21088,
+      "sha256": "a75ada478b871ca3c3d803e6d72cb183c255e4fb170a15b8aa097ee4553a0979",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/files.cpython-314.pyc",
+      "bytes": 22578,
+      "sha256": "93cf8ed1fe1fe686daba13a2f497ba412ec888238f84c36aa02edb222cd0c6f1",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/fitting.cpython-311.pyc",
+      "bytes": 1838,
+      "sha256": "0ff0d570d4288b3fbc7ced04d2e63e1adce0f0b1e18af14bb22c874030b2a9c7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/fitting.cpython-312.pyc",
+      "bytes": 1692,
+      "sha256": "64b8eb46b25d63f515d08077de2afb3fdfc84d3c726fc6c6332fa671abb80ef2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/kernel.cpython-311.pyc",
+      "bytes": 54280,
+      "sha256": "45aac1df92c8249fb7f9ba7a6ae5cc65d16c1e0a09f6eb8e8eb92e2508648743",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/kernel.cpython-312.pyc",
+      "bytes": 52565,
+      "sha256": "2ce6f8547b1080d3efbc032a6eef65d23f35197b06fb5a61c11f649d09c74922",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lsct.cpython-311.pyc",
+      "bytes": 34036,
+      "sha256": "cb470e1a253b0a3cb5e248f7b781c5991ae32a878ed57e7fe2c8b60d2cbd2488",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lsct.cpython-312.pyc",
+      "bytes": 31603,
+      "sha256": "fa283e210cdd1c56a2b0ff500daf544e93905f0b30885ee1829f6530af6aa47f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lsct.cpython-314.pyc",
+      "bytes": 11241,
+      "sha256": "e0249d71370a016c035c0671dea513d0abaee8caf283c1a55a676266acc5ef94",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lsct_window.cpython-311.pyc",
+      "bytes": 17142,
+      "sha256": "a82cffd37b37f1e2c4e7f43fafb12f421deafb424e2c3a3f6387550f6f582380",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lsct_window.cpython-312.pyc",
+      "bytes": 15748,
+      "sha256": "16b917cf1748d2570e18d6727b1ed3e780d82646421a4a838ff048ab2008f272",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lst.cpython-311.pyc",
+      "bytes": 12281,
+      "sha256": "b4d3ea0fee9833673c3e5bea2e00ce3d2613fb3176936f262a331e98b67e0f96",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lst.cpython-312.pyc",
+      "bytes": 11799,
+      "sha256": "2738fab4307dd13ba601c68d9b21b1316384f781c5dd579dcb84f4312a4c1fa0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/lst.cpython-314.pyc",
+      "bytes": 13392,
+      "sha256": "041d8545990ce98f2cac6ef53ce5cbcbd68b97ec4c232061a9f822294dccd933",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/metrics.cpython-311.pyc",
+      "bytes": 974,
+      "sha256": "ad21f403aae025417d35a799316fe52c8e81095050dfac300a40f0e77461ece6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/metrics.cpython-312.pyc",
+      "bytes": 865,
+      "sha256": "ca67774df37e8c210225cd4f3322eb3099f2a1182b176e4a41b741a300016ee9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/parameters.cpython-311.pyc",
+      "bytes": 1006,
+      "sha256": "2d73c385ca24e156f5e9c9fe6442e7437582ad894f06be2188216d0f2099fa17",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/parameters.cpython-312.pyc",
+      "bytes": 795,
+      "sha256": "7f52c6c30ec2961392e58415b18632f84b49a6c04043da91bef06c0817411fab",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/parameters.cpython-314.pyc",
+      "bytes": 958,
+      "sha256": "5f2404a9660677efa396a840ea5e90fa31649dce731b3420796ece3840090b33",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/product.cpython-311.pyc",
+      "bytes": 9341,
+      "sha256": "e3a21b4e2f1eca052ef936ce107fb3c1b4d7289071d7a0dd21d58e65141b7515",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/product.cpython-312.pyc",
+      "bytes": 8630,
+      "sha256": "1c7ae2152f3d97faaf645fa62e4066b213bdd19a41d07f582060cdda9039953d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/product.cpython-314.pyc",
+      "bytes": 10043,
+      "sha256": "59ab25797a5c062d1be4122c2caa396250479fbe81e0d4a833321afdd5b862b2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/product_io.cpython-311.pyc",
+      "bytes": 4919,
+      "sha256": "8bbadd1c500b91ea77cb0fcf01e73fb77647801373e3a03ca3ff287fc40d1c77",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/quality.cpython-311.pyc",
+      "bytes": 2200,
+      "sha256": "f0ebb7b209cefdcdb748c46d1264b2205003ad344a7b7c6fbf43e300c716a829",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/quality.cpython-312.pyc",
+      "bytes": 2059,
+      "sha256": "f224d32ef997f94893d9715b37e0f2365070854eef392e7086d78d3c23b0c9be",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/quality.cpython-314.pyc",
+      "bytes": 2612,
+      "sha256": "7ced4a40e4ba412a9a9ca164b619ee2783964080913c031fe105051c3e1c92c7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/radiometry.cpython-311.pyc",
+      "bytes": 5556,
+      "sha256": "2ead6bad3a7f0a1e4912182d266e395ab8e6186e516487643db2333a35ef38cb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/radiometry.cpython-312.pyc",
+      "bytes": 5178,
+      "sha256": "569036e09b9fa590ac61bc1572caf3ee0f82329e6c2501702b2b4c1043f557fe",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/radiometry.cpython-314.pyc",
+      "bytes": 3883,
+      "sha256": "ec4f688876de87dd99d24f29bab9049a0910254b7f7c0ecdfc63cd4584ead825",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/raster.cpython-311.pyc",
+      "bytes": 17367,
+      "sha256": "ba4210c85f3aafca8ca53b467469849e8fc8f99f64984662732dc8049eb23d61",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/raster.cpython-312.pyc",
+      "bytes": 14752,
+      "sha256": "aea681e496e1f48d755c11b910e05b02c37d60a44c8cb9270b3c27d1e9d1f570",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/raster.cpython-314.pyc",
+      "bytes": 11132,
+      "sha256": "0b17e158457c86875029d30381b09a6ff0776d52bf87b7ceea20df422af3a276",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/spatial.cpython-311.pyc",
+      "bytes": 37677,
+      "sha256": "1839354f131f4787b00d097ea45e5d6eee262f55213a85392c1e717da3ede85b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/spatial.cpython-312.pyc",
+      "bytes": 32988,
+      "sha256": "d03c987c4d29e80c71cc9f59172f05048d858303a930837420fffe8361b6a7b3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/__pycache__/spatial.cpython-314.pyc",
+      "bytes": 30024,
+      "sha256": "11f203aa8c1a6ef6f7e3bc7a3dbd1e272b35f9e12a1daf66a8de252857d45520",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 212,
+      "sha256": "20057dad64d89056b379bfb23495668eff13b92820f2cf18c72c89321faabe95",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 219,
+      "sha256": "c464b368c8365b947f409decc2576785da33d7e5e57fcf1da99c6031054546fd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 216,
+      "sha256": "80f1dd4b6d9c794174c77d521a89f29ed9d326cf596d165019c32fcf48e72f4d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_data.cpython-311.pyc",
+      "bytes": 19337,
+      "sha256": "b3f54634d36e41398c16e8dfdecee3a49e6c7d7e01cebc6d8f9e4535cd378a5f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_data.cpython-312.pyc",
+      "bytes": 16317,
+      "sha256": "32e601401630baf20cce6b8aa47e5531acb2630969bd40f5b1b0ddff7cc2118a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_data.cpython-314.pyc",
+      "bytes": 18915,
+      "sha256": "27c149e1d0c80706065a2f076c2cab6c35765b307cf52e79e7ac6577c27e9c6c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_lsct.cpython-311.pyc",
+      "bytes": 6697,
+      "sha256": "6808a35be6fff08962b27fa50cf9bfdb27cec2bb0665703285cd01bd9039a1ed",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_lst.cpython-311.pyc",
+      "bytes": 6433,
+      "sha256": "f6cf8c3f4d08bd59b18cf689428fa77f1ffa6b0e2f8ea51dd83934a7fc490393",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_project.cpython-311.pyc",
+      "bytes": 3571,
+      "sha256": "b5aeedd98a8c1ccd99e55bec1254139767be18f3b77908520332d9d3a5124b43",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_project.cpython-312.pyc",
+      "bytes": 3036,
+      "sha256": "7608a293fe85818974d7bce523ca0cad12a0da99e683e3de7766af0542ba703b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_project.cpython-314.pyc",
+      "bytes": 3220,
+      "sha256": "c8a422f310d84170a7575c9f19611dcbe82ccddf0e14696bd568c92d3041eef6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_region.cpython-311.pyc",
+      "bytes": 4116,
+      "sha256": "20ea336d1f5b619e338f07ca98d7eaf50db30884b71cd7bc6c36022bda6983bc",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_region.cpython-312.pyc",
+      "bytes": 3153,
+      "sha256": "586ea5f180f4617c24c09355db38a0d0f4bbe0446d4d37ca4ab6dfb2debc9b23",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aatsr/__pycache__/aatsr_region.cpython-314.pyc",
+      "bytes": 3447,
+      "sha256": "05c7c0e60afa5a48a1401249479e910dee4f73911147d597b7255fdc0cc08117",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 209,
+      "sha256": "77be4f7da08a97f4585945d082e6679e34dfc73d7509274d258dabadb013e62d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 216,
+      "sha256": "eaccca26d4b61a1a2dbca2c6cf1d857353a34886f18404cc0dd8f98a9c1ecfbb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 213,
+      "sha256": "8556ae7902cbfb2f35e24f70a72b8561ee702a3ba1c944142d72febe5d23c01a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_data.cpython-311.pyc",
+      "bytes": 2058,
+      "sha256": "6752c5fd1b6eca8447a6ab5fce929aff22f4727dfbd26744b9a10f0a62b5a9e2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_data.cpython-312.pyc",
+      "bytes": 1743,
+      "sha256": "dc798988895662a53b263dac21d283c3e98a0eda75ced7e255f29acbb64462cc",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_data.cpython-314.pyc",
+      "bytes": 2145,
+      "sha256": "4391f1dbb1c1d682768ad6577222b643dfe4d3c2c7175733a328d85e3c614521",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_extract.cpython-311.pyc",
+      "bytes": 805,
+      "sha256": "4377da5f7cec165b2e4fad318e44d1d760d30e23684556670cab1e9325bf5346",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_extract.cpython-312.pyc",
+      "bytes": 695,
+      "sha256": "f691a561c20f8a230fb81bf8d6295e5acfb50afe26388c9db98991d590faff63",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_extract.cpython-314.pyc",
+      "bytes": 791,
+      "sha256": "050ac8bf9d0be7f1b4fffd53d47e46830d17ffdf4a31e0f753b02d109e594f09",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_lst.cpython-311.pyc",
+      "bytes": 1549,
+      "sha256": "2d8dbf5f28517c9112704ac53a9e505fa43752eddcaa6f2f7adf1fa0066e580f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_merge.cpython-311.pyc",
+      "bytes": 665,
+      "sha256": "8047995de61cb56402c26155adf4e5acbddecc4cffaa218b6329f5cdd0b8b289",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_merge.cpython-312.pyc",
+      "bytes": 557,
+      "sha256": "41fa1f28eba7fb493c94e65568ebb006c35623bc3d0543161b60ddea18391a2c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_merge.cpython-314.pyc",
+      "bytes": 694,
+      "sha256": "d626a82cd2befc1620a12a7bc6b63b2fedebdb18e65a0c1dd71ca4e60e64f1ec",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_project.cpython-311.pyc",
+      "bytes": 1542,
+      "sha256": "3ea544218297e77b962e426ba91220873b7ec7a4b2afe8cab9431e1cd48b08e7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_project.cpython-312.pyc",
+      "bytes": 1352,
+      "sha256": "b812d8c099f72c6430a9178b2f8e694ea384f13c8558181e6b1fe4f1d78b1bf3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_project.cpython-314.pyc",
+      "bytes": 1425,
+      "sha256": "3c6fca968b1d476dfc3d4142f3dbfdbbfbff6eba6786ab49b4dac81dba6beced",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_region.cpython-311.pyc",
+      "bytes": 941,
+      "sha256": "27862563baff409468decba2907e22fce604d8449c1312532b048eb43d34e26c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_region.cpython-312.pyc",
+      "bytes": 779,
+      "sha256": "e93ced422aac76527cce048939294c5010377bd49d60375a27a4eab32fc344f2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/ahi/__pycache__/ahi_region.cpython-314.pyc",
+      "bytes": 1048,
+      "sha256": "b5dddb5fe536737158a32029b5026df9e42b7dcc8f6b4e437fc7d6623518bcd0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 283,
+      "sha256": "31c293a3e6e4f8e70348ea8e718c2c117046f1ef0da263ac9400486456ddfe98",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 271,
+      "sha256": "8c45227ed4d00814bf1acc32b01245965c2b5bffc9775d9290c3cb8fdd7e6008",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 263,
+      "sha256": "9867b2c944c2dc862f0874d4f8cf494094454cc80957d0442b1ca45902f82f86",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/tvdi.cpython-311.pyc",
+      "bytes": 3727,
+      "sha256": "c9f741949f64ea072ddfc89e77dce46096cae797b00f0ac0818d1f3b89af46f1",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/tvdi.cpython-312.pyc",
+      "bytes": 3334,
+      "sha256": "9eb2d87195a72b9e354aa354d88616e018986f30dbff36bdbbaa80652721f646",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/applications/__pycache__/tvdi.cpython-314.pyc",
+      "bytes": 3773,
+      "sha256": "448f97a4dac59bc8ff71ee1111e769103b1363144f9d18125c84eb1e884207ac",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 213,
+      "sha256": "82b4262130389068d592dcf11952bb493a838e61f3c7b7043f800ee5b825b7c7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 220,
+      "sha256": "318847bfd881314c71ac7f7cd735648767e220709ca51153bab78920098fa5ee",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 217,
+      "sha256": "cf9ef6eecd5dbba4d67ab2a76109d6a6eb3363cbdb6e09f9d73dff34abb5f06c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_data.cpython-311.pyc",
+      "bytes": 2092,
+      "sha256": "b93301a9ab2e9b0d544a531236f715e309be2c4421294faa5f19fbba6c095be8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_data.cpython-312.pyc",
+      "bytes": 1777,
+      "sha256": "915d58ea10d70a105d0034682b72fd8c18cb339dc81b0999dbeb957efe5f84b8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_data.cpython-314.pyc",
+      "bytes": 2181,
+      "sha256": "41d276219f783890c67b3d760d6f236d696dad8077afdb968a2dd657343add69",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_extract.cpython-311.pyc",
+      "bytes": 816,
+      "sha256": "85fdfa68cbfe551b703f4c83352911f935109c7bf896688392e5d91375b97ea6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_extract.cpython-312.pyc",
+      "bytes": 706,
+      "sha256": "9fca2feba5ea433a032685c2a0e7e16598232700885e6681729271b6d93ad468",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_extract.cpython-314.pyc",
+      "bytes": 802,
+      "sha256": "070860d7274b84bceefa2ac8e72034dc7688e7d9f1d3ebab520ed04842a1665a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_lst.cpython-311.pyc",
+      "bytes": 1595,
+      "sha256": "cfea3e9c6d0a7ecb997ca89b011dca5252de974eb90510b7fbae1aac464c403d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_merge.cpython-311.pyc",
+      "bytes": 676,
+      "sha256": "88037a2c9aa2a09af8dbca462bf3482c6ef92f8a5c3fdade1e0b091ae7c4a113",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_merge.cpython-312.pyc",
+      "bytes": 568,
+      "sha256": "a3cb5f153977be2c276c2ad9fe8bc8f955112ac0b0c1047fe8a5bcb9cfe80d7b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_merge.cpython-314.pyc",
+      "bytes": 705,
+      "sha256": "851aaebede4366f522865c43a806a802bb76d6748fd7c8f94479768a7b6f6cce",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_project.cpython-311.pyc",
+      "bytes": 1530,
+      "sha256": "3ac433c8b380d7cec897c2dc89209116f699e375e8876006cd0508fa3e336748",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_project.cpython-312.pyc",
+      "bytes": 1340,
+      "sha256": "9af8849c85eb70b537bf1d723ed9ef8fd19173c3a4051a12036ac96d2e6eda28",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_project.cpython-314.pyc",
+      "bytes": 1413,
+      "sha256": "fcda8dd3d45f97fd22576d8042df821bbc7ce3de1b7ae2abdd01e0b760b51a17",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_region.cpython-311.pyc",
+      "bytes": 958,
+      "sha256": "ba0019b792df517a057aae305b98fed7bcda1c1d5636817e835707006ffa3d90",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_region.cpython-312.pyc",
+      "bytes": 796,
+      "sha256": "acaf50d8183dba8609c85995ee09134b2ac71094d077080786b24926a0b8b19b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/aster/__pycache__/aster_region.cpython-314.pyc",
+      "bytes": 1065,
+      "sha256": "34e30fe9589f13b91aaaa89633ce5471397854aeb2e09ddeae1c3a8a8ed78d17",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 509,
+      "sha256": "7c5d1b89f5ebc5b228983d84d63a6087a6ee10d393d294cb3a35ca370a87d76e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 447,
+      "sha256": "d054411a397a4b902308af488bd875bdbdf5f32502a476775a7066c49f9a3511",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 309,
+      "sha256": "ad11b3c479c6d8d51615423669118fc2553fef3b85c46ea8721d9b4f104d58a7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/monthly_paired.cpython-311.pyc",
+      "bytes": 9844,
+      "sha256": "fbcef16bd0493f9a141cf8c5648d61935f35fddb1df33de900705882827691dd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/monthly_paired.cpython-312.pyc",
+      "bytes": 8601,
+      "sha256": "2af1580371cce0d771444081c0112d03285b27bd2debb04d101703ef18161a25",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/temporal.cpython-311.pyc",
+      "bytes": 5990,
+      "sha256": "b8903f0ff530fbae5fb4f2e76dc8f787c501db9b57260212a76fbadcd671d395",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/temporal.cpython-312.pyc",
+      "bytes": 5398,
+      "sha256": "8511e4271e3a81906a23016282d607490a53dee96bdf6c15db560effacf86372",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/composite/__pycache__/temporal.cpython-314.pyc",
+      "bytes": 5945,
+      "sha256": "33a4eb68505517873ff09c3feb9dd207ab2bd98f2e12087b174f29f0ddfe14e1",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 240,
+      "sha256": "365c6c0c22f4fd440e67ff40c553b12b356b4f122415744b573602ac42f90cd0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 220,
+      "sha256": "b2dd064682ed70717e76d5d5ac01373ae794bb7f29010e235c0693920a8e9057",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 217,
+      "sha256": "eac752c7022895e3ec67715854fa064cf5382a503894516b6144f3161de2fef7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_data.cpython-311.pyc",
+      "bytes": 2101,
+      "sha256": "6ae62388a0d310c89570ecff46de80609512d3b5be70020117b3dcdb29ee7b5f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_data.cpython-312.pyc",
+      "bytes": 1759,
+      "sha256": "70a5aeec160665d9c272b57da8b7cfba734b41ab92f66a1b4213b0bfb267cf6a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_data.cpython-314.pyc",
+      "bytes": 2163,
+      "sha256": "edb93596e48a8ac254564bcd222676c20da427024cc1a38436cd5f8b011cb735",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_extract.cpython-311.pyc",
+      "bytes": 816,
+      "sha256": "9e306b7f614f20e83cce215a9e398d9e14a1ab0468ab7d3bdb1695fdc1e39d2b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_extract.cpython-312.pyc",
+      "bytes": 706,
+      "sha256": "8455d61e019422062b95edfa5cbb9b61c7b8a879167635be9b523b9fddeb1b72",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_extract.cpython-314.pyc",
+      "bytes": 802,
+      "sha256": "b5cc082c5f70573d8669f7c9eec3bd19818e0cc5efb0f75f3b60066948ba8efe",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_lst.cpython-311.pyc",
+      "bytes": 1601,
+      "sha256": "edb100a0adb9b7f8be49a0f6b1dbc7571b1f72aaee9ca2ae225f90a6f58177ca",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_lst.cpython-312.pyc",
+      "bytes": 1389,
+      "sha256": "78dac631640ae0b41742750fc28d828aff7677a9b7186b51438a4ab5c5717ccd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_lst.cpython-314.pyc",
+      "bytes": 1549,
+      "sha256": "1fb1379ca7994a1a8edd7aee675a6b0656bfe37a181897ff105be68d20c0a1af",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_merge.cpython-311.pyc",
+      "bytes": 748,
+      "sha256": "87c4232f77603b67fed3d58cbbd1efe5e3f62508e1c0c75f41cc998057fd3cd8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_merge.cpython-312.pyc",
+      "bytes": 640,
+      "sha256": "dcc30de6365ecbaea750ddd2b9254134b011fcf7455b6eab737eff68b4b577a6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_merge.cpython-314.pyc",
+      "bytes": 777,
+      "sha256": "269be0b61d619e2858cd7ba1b2bbb5289a8f48652c9d248e1846ee41b1fd791f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_project.cpython-311.pyc",
+      "bytes": 1530,
+      "sha256": "8eaae8690d9898e8b3aff586a396b2a20535b8327e6eed6cd550cea4d3a52045",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_project.cpython-312.pyc",
+      "bytes": 1340,
+      "sha256": "2c7a422972e16ff1b9740405f41c7abf1f4a0a4a957c956e2ce4c2bbdab0335a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_project.cpython-314.pyc",
+      "bytes": 1413,
+      "sha256": "3f9f42cdaf3dea5a2a70f73922ae31e54ad753ee9b93b52ab4cdc855bc43f54b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_region.cpython-311.pyc",
+      "bytes": 958,
+      "sha256": "b6b4d67c5ca6895f533432ddfb78c04a40b7227cd2ab91d6cb65b4a1e7ced201",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_region.cpython-312.pyc",
+      "bytes": 796,
+      "sha256": "37b4097184d52d26049211e3640198ab7257c9713918795722e724daf1e4a445",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/modis/__pycache__/modis_region.cpython-314.pyc",
+      "bytes": 1065,
+      "sha256": "0deb13f807fb7da56aed64cd349e931c527ac10927161f648701f4fb8abf974f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 208,
+      "sha256": "e56c868bd0bf1e32dcedc2810855c22ccc7bf8e6de9210094875424a8f0a1d04",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 215,
+      "sha256": "5c720d39441b72f4ba3738827338793b669f103579d6d7b6b890be1a85788e45",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 212,
+      "sha256": "1b5d73cee79e89935dad8b12c5ae2efa99c5d791c269d81aae2ad82e47c7fbb8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_data.cpython-311.pyc",
+      "bytes": 17740,
+      "sha256": "4d843024d6c611b279924b2309a0fa411740c4cce42f4f8be96aa2e2d6087e59",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_data.cpython-312.pyc",
+      "bytes": 14222,
+      "sha256": "6528a5a64d5336703e0e75a5739991086f6189175a68df44e1a4a9eb6c7c95ed",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_data.cpython-314.pyc",
+      "bytes": 16294,
+      "sha256": "26a3bfd1185156fd28745f90100c5a9ac4c2d80eba6d4e59e820da1741ff6d73",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_lsct.cpython-311.pyc",
+      "bytes": 6675,
+      "sha256": "0b5eb8ec09f8edbe7ac1db57e2f166974e35fa783fe282b8486bcbf0fe5e64d7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_lst.cpython-311.pyc",
+      "bytes": 5761,
+      "sha256": "97559f45dc227b795a3c82bee75bf9d84f81bfb3c98b60b41eb09f495857b86e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_project.cpython-311.pyc",
+      "bytes": 3599,
+      "sha256": "ffa453e7598a932655cf63e9aad70bd274c86c777cb596f38f732c5281d61859",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_project.cpython-312.pyc",
+      "bytes": 3061,
+      "sha256": "e6da900ca74fae123725d48a9dd673fbaa5365a953dcf43ed9aad9e8deb12a42",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_project.cpython-314.pyc",
+      "bytes": 3243,
+      "sha256": "485645a9dca1cb4c5a4b19fadb4d28ecdc7f70605e72741f93a6154785f5078e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_region.cpython-311.pyc",
+      "bytes": 4116,
+      "sha256": "901837cbdd28d422976461f434b20f7bce58279073131f11591f0e1b3eb4a51d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_region.cpython-312.pyc",
+      "bytes": 3145,
+      "sha256": "082ff3b27f3656b6675ad7d06ed8369ad7eb776f840897fa2799b8f775eabc28",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/msg/__pycache__/msg_region.cpython-314.pyc",
+      "bytes": 3444,
+      "sha256": "14db9dc87aec73111badf6dc08f8eb30a8cf20e2c0f51d2dac0177d7785b637c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 805,
+      "sha256": "5a79812482c9ad88234319e29fd33ac715b6d5ff1e56957dc3ee59051ab29192",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 693,
+      "sha256": "4a09c46513d360d060a4e090cad8ff3c9b09d615379c76ebd07d3dfd7dc62ebb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 685,
+      "sha256": "c4b91803aa644339915d20768fc90c5b868d9ad1c19c91dd0ef2dfc8659481cf",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/angle.cpython-311.pyc",
+      "bytes": 5127,
+      "sha256": "046de529cfeea982142060caaa95095f863b8d321f8f4dd0f4dbdf435f614ff0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/angle.cpython-312.pyc",
+      "bytes": 4795,
+      "sha256": "a5d90d5715cdbccc26f8cf50a2100422ad08b764aed210860a4100bab39a7bf3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/angle.cpython-314.pyc",
+      "bytes": 5370,
+      "sha256": "de0da6307ee561b76812388a54382f1a9d3e8e275db889386becc47014a955f5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/fusion.cpython-311.pyc",
+      "bytes": 11431,
+      "sha256": "6e78da423a70f6ed92b61c41fcae724c6fa50cf0c6f4018cd195b1e9e7f25424",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/fusion.cpython-312.pyc",
+      "bytes": 9822,
+      "sha256": "6399caff779a57f5f642a2d1ba75b1c81dc6c5e536088c111976f344d01f204f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/fusion.cpython-314.pyc",
+      "bytes": 10763,
+      "sha256": "0d9f98b9623dec1b3374cb60e3505f7c90e9ddaf5df6fdb0df87d590e66a33ef",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/profile.cpython-311.pyc",
+      "bytes": 3257,
+      "sha256": "63564efee15c6733a347ad9a67164cce7b4c36a6b5d077a68a67f84a4ab676cd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/profile.cpython-312.pyc",
+      "bytes": 3054,
+      "sha256": "be90629dbad45b903bd84f5166187785daeb2d1b27ccfa26e9f5e4316967dc42",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/profile.cpython-314.pyc",
+      "bytes": 3563,
+      "sha256": "f3b14db176c1bd8949bd34ae28640b274716c64dbada97cdb9a0a1783aa0fd24",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/sensor.cpython-311.pyc",
+      "bytes": 4207,
+      "sha256": "1a5ee62bc71c741574bd1d8041e1486c79e5cadd825010c856c9137206d0602a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/sensor.cpython-312.pyc",
+      "bytes": 3792,
+      "sha256": "266134ef054586a48bbe47893a1b301053622f4159d95147e0100fb25b521f8b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/sensor.cpython-314.pyc",
+      "bytes": 4252,
+      "sha256": "68b3548a372fd52b13ea84f5257e8f8a53f66dea3c72b1700d9c1a82297ad28d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/space.cpython-311.pyc",
+      "bytes": 8712,
+      "sha256": "6ea7954d51c9e6bf00ce78ea50777dca1349876c6cf08fea1eaaa0c795365740",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/space.cpython-312.pyc",
+      "bytes": 8164,
+      "sha256": "4fb3934e7254ec8307955330f238c14d901ffacf570e482826f002c0f12f1b24",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/space.cpython-314.pyc",
+      "bytes": 8931,
+      "sha256": "35f5a7bce24d8ffb617a85643b2b8890acb8f8cebbee653f7506f4ea1a91f713",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/time.cpython-311.pyc",
+      "bytes": 3605,
+      "sha256": "c5816142a2cfaf972c83e5ebe6972b64da3ad4cc00afcf3a26a163fd04adac7a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/time.cpython-312.pyc",
+      "bytes": 3361,
+      "sha256": "172551e2279d58e364a9f3e79b79827e66df20a0e1aa1cf8f1796170477b2b70",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/normalization/__pycache__/time.cpython-314.pyc",
+      "bytes": 3863,
+      "sha256": "7c76333c8d901d748bd20147d604712a7f35e07bb48508bd5bff9b506f84de66",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 216,
+      "sha256": "22e062f396348a5031cbe3bc24d43030729bd94244b60ebb95d079a6510deb5d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 205,
+      "sha256": "aeb4380745383e0918cf918c209712dfdc6014e89eed9e43097763e872efc3ae",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/emissivity.cpython-311.pyc",
+      "bytes": 3343,
+      "sha256": "cfbce8c9010c127d131b59442a6deaccbd1c5a2c7c7236f6b6c731fde96ece7e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/emissivity.cpython-312.pyc",
+      "bytes": 3222,
+      "sha256": "081f30d365bc6225996c6bad948a1f3a1ca9ff8f9029de73c57af58a088f7c36",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/gap.cpython-311.pyc",
+      "bytes": 1299,
+      "sha256": "16bac357650368a1cf7a5d218b920c76a817410ca1d5cf72fcf5943969268d6a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/gap.cpython-312.pyc",
+      "bytes": 1240,
+      "sha256": "66380e64fe0d239ca8b47dac39d006816b6a9b2dbb20669ce81de846bc6c8986",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/hom.cpython-311.pyc",
+      "bytes": 6540,
+      "sha256": "dfc786a3dba6da981ecf475d5e413e06c6272dc1bd8cc427d0fbdd7a80c3877e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/hom.cpython-312.pyc",
+      "bytes": 6533,
+      "sha256": "85c8d3b3315accc538b4c403d683c69dbf53c1370a0e6f30c01a10ea783c5769",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/hotspot.cpython-311.pyc",
+      "bytes": 8375,
+      "sha256": "209becfbd6218b0b56fd955f4f2f261c52c352b74c4a1eae7fb91a63785fd1c0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/hotspot.cpython-312.pyc",
+      "bytes": 8245,
+      "sha256": "72e4ff549214ea93445ebaad2b67db35d7ae04cbf2ee72ac941f0ccb4d448b78",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/physicsF.cpython-311.pyc",
+      "bytes": 1571,
+      "sha256": "b563d96879beee773f674f577684a89fe154702305047ac1eeb628222be9cd5d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/physicsF.cpython-312.pyc",
+      "bytes": 1475,
+      "sha256": "6932e402c50c65c7d0d2c8f966fada4e47bf39ad7e9578f419ec07e27416c466",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/proportion.cpython-311.pyc",
+      "bytes": 924,
+      "sha256": "ff1c9daa3dde6fe55cd9821a4af55f52c8436c9b8a6462ad69c67563321e3d3b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/proportion.cpython-312.pyc",
+      "bytes": 830,
+      "sha256": "a28f81a3212d5b0127cb876d9473b34ccf5823f8e8b93c1fab9f9ea35493b069",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/radiance.cpython-311.pyc",
+      "bytes": 1750,
+      "sha256": "7f6f653bd7b1b4fbca577e7f384478acb0848ab5b3514b38eb3eed3837137f38",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/radiance.cpython-312.pyc",
+      "bytes": 1385,
+      "sha256": "97a2b5eae78ef37440ad5852a0107d045f40b2dfb29a7d649c54b124709c910c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/scatter.cpython-311.pyc",
+      "bytes": 1971,
+      "sha256": "bd99611bd945315a4f2b4e709f84b68bc26adbab3c960f544d7c93587f7095a2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/rt/__pycache__/scatter.cpython-312.pyc",
+      "bytes": 1843,
+      "sha256": "55bb1eb97e3284bce1de5cf027dc738db50ff5fecec9b5d3b1d18dfd227c5e7d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 212,
+      "sha256": "ef2c653c9e65f0bdf81f4f3c92d6ec44e61a1b2402b289f73a6be215d66df54b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 219,
+      "sha256": "9c45495d434ef7dd23e51c7c4f3889987c174cc5a4fd10901e1c16f4ca2e02bd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 216,
+      "sha256": "df577f1787b863f179205070279aace1fd231b1bf0130d99b8719c659a141386",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_data.cpython-311.pyc",
+      "bytes": 51744,
+      "sha256": "e4ae0fa377736de376dc53a4e520f83523c9540cd67b2133a244252b8c21e11e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_data.cpython-312.pyc",
+      "bytes": 44263,
+      "sha256": "b0cbe1d7cfcefbe3105aa2d999aa3415214a58aa5b7a7552daaf1819cb3d67a1",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_data.cpython-314.pyc",
+      "bytes": 51173,
+      "sha256": "13d7bb02b72be99c03e34a44e83bea8719c69b45d5fcb247d48d809b8cba3e45",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_extract.cpython-311.pyc",
+      "bytes": 3085,
+      "sha256": "cd4c9bc9aac9352b3374937a41ac685a1a8bb4d1bfec8d5a95f600bb9e3ce9f8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_extract.cpython-312.pyc",
+      "bytes": 2675,
+      "sha256": "cb1fc39ea4bc5ade724640fcfbfd9291ea0c0d772c7d9ed44b7ba23cbdc71de7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_extract.cpython-314.pyc",
+      "bytes": 2894,
+      "sha256": "f356703c43adffc12c7c0457da6862e8590f44d7f4a6e7c57dc71752c05a1dab",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_grid.cpython-311.pyc",
+      "bytes": 613,
+      "sha256": "ab963d27003d911cd4e2c3a4448a84e01b3b7d450ce7e511ff73a8fb9842acd8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_grid.cpython-312.pyc",
+      "bytes": 607,
+      "sha256": "2ed3dc4f0d83c21f8d45ecd92c20e92f3550d7c8a98ef9ab649eb4a37381c0d8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_lsct.cpython-311.pyc",
+      "bytes": 6681,
+      "sha256": "f46827ef769a54740ed9f5e2faf61a4f2494b3af3ed2860d610d5af3821d9c2c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_lsct.cpython-314.pyc",
+      "bytes": 6391,
+      "sha256": "3c0cdc6af1c6d02179454fce03c4a7fec1c1f638c1abe02bcbd67d11786aaff3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_lst.cpython-311.pyc",
+      "bytes": 8211,
+      "sha256": "0011cab8c0da26984682cb581827d6e5aecdb65d082bcb0ca975a34d34d1ab3a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_lst.cpython-312.pyc",
+      "bytes": 7624,
+      "sha256": "a8667dce38fdd787985b530b7774cfd15900ed54f62d217c516bd6982e9f6f5d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_lst.cpython-314.pyc",
+      "bytes": 8470,
+      "sha256": "08dea1cf3146b5d913db3793a3fada2b3adab159ff8484b126e3f14a2a66dca1",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_merge.cpython-311.pyc",
+      "bytes": 3360,
+      "sha256": "cf6d99d0f4e587deead78f7b2e2bf0b1d244cabe7a2dc4c69fcbe9d125568ac8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_merge.cpython-312.pyc",
+      "bytes": 2886,
+      "sha256": "1fb2d496b6d84198492a491d9e578b1c5e1f6af789eb978a87a985871b173597",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_merge.cpython-314.pyc",
+      "bytes": 3136,
+      "sha256": "be7964fcdbf76241baaa8026763d70c1da9ae8fbf39956575fc754c11c9f484b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_project.cpython-311.pyc",
+      "bytes": 10163,
+      "sha256": "c03948716e3e8250ec3cb713c130a6245fb6362bd623ba3574254d00c743714b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_project.cpython-312.pyc",
+      "bytes": 8891,
+      "sha256": "5e6a84faefada5481dab71788553beb4ee752b0661147cc7b3a86f955916bb6e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_project.cpython-314.pyc",
+      "bytes": 9539,
+      "sha256": "bf830bbf4fd718c5320e08314bc68d301aa94e92f9994db5ab16414623a088dd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_reconstruct.cpython-311.pyc",
+      "bytes": 2865,
+      "sha256": "e98a1d0f164aa1c38ba29abbd0010f2354c3a171076b93ce98e852d6e33f2842",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_reconstruct.cpython-312.pyc",
+      "bytes": 2464,
+      "sha256": "f7189b902719d19f8239a766887697c98f132fdc2dc4b5766cafb4f2853f79a0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_reconstruct.cpython-314.pyc",
+      "bytes": 2654,
+      "sha256": "e76cb6566d43d4c4299eef91a3e7225d04fb996f908242b96deecabdba57755f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_region.cpython-311.pyc",
+      "bytes": 4041,
+      "sha256": "75fbb195acaaec12ec2b4a3d60616a9ab14dc6b72db34265e4b7a8b03a5617a9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_region.cpython-312.pyc",
+      "bytes": 3056,
+      "sha256": "48d5efd8292afb395f2fe5ebdf69cf075835ce4c564ae1bc5a16bb39a8f1009a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_region.cpython-314.pyc",
+      "bytes": 3356,
+      "sha256": "bbf50537dd76b7ffc284f1695c8a5587b0a396ae0da014f51283bd990ed3d8d4",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_scene_skip.cpython-312.pyc",
+      "bytes": 2317,
+      "sha256": "0ee39334440e604ff4ea55d66e4d01960917bffb715683b244f7abf980b7b5bb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_unzip.cpython-311.pyc",
+      "bytes": 2997,
+      "sha256": "0edf1d60251a417e570983390cf478c8a3de67978c00f2e0eecb19fb4f26b327",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_unzip.cpython-312.pyc",
+      "bytes": 2613,
+      "sha256": "87592000370a0ec086d32e7e59daae23a6455d3c745fcaa83b9474bd855bd9ce",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/slstr/__pycache__/slstr_unzip.cpython-314.pyc",
+      "bytes": 2810,
+      "sha256": "44c5d2c978b707c29fb4a6a510fcb23bdf7fa77a19871e8a25fae1848b8c39e5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/templates/case/__pycache__/run_standard_stage.cpython-312.pyc",
+      "bytes": 7948,
+      "sha256": "6ba16e209621b046ff8c6604d8857e5f3fdd74181068ef6fcc2404df90c83dd5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/__init__.cpython-311.pyc",
+      "bytes": 213,
+      "sha256": "24c4f419696573e79892c20fd26e53af83a0ef9f919576d028bbd9705664d3be",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/__init__.cpython-312.pyc",
+      "bytes": 220,
+      "sha256": "b4bc17666064f93134902ded0105962b6e2d48096fd483d4a9b38a5d5e4bced9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/__init__.cpython-314.pyc",
+      "bytes": 217,
+      "sha256": "07f927a1a79708a7f592379ecf87ae52ec0c8900fe36b486d0507c8a7d78fc45",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_data.cpython-311.pyc",
+      "bytes": 2082,
+      "sha256": "bf530ba0965d2ae95264945f115d50cf43887ec2381fd161de64ecd6f30b2ec2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_data.cpython-312.pyc",
+      "bytes": 1767,
+      "sha256": "cbbfb985744cc7bbe82d3ac69f616d36df00a45aef687926747acc0560bfff6b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_data.cpython-314.pyc",
+      "bytes": 2171,
+      "sha256": "e944787bd24a0046fc05111009adc94b415120d09e8927feba1d86526723a04b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_extract.cpython-311.pyc",
+      "bytes": 819,
+      "sha256": "9b64f9afbc119aca7a0c4ac982db46f04c7ec0af888258712ebba41e7bc6c5e9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_extract.cpython-312.pyc",
+      "bytes": 709,
+      "sha256": "aeb43e40a2cd67c4b672e884a669d37481abd26987af71cdba0917c631ce6259",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_extract.cpython-314.pyc",
+      "bytes": 805,
+      "sha256": "be8af15f5c395d9415f45605cf5b383456caa8daa332dfd062fbb8bf41e26ed7",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_lst.cpython-311.pyc",
+      "bytes": 1569,
+      "sha256": "0fddb6f51c68845cee17d349433b17e6827687a57a4f522d22cf44f5209b9d2d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_merge.cpython-311.pyc",
+      "bytes": 676,
+      "sha256": "bd1a50ba6875d69ef8db60b202c986de26b5f66adcaf0bb843c06b7d779a74d5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_merge.cpython-312.pyc",
+      "bytes": 568,
+      "sha256": "7fd71c84e6ec6041869c2210cb953fe030dc8feb74a29ec8ea9ce6dc5d7d041f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_merge.cpython-314.pyc",
+      "bytes": 705,
+      "sha256": "09ae8f091051b898fac59f19fb2e2eaea7e43fd9ba05f669208429ef77a571d8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_project.cpython-311.pyc",
+      "bytes": 1530,
+      "sha256": "e13c7a854348ec25f8044c9d36bc3de74045ca914a70e0e13c5772f2d8773c25",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_project.cpython-312.pyc",
+      "bytes": 1340,
+      "sha256": "b5580c281af7e6761981aeab79d226c2a9a270d621159de70c30c67d1cc6eae9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_project.cpython-314.pyc",
+      "bytes": 1413,
+      "sha256": "6a8cdb10babdcf90e819d1907740e2aa9c12be0e7d2c5a79b28cf6b37bfe8c0e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_region.cpython-311.pyc",
+      "bytes": 958,
+      "sha256": "0ed300137bdc83a2ed1cbb5970ad8ae49bc80bba85581fec050c4d99236e4884",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_region.cpython-312.pyc",
+      "bytes": 796,
+      "sha256": "91a4f8e60fa1736e0ddb60110811cfc66b346b4a0d4cba1bf301c9979eb779cb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "base/viirs/__pycache__/viirs_region.cpython-314.pyc",
+      "bytes": 1065,
+      "sha256": "46f3fbbebdef7f547b1eb76e1a9038774c76cd24f188e248d028d916f6754ab0",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/aatsr_tcw.py",
+      "bytes": 6329,
+      "sha256": "fc5b4bb45e45605dfb163f69cf7d1ce54d4dcc02a6ae10ffeebe5ee2f534ed08",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/era5_tcw_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/aatsr_unzip.py",
+      "bytes": 1071,
+      "sha256": "bff61f59e1b004543d3aab1bc125984f7f620cc3f0c61411db90e3f7aa2e7b89",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/aatsr_unzip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/old/val_Dahra_2009.py",
+      "bytes": 6928,
+      "sha256": "25c09cf109261f8de39fe6c755647d294a04284f69e64f4c3d537349a2ba1ebb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/old/val_Dahra_2009_raw.py",
+      "bytes": 39009,
+      "sha256": "6fad50f64711cbc499c48a7c0d0c70ac9d464ace522470e4eb8ede267f938869",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009_raw.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/ERA5_land_extract.py",
+      "bytes": 5670,
+      "sha256": "fb406d15a1acf5234a22f67e0f2861d081227b9abb9e5532db7388d5a966a1e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/ERA5_land_extract.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/AATSR_extract_site_lsct_h5.py",
+      "bytes": 12419,
+      "sha256": "80c963e9bf9ed01cdbf09c26b59424988eb9e55982fe0fb3a03638138246675f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_extract_site_lsct_h5.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_zip.py",
+      "bytes": 3962,
+      "sha256": "4727618a3bde5c4e5087ab19e57e8f84f2a429bda63b934a4a625110003e8047",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_zip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst(LAI)_day.py",
+      "bytes": 18003,
+      "sha256": "bacc03c26d202276a3ba62c14a9affb845d2838f6dff03a0dec01d437a96f7aa",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst(LAI).py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/lsct_s_lsct_v_plot.png",
+      "bytes": 2396,
+      "sha256": "f40374de94df9f465b5357b784edbdce7c5f81c8e3d7b7b051a65f1d94fa1b59",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/lst_n_lst_f_plot.png"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/old/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_new/data_pbs/Creat_PBS.py",
+      "bytes": 5030,
+      "sha256": "4c58e417c4c7536da7ee328f0ea713ad6e64b275047a938927bd8413504f41b9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/Creat_PBS.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_new/util/rt/row.py",
+      "bytes": 5263,
+      "sha256": "9051bf439dcdf3d00751c9a7156b84301b238da772a4d4e629b2ea66f23cdf3b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/row.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_new/util/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_data.py",
+      "bytes": 8971,
+      "sha256": "47beb1b15b7d47ebb4ed431cca428bd96917c519948399f3039469976474f9e8",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/aatsr_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_lsct.py",
+      "bytes": 7239,
+      "sha256": "ad64287383cf3e313dd534602209ef379a8d16c19c28db825e78f1b7e84214d7",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_lst(LAI).py",
+      "bytes": 18079,
+      "sha256": "9aa31f5b03a31409823bca19048ef1156d6031244e74626985de9cae5e2f3862",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_lst(LAI).py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_reformat.py",
+      "bytes": 1652,
+      "sha256": "a588fab2860021d817411587d4bd25a21af83b80da14f66c6f11d20953078b47",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_reformat.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_stats.py",
+      "bytes": 6889,
+      "sha256": "89fb69d8b3e091c18cfa9f45fd26b499b9be1a6b1f0855773b0ac8325a6653d2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_stats.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/AATSR_zip.py",
+      "bytes": 3962,
+      "sha256": "4727618a3bde5c4e5087ab19e57e8f84f2a429bda63b934a4a625110003e8047",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_zip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/ERA5_tcw_data.py",
+      "bytes": 6294,
+      "sha256": "e3656c91887cef2e7bf1dddeaea7090533c0ebb8cfb5d39d7bbd91f3930e1228",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/ERA5_tcw_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/multiple_lsct.py",
+      "bytes": 150991,
+      "sha256": "426dc3dc86a5a0b599f44a5075bf212f55aaf5396cc4794046ad36c9f6ad7b8e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/multiple_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/AATSR_online/util_lsct.py",
+      "bytes": 48161,
+      "sha256": "920d14a61d0c91bf5127a2e0bb5e39368e5ed2c75e9f497c0c9ffe994edf6eb2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/util_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/AATSR_Dahra_val.py",
+      "bytes": 12094,
+      "sha256": "3e581e2902ce1d71ca1c71f6a8f6e4fc2f1e8b8eac10251e77188406703b067a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/AATSR_Dahra_val.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/ERA5_land_extract.py",
+      "bytes": 5145,
+      "sha256": "0f6f94f7004257c7e9dbe7c5de9c0e47e55b32c0ff9084546c2a2326e9c65ba1",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/ERA5_land_extract.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/old/val_Dahra_2009.py",
+      "bytes": 6928,
+      "sha256": "25c09cf109261f8de39fe6c755647d294a04284f69e64f4c3d537349a2ba1ebb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/old/val_Dahra_2009_raw.py",
+      "bytes": 39009,
+      "sha256": "6fad50f64711cbc499c48a7c0d0c70ac9d464ace522470e4eb8ede267f938869",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009_raw.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/opt_lsct3_Dahra.py",
+      "bytes": 26710,
+      "sha256": "8d189c2ab1efe6e7f27680f0bfc1eaa424140a21ea154256d1466b0a08575f35",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/opt_lsct3_Dahra.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_Dahra/opt_lsct3_Dahra_site.py",
+      "bytes": 27992,
+      "sha256": "48fba27dd323c49b8b8b2afc8ad6eb5040ec69d30675f609fcfae8be93b98d29",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_Dahra/opt_lsct3_Dahra_site.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_PBS/AATSR_lsct_Creat_PBS.py",
+      "bytes": 5019,
+      "sha256": "fc936174a989f2386a4e965facbef81a5fe8c59fbed5d9aaf834329fb13439cd",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/AATSR_lsct_Creat_PBS.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_PBS/Creat_PBS.py",
+      "bytes": 5030,
+      "sha256": "4c58e417c4c7536da7ee328f0ea713ad6e64b275047a938927bd8413504f41b9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/Creat_PBS.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_PBS/Fluxnet_lsct_CreatPBS.py",
+      "bytes": 6464,
+      "sha256": "aa5b503ae9aad097c453884bd5865d15a63dc727010975ec5ff3e4d57720e858",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/Fluxnet_lsct_CreatPBS.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_PBS/myfun_lyf.py",
+      "bytes": 2593,
+      "sha256": "d766ce859d443308613a81c650f84f32cfe4f0742932f154644b9299ae9d0715",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/myfun_lyf.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_city/AATSR_city_reformat.py",
+      "bytes": 5524,
+      "sha256": "b3ff167cf1f8bc98df954917e69ad1f6c45170f075452c84db6daee948945374",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_city_reformat.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_city/AATSR_extract_ChinaCity+Fluxnet.py",
+      "bytes": 12698,
+      "sha256": "628a2d8d36be63fba79f0982f7cafb9295356ab5df4b9b013939d00b11eaa257",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_extract_ChinaCity+Fluxnet.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_city/AATSR_extract_ChinaCity.py",
+      "bytes": 8335,
+      "sha256": "37392d4152b517930097cc65b2c7591fffb53fb04ec68ad425c7bdf1fb0a8ce8",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_extract_ChinaCity.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_city/AATSR_extract_site_lsct_h5.py",
+      "bytes": 12419,
+      "sha256": "80c963e9bf9ed01cdbf09c26b59424988eb9e55982fe0fb3a03638138246675f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_extract_site_lsct_h5.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_city/test.py",
+      "bytes": 1931,
+      "sha256": "3d1c1b8df7f48f771e02ffee03ee2cda4e6c7c3468cd92687fc118f30bde3a40",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/test.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_download_land.py",
+      "bytes": 2910,
+      "sha256": "58d4af5c51b98164c8e557befa68a5310126975380b2511aa7aece061b559a22",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_download_land.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_download_month.py",
+      "bytes": 3219,
+      "sha256": "ac48c4c267a86c93157b722cc68fefcbca3a86be3cab06a3844edaa2adb60f4a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_download_month.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_download_monthly.py",
+      "bytes": 2442,
+      "sha256": "144db890f16ae425e2559458eb962e33dc598d7740586ad142636c83faa10103",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_download_monthly.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_land_download_hourly.py",
+      "bytes": 2589,
+      "sha256": "34be8982ffd9d084998c34a67fab970212cc949af2373394a1a922bb96f47f6b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_land_download_hourly.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_land_download_hourly_month.py",
+      "bytes": 3225,
+      "sha256": "efe77c3d61ef2697edad4a8cdad8e0025470451495e36ee261bd7d8250e3bec4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_land_download_hourly_month.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_land_download_monthly_AverageByDay.py",
+      "bytes": 2459,
+      "sha256": "a816ad9d54a390ba84dd2ac9a6a500f3c133821add2ca8c6d1286ab02d138e73",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_land_download_monthly_AverageByDay.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_land_download_monthly_AverageByHour.py",
+      "bytes": 2800,
+      "sha256": "f4a9606a0a17e659acccf4cfb7d4b8130f3054cf31f403215ec39c3d3a0ea51c",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_land_download_monthly_AverageByHour.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_download/ERA5_plot.py",
+      "bytes": 2706,
+      "sha256": "a6a3b96a10f1305c48f863c7aebaf1bfb419ce644f60efae1a6abaf21af792b0",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_download/ERA5_plot.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/Analysis_lai.py",
+      "bytes": 5955,
+      "sha256": "85cd8ecfa35f3818443cc675fd55d2ac7facd7f279a4d32bebc490ffb05e17a8",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/Analysis_lai.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/Merge_file.py",
+      "bytes": 8901,
+      "sha256": "bc4479c5a5c3dbb4aeb6251c96e40c424bf1a1a1bf54e620c2db9d787191f4f2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/Merge_file.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/cal_var_r.py",
+      "bytes": 2604,
+      "sha256": "2333b367f32a4c4ecc58e5a27e68b597a295450370dd5f0b564743ffc94e41a9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/cal_var_r.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/AATSR_extract_site_lsct_csv.py",
+      "bytes": 8792,
+      "sha256": "9b778c7997b72e18581190b9b3ce27992313dd171601f0e46f5891b9e8277661",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/AATSR_extract_site_lsct_csv.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/AATSR_extract_site_lsct_h5.py",
+      "bytes": 12480,
+      "sha256": "90d7b9007c33fbfecec9b08ec62fed3f53c1444aafa26232b357d9cf4bacf84a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/AATSR_extract_site_lsct_h5.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/AATSR_val_lst&lsct.py",
+      "bytes": 28419,
+      "sha256": "8e28fd3a85cacdcc032eb11216e060fd205b36cf286dae039d4619a7820f25e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/AATSR_val_lst&lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/AATSR_val_lst&lsct_new.py",
+      "bytes": 43317,
+      "sha256": "db0aea775cab9ec739ee2121963d7734c4b1ab6dcaf856c1caa2363c7770aebb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/AATSR_val_lst&lsct_new.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/ERA5_land_extract.py",
+      "bytes": 5670,
+      "sha256": "fb406d15a1acf5234a22f67e0f2861d081227b9abb9e5532db7388d5a966a1e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/ERA5_land_extract.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/ERA5_val.py",
+      "bytes": 6677,
+      "sha256": "6349d63543471de541e796414d3702474da9d151d6cf2fa24a1bbd83146220e2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/ERA5_val.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/opt_lsct2_AATSR.py",
+      "bytes": 1688,
+      "sha256": "c2cdc573793824b548a2397eee4006708e2dbd46e532d78dada13d27f65045c4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/opt_lsct2_AATSR.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/opt_lsct2_Fluxnet_site.py",
+      "bytes": 18707,
+      "sha256": "2110e8fabd9797e0c8749e6fd2f493cf0e710ed3a60daec5172d73c569541e36",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/opt_lsct2_Fluxnet_site.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/2009/opt_lsct3_Fluxnet_site.py",
+      "bytes": 27722,
+      "sha256": "6f7467b05caa4360a4af3b265358b0fa5757a8c3bdcf0cd90cc00b6e5305ace9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/2009/opt_lsct3_Fluxnet_site.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/AATSR_extract_new.py",
+      "bytes": 8087,
+      "sha256": "d57ac1aa8b362492f922668c6ea43e7f8f8170f9ae9d3b1d96940892fc832bad",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/AATSR_extract_new.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/AATSR_extract_site_lsct_h5.py",
+      "bytes": 12419,
+      "sha256": "80c963e9bf9ed01cdbf09c26b59424988eb9e55982fe0fb3a03638138246675f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_city/AATSR_extract_site_lsct_h5.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/AATSR_val_lst&lsct.py",
+      "bytes": 43461,
+      "sha256": "e4fc3a3b31de77aaee08017ac337853b42f52ca15b860a086c5243b791be757b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/AATSR_val_lst&lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/ERA5_land_extract.py",
+      "bytes": 5670,
+      "sha256": "fb406d15a1acf5234a22f67e0f2861d081227b9abb9e5532db7388d5a966a1e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/ERA5_land_extract.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/Fluxnet_extract.py",
+      "bytes": 2431,
+      "sha256": "8e42b9d6bfc72bb8140f9a38840721c64c451f322771dfd493dc8196d2095cee",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/Fluxnet_extract.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/Fluxnet_lst.py",
+      "bytes": 3653,
+      "sha256": "7adb70df62d0e0181ba316d154add2c45e92afd40f9ea78c91bbef681be659a5",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/Fluxnet_lst.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/Fluxnet_merge.py",
+      "bytes": 859,
+      "sha256": "dd3effac29b58c5cb40bd364d835430f84b43ddee7b098f27bb3de18eb49ebfb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/Fluxnet_merge.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/Result_fitting.py",
+      "bytes": 29187,
+      "sha256": "c64b5c0a1c5b5368244b558fb48e48868281b0cef45bf918241ce572be9d188a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/Result_fitting.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/opt_lsct3_Fluxnet_site.py",
+      "bytes": 28103,
+      "sha256": "3a28c706c2ac9dcc0a6f8145f8ea7e10549973c0e7aaf1df638789a923f63fcb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/opt_lsct3_Fluxnet_site.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/opt_lsct3_Fluxnet_site_new.py",
+      "bytes": 16249,
+      "sha256": "9bdaa3257abbad102ceed2d15da030a88097272c96d73f55a3923c89e469d6fb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/opt_lsct3_Fluxnet_site_new.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/opt_lsct3_Fluxnet_site_newest.py",
+      "bytes": 12388,
+      "sha256": "a5e4cab5e74843fc1669024d7794e621b6271e33512486734f67578155731054",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/opt_lsct3_Fluxnet_site_newest.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/old/temp.py",
+      "bytes": 808,
+      "sha256": "771614e11a91797213949b007af8d0feb8b6322bc0fe63b5f2336a7eea32045f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/old/temp.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/opt_lsct3_Fluxnet_site.py",
+      "bytes": 12387,
+      "sha256": "04eefd716b6a15301c35312a2435b1910d49013bdfa1ea7134d9385613944609",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/opt_lsct3_Fluxnet_site.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/opt_lsct3_Fluxnet_site_mlp.py",
+      "bytes": 13335,
+      "sha256": "e702ff023df04b5550b9d386f1203c31b8bb4ee07285e005ca21988a9b63948c",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/opt_lsct3_Fluxnet_site_mlp.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_fluxnet/util_lsct.py",
+      "bytes": 6065,
+      "sha256": "3f5ccf17aaec7d9df07d2aa4476c78f47c4f2cf0cbd11702769c745817018635",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_fluxnet/util_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_reformat/data_delete.py",
+      "bytes": 942,
+      "sha256": "bbd2dfe4ee4dd82914c3f35de625e04189e9225dbe40fda03ac2cd8c9d9907cd",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_reformat/data_delete.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_reformat/data_download.py",
+      "bytes": 1122,
+      "sha256": "8d30f66d7e9537c07bb47e545606967d95b546ca00306e53355343c333471d93",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_reformat/data_download.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_reformat/data_reformate.py",
+      "bytes": 9803,
+      "sha256": "f2fb60c1cea5b913809bce59597bd185c2c99d9bda240db9ad2d6b0717622aac",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_reformat/data_reformate.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_AtmosphereCorrection.py",
+      "bytes": 35,
+      "sha256": "e443b97683b92a735045ad4891d90722162cf2b5cff2b6b6a3cae0eb7a2188e6",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_AtmosphereCorrection.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_data.py",
+      "bytes": 12515,
+      "sha256": "cac9b5a28a12e5fb5d939bd337583b3d1f5e7f0c1bfb6220fb182de483099de7",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_data_hdf.py",
+      "bytes": 7490,
+      "sha256": "33effe7d6cdf89d51b59b3796c9dae8cd1e3e854b4925b6653d08132f54919f7",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_data_hdf.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_data_multiprocess.py",
+      "bytes": 13868,
+      "sha256": "1d746534c61145ad7a0798232490d4212abfa1acdafedb7e31a11e552f0922e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_data_multiprocess.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_unzip.py",
+      "bytes": 3798,
+      "sha256": "b4caeb4a803c13c2c54163770633e02b093fb9e00b4de6c23c7897a864ac9b46",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_unzip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_unzip_origin.py",
+      "bytes": 3504,
+      "sha256": "e0247a5b24f69d779f62f87bc4320534ee8811de4f520400c06a54416cfe5abb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/AATSR_unzip_origin.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/AATSR_zip.py",
+      "bytes": 3962,
+      "sha256": "4727618a3bde5c4e5087ab19e57e8f84f2a429bda63b934a4a625110003e8047",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/AATSR_online/AATSR_zip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/CanopyH_data.py",
+      "bytes": 4258,
+      "sha256": "b6d8d5aae2d2f627b41e7a9b63f79d36881c9e2fc264f44829acefa7a88c9a7f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/CanopyH_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/ERA5_land_Ts-lst.py",
+      "bytes": 1420,
+      "sha256": "89ebe1ccb97c52d4b362db30ee4be562f29818ebec9ba111ed6444f68e8388ca",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/ERA5_land_Ts-lst.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/ERA5_land_monthly_by_day.py",
+      "bytes": 8032,
+      "sha256": "26d64061d337fe1e62bca068b9e3678b8b6eb340fadf347d873eac9e85b4a765",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/ERA5_land_monthly_by_day.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/ERA5_tcw_data.py",
+      "bytes": 8674,
+      "sha256": "61840c01aaf385b474c85a0c0e4a8284d7370a1ad2bdf698c970eebb4929e38e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/ERA5_tcw_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/LAI_mosaic.py",
+      "bytes": 2751,
+      "sha256": "b1438af6d2be8c8b6f22ccd46316a9f8c5784abde71a201951bf71b6c06b1706",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/LAI_mosaic.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/TCC_30.py",
+      "bytes": 517,
+      "sha256": "a9f080bf203aa4feeb12cc02e3bc8a114a2f049761d1ef9f5b41c61e81127eba",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/TCC_30.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/TCC_data.py",
+      "bytes": 3389,
+      "sha256": "e6ba8dbce6d30a7626ad3915d78f2afc7af8d10466b7d1583729eb1b33828a39",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/TCC_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/data_SaveFormat.txt",
+      "bytes": 877,
+      "sha256": "6ed40bbcaed86c64c26a855688f0300cbf67b37530ecfc1186281c22043b6d71",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/data_SaveFormat.txt"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/data_structure.txt",
+      "bytes": 4465,
+      "sha256": "59700e410c611768165dc30d148213d273d7d9bc2c8bf812971312c11fc67c86",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/data_structure.txt"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/std_data.py",
+      "bytes": 1084,
+      "sha256": "24d2003256c8c208545d7e6ba96f9e4763a77bcb77f20bd672fb1cf129c1e12f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/std_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/data_satellite/temp.py",
+      "bytes": 423,
+      "sha256": "a97b017c3a6bc27bf4934e91282f367be8e23ef5fd5e09e0b82c963547d76a3d",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_satellite/temp.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst(LAI).py",
+      "bytes": 18003,
+      "sha256": "bacc03c26d202276a3ba62c14a9affb845d2838f6dff03a0dec01d437a96f7aa",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst(LAI).py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst(LAI)_day.py",
+      "bytes": 18003,
+      "sha256": "bacc03c26d202276a3ba62c14a9affb845d2838f6dff03a0dec01d437a96f7aa",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst(LAI).py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst(LAI)_year.py",
+      "bytes": 22223,
+      "sha256": "cf6e3681b95e34964ee61d2b9a5c5ead0b7fbc6276a74857d61639535d75cdee",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst(LAI)_year.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst.py",
+      "bytes": 16296,
+      "sha256": "4e33b5b4cf8f4b3a17a9a3683d01161a2a64fb2e09841c2de461e7c365ac6bcd",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst_month_average.py",
+      "bytes": 7820,
+      "sha256": "ad699ae1099f8d565702e31e66f57c28be0ac87093b93fe4176b121b61399434",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst_month_average.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_lst_reformate.py",
+      "bytes": 1940,
+      "sha256": "6d0554365b5afe2330cc08924c647afcd6a01f3a70c6c0fb4991f7be904b56b3",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_lst_reformate.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_statistic.py",
+      "bytes": 7731,
+      "sha256": "45b0b76e22e8d4319dfec44e7566caacd6f9da31c6f7264e08b263baddfd2f1f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_statistic.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/inversion_lst/AATSR_statistic_origin.py",
+      "bytes": 7580,
+      "sha256": "61eb400a663d1ba54ed3b3e20b6f3dca803445c0ff9d8e945e593bb5959a66ec",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/inversion_lst/AATSR_statistic_origin.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/AATSR_statistic_10km.py",
+      "bytes": 7705,
+      "sha256": "34797c6e47147a37fdaf6dc18d0e5454c5ea6e46466817c99604df234d3f0554",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/AATSR_statistic_10km.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/AATSR_statistic_2km.py",
+      "bytes": 7609,
+      "sha256": "84a4b2572e4f9fe2d7f950316bfeb141f4a6f3833ef72f742af5610eddcb6abd",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/AATSR_statistic_2km.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/disp_lsct.py",
+      "bytes": 218,
+      "sha256": "0356e8de556c53f3cae292ce081ccbe4f83cd5381680087caa70c7cc5221155f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/disp_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/lsct_reformate_2012.py",
+      "bytes": 1255,
+      "sha256": "7335a730acfba5fd444936305e2e36ca5a63eff446825ff0331f0df3cf54b172",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/lsct_reformate_2012.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct2_AATSR_world.py",
+      "bytes": 5729,
+      "sha256": "19ac5b7fb59da88f47d547c504dd270fb7a6717c612536aa9124de075b960d8d",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct2_AATSR_world.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct2_AATSR_world_year.py",
+      "bytes": 9407,
+      "sha256": "6c529aad33e25dc0a140cd2c9b6e0f3d807544153f4320eb68b51c6781858a8a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct2_AATSR_world_year.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct2_AATSR_world_year_linux.py",
+      "bytes": 18999,
+      "sha256": "cea8c84285ce920bb8d800821b25943c4c7ee351458b8e6c75507f3b64fc8ac1",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct2_AATSR_world_year_linux.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct2_AATSR_world_year_multiprocess.py",
+      "bytes": 19401,
+      "sha256": "59b9bc64f1e47f979bcd970d8e131d42859f51e967eec124ac58282d3bd0b785",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct2_AATSR_world_year_multiprocess.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct2_AATSR_world_year_new.py",
+      "bytes": 18719,
+      "sha256": "f623a2afeca89d454925584899869de7ca7fa4c7edaba8ccb84358858dfd0137",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct2_AATSR_world_year_new.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct3_AATSR_linux.py",
+      "bytes": 11686,
+      "sha256": "a91d9085c9f469a10813d690234521c678179e30beae773e680087e1d396942b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct3_AATSR_linux.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct3_AATSR_linux_month.py",
+      "bytes": 12232,
+      "sha256": "cd1d7fa0e7007883f79e8b172f48561b322d892bc0694a22d36f5ecd652c46ce",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct3_AATSR_linux_month.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_lsct/opt_lsct3_AATSR_linux_test.py",
+      "bytes": 11536,
+      "sha256": "c11e40412b6c4270ed67f5433fe5ccfd07d852706c69dbf27e0453a0c1d00b74",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_lsct/opt_lsct3_AATSR_linux_test.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_merge/AATSR_composite_3day.py",
+      "bytes": 8434,
+      "sha256": "0f3bddfb5fd75b06b9d363bb81d75e29ba8b51790fb8003848aa677109e70d2b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_merge/AATSR_composite_3day.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_merge/AATSR_composite_day.py",
+      "bytes": 11447,
+      "sha256": "1a3f2a6989acc0a477d24d167002823b82a469acc474c4e91e8b424dac5ea2c3",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_merge/AATSR_composite_day.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_merge/AATSR_composite_month.py",
+      "bytes": 13493,
+      "sha256": "2384da7be243b69fce0148622e43ead3f41d25d530234cb1c51c659b143ac931",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_merge/AATSR_composite_month.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_merge/cal_tem_dif_winter.py",
+      "bytes": 3636,
+      "sha256": "d4365f4d92c1e452d979b062fb758baf16737f47a1ce3a34f857c17deeea9aa6",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_merge/cal_tem_dif_winter.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_merge/cal_tem_dif_winter_slstr.py",
+      "bytes": 1676,
+      "sha256": "2a2bacd2cbc8f6659d3a2a945bbf2b9f0c17ced72c4b0a6beea122f9609fbdf6",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_merge/cal_tem_dif_winter_slstr.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/lsct_s_lsct_v_plot.png",
+      "bytes": 2396,
+      "sha256": "f40374de94df9f465b5357b784edbdce7c5f81c8e3d7b7b051a65f1d94fa1b59",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/lst_n_lst_f_plot.png"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/lst_n_lst_f_plot.png",
+      "bytes": 2396,
+      "sha256": "f40374de94df9f465b5357b784edbdce7c5f81c8e3d7b7b051a65f1d94fa1b59",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/lst_n_lst_f_plot.png"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/opt_plot_T_soil.py",
+      "bytes": 4480,
+      "sha256": "ce9c96bc49bffcf26b3d94237d8331b55b8e206540a4507998aacdc32ceb09c2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/opt_plot_T_soil.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/opt_plot_T_veg.py",
+      "bytes": 4479,
+      "sha256": "1985925a908fca35bfb31f34565cc841f30040fb2097b61be51bec33286c4d8e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/opt_plot_T_veg.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/opt_plot_Tave.py",
+      "bytes": 4546,
+      "sha256": "df44265d4e6fc865570c9a01b081263c9ddeffa40053366f2d93e5ad41bf11be",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/opt_plot_Tave.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/opt_plot_Tdif.py",
+      "bytes": 5097,
+      "sha256": "e1b8dab1d42a02390a9f2251181926b94dfca0970102c0656c1dfa0cc11c868b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/opt_plot_Tdif.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/opt_plot_ave.py",
+      "bytes": 6437,
+      "sha256": "09ee7431e49c35d7583b009541671215602dd86b156e976dcadab242140b383f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/opt_plot_ave.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/plot_season_ave.py",
+      "bytes": 3298,
+      "sha256": "f232229bb7529fab9e467c25d80a976ddd358573dd279d8850d728684ddc9494",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/plot_season_ave.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/plot_site_location.py",
+      "bytes": 7979,
+      "sha256": "1d70bb0457c5059bbe661246f30d3d2b3b9e316bf2ad3c9f5153bb520cbbefbf",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/plot_site_location.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/plot_spatial_change.py",
+      "bytes": 10670,
+      "sha256": "3052e20810981261ba2ee8ac218ebdddbddb9297905fbf191379e00ceeb752b8",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/plot_spatial_change.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_plot/plot_time_change.py",
+      "bytes": 16690,
+      "sha256": "7dc72dd86fc1a5092787a72c57fd09c535fcf846ad63ab08776a231bb539f4a4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_plot/plot_time_change.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/Ts_all_graph_cov.py",
+      "bytes": 3613,
+      "sha256": "3f98c742639adf519f06a91a55bcc89b882dab09a7336cc14384f1685703020f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/Ts_all_graph_cov.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/Ts_all_graph_cov_new.py",
+      "bytes": 4287,
+      "sha256": "f976fd7d3ae231b6ae588c3c74b66867bafdb431ffd01bf619f25a1ce6358437",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/Ts_all_graph_cov_new.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/Ts_all_graph_cov_new2.py",
+      "bytes": 4505,
+      "sha256": "fe9a0919035f54fa8421b0cc828c7ed336cc009edf1933fd1bac96b70ec8495a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/Ts_all_graph_cov_new2.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/month_scatter_Ts_2009.py",
+      "bytes": 5186,
+      "sha256": "b124c9f3c28d7325dda04f3b7d3bcf0aa7ba1cf05623d8fa9f3887cb0a39067c",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/month_scatter_Ts_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/month_scatter_Tv_2009.py",
+      "bytes": 3146,
+      "sha256": "e800907163664c60b0681ffd98fb1cff26dd9c289df5c10e4d27fb5e76a85178",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/month_scatter_Tv_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/month_scatter_lst_2009.py",
+      "bytes": 4441,
+      "sha256": "edd4804cfae53b64042797d1f1e7fbaeb568e4601c1430d90a9a2b5f01bf8fba",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/month_scatter_lst_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/plot_data_Dahra.py",
+      "bytes": 1899,
+      "sha256": "adb9514d48b91b6d2ec4b9a41a66315bd52361760bc5ea5292ecc0cd3af46f89",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/plot_data_Dahra.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/t.py",
+      "bytes": 1400,
+      "sha256": "263dda7a36e7ae5f14d5b21c15b97f10bc4bb77f348e4a8e6e43ac94d24e91b0",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/t.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/val_Dahra_2009.py",
+      "bytes": 6928,
+      "sha256": "25c09cf109261f8de39fe6c755647d294a04284f69e64f4c3d537349a2ba1ebb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/opt_val/val_Dahra_2009_raw.py",
+      "bytes": 39009,
+      "sha256": "6fad50f64711cbc499c48a7c0d0c70ac9d464ace522470e4eb8ede267f938869",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/opt_val/val_Dahra_2009_raw.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/123.py",
+      "bytes": 30,
+      "sha256": "a87c9ffe8a98f8bd9cf549ea04370e87d81ed175d23908b75f1d5a778361374e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/123.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/old/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/old/util_old.py",
+      "bytes": 48938,
+      "sha256": "13648c8a467dc710387e11631526576ed65779ee8bacd417bdca5a8a3d53f496",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_old.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/crown.py",
+      "bytes": 5671,
+      "sha256": "a0ddd0d68da9c1fe018727a5583420c4afb90a244fe07c7f56e103800181b1e4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/crown.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/emissivity.py",
+      "bytes": 2545,
+      "sha256": "bb004530d269042ae634d2cc6fede4520e9a8340e1377c1accb5887673fc7d42",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/emissivity.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/gap.py",
+      "bytes": 12444,
+      "sha256": "fc38d097a5e16174ec552ef2006f9381589c07289e4f15e1f09e670506220d6f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/gap.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/hom.py",
+      "bytes": 5308,
+      "sha256": "7f113fa2fc30365bba897a5cf08ff94e53aafaa3603e67d07105b398c4b607ef",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/hom.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/hotspot.py",
+      "bytes": 11361,
+      "sha256": "d66ddf4dcc8ff981378b8eee4cab02e1daac982290c0c3a6c1eef7e6930d1108",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/hotspot.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/physicsF.py",
+      "bytes": 2656,
+      "sha256": "8c0bf48c49afed227015ac3cac60606559d5b84acd728c5565af40e7fde4db14",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/physicsF.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/radiance.py",
+      "bytes": 1316,
+      "sha256": "6db20548ed9faf03637a4414fe6ca4a6bbea6405e57e28a2bb3d189af213ffba",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/radiance.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/row.py",
+      "bytes": 5263,
+      "sha256": "9051bf439dcdf3d00751c9a7156b84301b238da772a4d4e629b2ea66f23cdf3b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/row.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/rt/scatter.py",
+      "bytes": 2637,
+      "sha256": "1cbf18fabea9be791d351b36d914a46c3793c22c138c2c9f40375b1b92bfab9d",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/rt/scatter.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/t.py",
+      "bytes": 1991,
+      "sha256": "9cd0eb58fc76569def67b7c23ceceb1cad230cc8550b3dd8465479c0da97c5be",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/t.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/test.py",
+      "bytes": 75,
+      "sha256": "0a10176c55446a2fd3287f683775be644bbe87166d8ec15d5c7537aa20ba3fd1",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/test.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/util.py",
+      "bytes": 51351,
+      "sha256": "39a91856f981864d0ebe344d0d4b051a868fc38d0ea6ab90d23ad2b84a0bccdb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/util_lsct.py",
+      "bytes": 53377,
+      "sha256": "111786fb7852f21f768762c6f0f2820580bae9c5d5ddcaf589a90bec0d9a2067",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/util_lsct.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product_reform/util/util_lsct3.py",
+      "bytes": 24199,
+      "sha256": "af96fcc9af061f58e5682dd9e15ea5723ad530c1cb2d4fef4dde7230e863b28c",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/util/util_lsct3.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/aatsr_data.py",
+      "bytes": 18603,
+      "sha256": "069b34421edc45482bc83aec50965d254ad37021bc44a7274eb5ad370aeafff9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/aatsr_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/aatsr_lst.py",
+      "bytes": 14386,
+      "sha256": "6c7b8c399f73d3a466e7e36864cdf75e256c2cf46a04d70d15fc03455635a54d",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/aatsr_lst.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/aatsr_unzip.py",
+      "bytes": 1071,
+      "sha256": "bff61f59e1b004543d3aab1bc125984f7f620cc3f0c61411db90e3f7aa2e7b89",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/aatsr_unzip.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/cores.py",
+      "bytes": 3653,
+      "sha256": "011267b63bcf5535fe52e578eac5527115d9d33d94ba2fc97397a2f76f5246bb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/cores.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/era5_tcw_data.py",
+      "bytes": 6329,
+      "sha256": "fc5b4bb45e45605dfb163f69cf7d1ce54d4dcc02a6ae10ffeebe5ee2f534ed08",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/era5_tcw_data.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/inv_lsct2_v0.0.py",
+      "bytes": 26306,
+      "sha256": "2e1a464c466cf867c305063c83a3d05d0a78c0a01a587ce033acc6c3de4a8142",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/inv_lsct2_v0.0.py"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/readme.txt",
+      "bytes": 763,
+      "sha256": "81714f0292345f27ae84746743cf63c340a9e12f7bdac3f117af7c210959cbde",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/readme.txt"
+    },
+    {
+      "path": "cases/_archive/aatsr/transferred_20260916/nested_snapshots/global/001deg_2003_2012/util_aatsr.py",
+      "bytes": 15683,
+      "sha256": "1412b271e4313ef539ffaf1fa7fa26796b59a372227a1574d2fd829cc37320bf",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/aatsr_lst/util_aatsr.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/data/datapro_era5_tcwv.py",
+      "bytes": 2672,
+      "sha256": "9230cbd125f4c7f3ff007af7e686691ebd45eafeefe8b031bc02d479bd53716b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/data/datapro_era5_tcwv_re.py",
+      "bytes": 5826,
+      "sha256": "797c5e46425a2ce81daf6bdfdb875697581733ea2fdb77fa87e4fb6cd729d854",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv_re.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/data/datapro_fileremove.py",
+      "bytes": 2672,
+      "sha256": "9230cbd125f4c7f3ff007af7e686691ebd45eafeefe8b031bc02d479bd53716b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/data/datapro_flip.py",
+      "bytes": 2286,
+      "sha256": "3cc1011f246616a6af565dba5641aa65b7bd8367f727040b8bb5d6461abbe590",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_flip.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/data/fileter-list.py",
+      "bytes": 3322,
+      "sha256": "5e900b15c9fd1c04f99d4d73118a833665485046b2c759d07afc481a3f20aa73",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/fileter-list.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/msg_lst/extract_sitedata_from_IODC.py",
+      "bytes": 7751,
+      "sha256": "fcf86a26815c20a859a6b647eefc38cedca1b78ba7346d6833b20b015905d1d2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/experiments/extract_sitedata_from_IODC.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/era5_tcw_data.py",
+      "bytes": 8971,
+      "sha256": "f7b9e69133f22eda0bb048d9ab55c3b3344e3d6c85092b76ce3bb051ad0193bb",
+      "reason": "duplicate",
+      "retained_copy": "cases/slstr/heihe/study_area_2022/study_area/slstr_tcw.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/era5.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_tcw.py",
+      "bytes": 8971,
+      "sha256": "f7b9e69133f22eda0bb048d9ab55c3b3344e3d6c85092b76ce3bb051ad0193bb",
+      "reason": "duplicate",
+      "retained_copy": "cases/slstr/heihe/study_area_2022/study_area/slstr_tcw.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_unzip.py",
+      "bytes": 601,
+      "sha256": "90cada6f8044bb8635e8de9d0f324c76441642a6391211e42ce2c28e1185778f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_unzip.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/study_area/slstr_lsct2.py",
+      "bytes": 4743,
+      "sha256": "81046542e50711531a7b9a47ef621511b9b4a170261fdd32700c5c047f67e7e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lsct2.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/study_area/slstr_lsct3.py",
+      "bytes": 4879,
+      "sha256": "e2fdd7013cd0a400415ded12369b03880a78dabdebf09b2f723dedc0d701f688",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lsct3.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/study_area/slstr_lst.py",
+      "bytes": 16140,
+      "sha256": "feef4487c764774cc4a85e6fba0435f0af9c5c787180371e731df6500e4fec2f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lst.py"
+    },
+    {
+      "path": "cases/_archive/legacy/unclassified/slstr_lst/study_area/slstr_tcw.py",
+      "bytes": 8971,
+      "sha256": "f7b9e69133f22eda0bb048d9ab55c3b3344e3d6c85092b76ce3bb051ad0193bb",
+      "reason": "duplicate",
+      "retained_copy": "cases/slstr/heihe/study_area_2022/study_area/slstr_tcw.py"
+    },
+    {
+      "path": "cases/_archive/msg/experiments/thrishna_sim_forest.py",
+      "bytes": 6989,
+      "sha256": "8c1e0b0be85e0666e7a13b76ef56338833affd459a6c2e22aaa51f2720ba1b17",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/experiments/thrishna.py"
+    },
+    {
+      "path": "cases/_archive/msg/experiments/thrishna_sim_hom.py",
+      "bytes": 6989,
+      "sha256": "8c1e0b0be85e0666e7a13b76ef56338833affd459a6c2e22aaa51f2720ba1b17",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/experiments/thrishna.py"
+    },
+    {
+      "path": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/display-dtc.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/display-lsct.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/display-lst-lai.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/display-studyarea.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-iter-site-cons-ig.py",
+      "bytes": 22505,
+      "sha256": "c34bff5f7956a55c6bdcedec2771799b51f082b48df21b45b3f3e89211070a86",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-iter-site-cons.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/auxiliary/era5_tcw.py",
+      "bytes": 2748,
+      "sha256": "c48535995abe8eed8c7f6ef0584e0dfe26b3c547593f994cb11753fccf882a09",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/datapro/era5_tcw.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/auxiliary/modis_lai.py",
+      "bytes": 4602,
+      "sha256": "7259649a66982b7c863c8802190b198e2d12382639474193bf9d04898592ff59",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/datapro/modis_lai.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/display-lsct.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/display-lst-lai.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/display-studyarea.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/examples/case2/case2.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/file-checkre.py",
+      "bytes": 2195,
+      "sha256": "8be72b519cfa69bce546018b5aca2777c2a4c6437d434c14a84c191712926fc1",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/file-checkre.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/filemove.py",
+      "bytes": 2669,
+      "sha256": "714683ee44d6f74015fa3044ab67d72f9d030dd4c245c84a65c95e15a8b4c59b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/filemove.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_extract_sitedata-EURO.py",
+      "bytes": 9198,
+      "sha256": "d3b0818179fb971fb39494e112614a2b359eedf42fab315ad68b4cf27bdc6a12",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_extract_sitedata-EURO.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_extract_sitedata-IODC.py",
+      "bytes": 6846,
+      "sha256": "b6c00c0558a9df6003b5beaa97b5bbea544c48f29b291627eafda732dd6e84f2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_extract_sitedata-IODC.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct2.0.py",
+      "bytes": 13000,
+      "sha256": "728970e255c1fad7a3315caad11123e6dac3e037e6bda08b25871157a837a003",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct2.0.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct2.1.py",
+      "bytes": 19119,
+      "sha256": "068b9e21ace9628ff801e12fc47ea6969fc3f049b53231cb94184b8637b427a0",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct2.1.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.0.py",
+      "bytes": 18182,
+      "sha256": "b6be269d187098657db8050bbbc718f284fcfe854d520cd7091d678142c68562",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.0.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.1.py",
+      "bytes": 17285,
+      "sha256": "9fb89e443df67f35ae1c91cb78b190e257088c6d818d64b0386c6a3bec596d01",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.1.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.2-cons.py",
+      "bytes": 30574,
+      "sha256": "5ea64cbcdefbfdfdb785aeedeb08d8f0eee041e1b8feb49e53eafd7abe65f2a4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-cons.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.2-iter-show.py",
+      "bytes": 28571,
+      "sha256": "02705dd4f7a5a97d89f38977caa09919eee5ef12a75e71604f78162f2453d28b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-iter-show.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.2-iter-site-cons.py",
+      "bytes": 22505,
+      "sha256": "c34bff5f7956a55c6bdcedec2771799b51f082b48df21b45b3f3e89211070a86",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-iter-site-cons.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.2-iter-site.py",
+      "bytes": 20113,
+      "sha256": "cb95c95d45fa4a920f887980916de0e4e498de6cb4cb895fe6e882f1ee83a7fd",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2-iter-site.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_lsct3.2.py",
+      "bytes": 19004,
+      "sha256": "951dd29451e4b0b3a31ef362430810fa96269a05ac61b2bdc774a14cb6fe88c4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_lsct3.2.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_proj.py",
+      "bytes": 7719,
+      "sha256": "bd43f110903c7af2e0f3d35c01062558e37577f90ad7108bb424d8174a8154cc",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_proj.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_proj_hdf5-euro-lai.py",
+      "bytes": 7731,
+      "sha256": "69f4586163b3401aeadfb87635db5bf7a54d12659cfaad47e00f504a7c62c105",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_proj_hdf5-euro-lai.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/lsct/msg_proj_hdf5-iodc.py",
+      "bytes": 7841,
+      "sha256": "c0ffd8ac15429f6a2cff46e93a5f3cc623d76bf5ff72ab8da9f69c85a9560954",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/pre_reorganization_snapshot/lsct_snapshot/msg_proj_hdf5-iodc.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/atest.py",
+      "bytes": 3050,
+      "sha256": "612a55b402c5ebe0c2f03d8adeed6fa7f5ead73f69c2cbd3b167d968bde9c2a5",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/atest.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/extract_sitedata_from_EURO.py",
+      "bytes": 8171,
+      "sha256": "b146542f6bf87dac59c8dea6df3b37eaf49e85b11089882587b081b6f6866d45",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/extract_sitedata_from_EURO.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/extract_sitedata_from_IODC.py",
+      "bytes": 7751,
+      "sha256": "fcf86a26815c20a859a6b647eefc38cedca1b78ba7346d6833b20b015905d1d2",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/msg/experiments/extract_sitedata_from_IODC.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/msg_data_euro.py",
+      "bytes": 7374,
+      "sha256": "7bfe69561b7d9e64b5c0e26a51815ffaca6e896150bb331d67f1ed809ba1d2c4",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/msg_data_euro.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/msg_data_iodc.py",
+      "bytes": 7342,
+      "sha256": "9f11ad327cc42d94a4be905f3cf0b6391a1fd21c1247074b01c2994399e14d91",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/msg_data_iodc.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/msg_data_lst_euro.py",
+      "bytes": 12928,
+      "sha256": "d5a1c6c3c0d19b85bb5d6baa7daf0db88c2c609214db9c3c181639127c11bd34",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/msg_data_lst_euro.py"
+    },
+    {
+      "path": "cases/_archive/msg/transferred_20260916/nested_snapshots/europe_africa/dual_disk/preprocess/msg_proj.py",
+      "bytes": 7487,
+      "sha256": "3d7a06a9943d64f5499a47fafc7fe343d4a611428a2a89129a8965156febe1d5",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/msg_lst/msg_proj.py"
+    },
+    {
+      "path": "cases/_archive/msg/validation/Validation_Stats_Nadir_vs_Obs.csv",
+      "bytes": 418,
+      "sha256": "3e09594a37c48aebafb9059786241077940d4d877d3212306e2922017cb1918b",
+      "reason": "duplicate",
+      "retained_copy": "cases/msg/Validation_Stats_Nadir_vs_Obs.csv"
+    },
+    {
+      "path": "cases/_archive/shared/legacy_cross_sensor/cross_sensor/stream_msg/stream_2_msg.py",
+      "bytes": 6524,
+      "sha256": "78664b1927f16f73cb0fdaec75e1d357fb847a19ff6ce88f3161d7c558c350f6",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/data_fusion/stream_2_msg.py"
+    },
+    {
+      "path": "cases/_archive/slstr/mixed_batch/datapro_fileremove.py",
+      "bytes": 2672,
+      "sha256": "9230cbd125f4c7f3ff007af7e686691ebd45eafeefe8b031bc02d479bd53716b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/auxiliary/datapro_era5_tcwv.py",
+      "bytes": 2672,
+      "sha256": "9230cbd125f4c7f3ff007af7e686691ebd45eafeefe8b031bc02d479bd53716b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/auxiliary/datapro_era5_tcwv_re.py",
+      "bytes": 5826,
+      "sha256": "797c5e46425a2ce81daf6bdfdb875697581733ea2fdb77fa87e4fb6cd729d854",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv_re.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/auxiliary/datapro_fileremove.py",
+      "bytes": 2672,
+      "sha256": "9230cbd125f4c7f3ff007af7e686691ebd45eafeefe8b031bc02d479bd53716b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/datapro_era5_tcwv.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/auxiliary/fileter-list.py",
+      "bytes": 3322,
+      "sha256": "5e900b15c9fd1c04f99d4d73118a833665485046b2c759d07afc481a3f20aa73",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/fileter-list.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/file_checks/file_recheck.py",
+      "bytes": 4495,
+      "sha256": "e7b0b28ed12b8a7f55d1eb9f9339c72482ab8a2786cb73e8b548ea7dfda48ace",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/file_recheck.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/nested_scripts/implementation/one_by_one/run_slstr_data_origin_years.py",
+      "bytes": 1599,
+      "sha256": "b955c10a95a07373e7b116e1b3a671b63b98a2eb51990ecc801049ac07f6e42d",
+      "reason": "duplicate",
+      "retained_copy": "cases/slstr/slstr_data_scene_years.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/nested_scripts/implementation/readme.txt",
+      "bytes": 734,
+      "sha256": "1a9be6b3700cefde446f2623bce89e5e3f12164465e6ff767969b47adf91c13f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/readme.txt"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/support/rt/physicsF.py",
+      "bytes": 2612,
+      "sha256": "9fa48ef614db3d56a6a23b2bb8456720add40b845781c7e715a9a558671624aa",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/compatibility/legacy_support/base/rt/physicsF.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/support/util_constant.py",
+      "bytes": 1444,
+      "sha256": "024aaa19257bb7fc963fc66cb0e272b9db1ddef15908606ef6dacbed8162d4fb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/compatibility/legacy_support/base/util_constant.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/tcw/batch_slstr_tcw.py",
+      "bytes": 2749,
+      "sha256": "a41c28638441053eeff5acc84a38ddc36f32604e42adcb6e961c26b626c6317a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/mixed_batch/slstr_tcw.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/tcw/study_area_slstr_tcw.py",
+      "bytes": 9016,
+      "sha256": "c7aa93c9f2c34349361b91a1fbd433ee730f5a16bec74c5631c34f875d5f985b",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/transferred_20260916/tcw/one_by_one_slstr_tcw.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/unused_support/util_learning.py",
+      "bytes": 43,
+      "sha256": "02355021dbc70cb4f68e9b9635a37e4672dd68bb6120657337cdc8e4352b0e37",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/compatibility/legacy_support/base/util_learning.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/unused_support/util_lst.py",
+      "bytes": 1440,
+      "sha256": "d6a26eee545629a6b8d29c497bd10659f5b5ba200671ff141b8fab9a823eb900",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/compatibility/legacy_support/base/util_lst.py"
+    },
+    {
+      "path": "cases/_archive/slstr/transferred_20260916/unused_support/util_lstn.py",
+      "bytes": 38,
+      "sha256": "21ff6fb649b8b33e5affc84d0d75e02630b53b292df352f4df988dda6848a68c",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/compatibility/legacy_support/base/util_lstn.py"
+    },
+    {
+      "path": "cases/aatsr/__pycache__/util_aatsr.cpython-311.pyc",
+      "bytes": 12465,
+      "sha256": "ef6ddb07a838685df7e2f6a5fcc4409361ccc8437221f79efae9fd837908ab4d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/aatsr/__pycache__/util_aatsr.cpython-312.pyc",
+      "bytes": 11470,
+      "sha256": "01b8500d3c66abd2ad70bc8ff57495ce1288b35b743eb2d3a89c07378693ab3b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/msg/__pycache__/msg_lst_fit.cpython-311.pyc",
+      "bytes": 35707,
+      "sha256": "bec478f649992913a504263e523b6533046a40256a1b7d04e9779e14ceee085e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/msg/__pycache__/msg_lst_fit.cpython-312.pyc",
+      "bytes": 33520,
+      "sha256": "999108498a1d338a6a11724c3d8b1c47dad3135ea8edb03822d955c2ffa6f967",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/msg/__pycache__/msg_project_hdf5.cpython-311.pyc",
+      "bytes": 14910,
+      "sha256": "6faecdf147339d1d18194bc74ed0b1b09ace0c0e2864b7894588705aeb1fbbc2",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/msg/__pycache__/msg_project_hdf5.cpython-312.pyc",
+      "bytes": 13030,
+      "sha256": "651bd04868ca180d1aaf0a93b0742740142b3d95c0ca4467204b1fa17f421c98",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/slstr-heihe/__pycache__/run_standard_stage.cpython-312.pyc",
+      "bytes": 7946,
+      "sha256": "b96b1012cc530688ad754c840d641f55fc84a021d151b80c2ca59d18cec5ca2e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/slstr/europe_south_africa/scene_first_migrated/scene_first/__pycache__/slstr_lst.cpython-312.pyc",
+      "bytes": 15449,
+      "sha256": "f5546082a077062d1cad33e0812f9b1cf530bdcb220eac7bbe9e1cde15a3536d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/slstr/heihe/study_area_2022/study_area/__pycache__/slstr_lst.cpython-312.pyc",
+      "bytes": 14829,
+      "sha256": "60f2506fd9a538d3ba916d732550e9f25e493839df9504b44c8d08f8f08de51c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "ls4t.egg-info/PKG-INFO",
+      "bytes": 6744,
+      "sha256": "69a8cb5e5b152464b4ec8eb1a230b8695fab3e31876365fb76b9925fa6c1c3cd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "ls4t.egg-info/SOURCES.txt",
+      "bytes": 1869,
+      "sha256": "5bbd84f8407afac5415e752d38e55e398e1cc66831c7ca59193792f48c92f7c5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "ls4t.egg-info/dependency_links.txt",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "ls4t.egg-info/requires.txt",
+      "bytes": 135,
+      "sha256": "02e2003fa4e880f29840e4f302a2e02f0487764ed0a69ec653fd2415022b6d2c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "ls4t.egg-info/top_level.txt",
+      "bytes": 80,
+      "sha256": "d135a1b0e4684e6b659b1e3f61bcdf82f170fde049a767bcd064348ddb95c62a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "old/.gitattributes",
+      "bytes": 68,
+      "sha256": "d8fb0de4792538f93822b2c0d235604921299d5e54a3d6ec7a6cb34536e8bf1e",
+      "reason": "duplicate",
+      "retained_copy": ".gitattributes"
+    },
+    {
+      "path": "old/product_prototype_20260831/normalization/profile.py",
+      "bytes": 1692,
+      "sha256": "db602eafe149bff46af90da7b1931abd7027cd907fb6dad156c1fbe72f8e8325",
+      "reason": "duplicate",
+      "retained_copy": "base/normalization/profile.py"
+    },
+    {
+      "path": "old/product_prototype_20260831/quality.py",
+      "bytes": 1121,
+      "sha256": "746201ea3278083ab426014fd1377000ee4119744a50e41a6797f77f08b382e3",
+      "reason": "duplicate",
+      "retained_copy": "base/quality.py"
+    },
+    {
+      "path": "old/util/myfun_lyf.py",
+      "bytes": 2593,
+      "sha256": "d766ce859d443308613a81c650f84f32cfe4f0742932f154644b9299ae9d0715",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/old_version_backup/AATSR_product/data_PBS/myfun_lyf.py"
+    },
+    {
+      "path": "old/util/util_constant.py",
+      "bytes": 1096,
+      "sha256": "925a14bdce0582c512431bf317cdbff2ee0e7f18c1cab4aa4d907f85869d020e",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/aatsr/product_history/backup_old/util_old/util_constant.py"
+    },
+    {
+      "path": "tests/__pycache__/test_aatsr_case_dependencies.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 22104,
+      "sha256": "79c3f0bbba331583ff47f3416a2a938b77898b769d7c48c99393c6a23ba3d29a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_aatsr_case_dependencies.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 19344,
+      "sha256": "7610e09ce4ebcbb1e46caa1592091e56dbb6289aaa3e14a626964e626d75f62f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_calibration.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 1761,
+      "sha256": "ca562689f8bedfabd1a3c5d67bcf60b4f66dc39c5f42cc0a3a349b2295f71be5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_calibration.cpython-311.pyc",
+      "bytes": 1612,
+      "sha256": "6d3f35c0705acdd96363b4deee01d207aa93e2a009516140515314264cdc8ecb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_calibration.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 1601,
+      "sha256": "6c4e131e1a783665c4baf234a25e2321616b6459c153bb5a89a3529e1f2d5eb4",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_calibration.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 1752,
+      "sha256": "bca9654b223157e099b7c19d84219f05302f5230321a34ced5464d8e1f6033c3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_calibration.cpython-314.pyc",
+      "bytes": 1625,
+      "sha256": "b9a341fb7719ffdb4eebe4197e894c0f990671864d7a5dbd0dc53ff4f9168407",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_dual_thermal_sensors.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 14741,
+      "sha256": "26aa7a11f9369bc3fcfefd4ce175f05ef226cd6cdb9e70665d247e9bebd51fc8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_dual_thermal_sensors.cpython-311.pyc",
+      "bytes": 9923,
+      "sha256": "3e09c008442a72951fd59822463562a23c78c37d582d3ad60af538a1c51e1197",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_dual_thermal_sensors.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 13316,
+      "sha256": "aecff051dacf5b98cb36b3274698e13bd1c8ff1e938b03bd29e4f665b6a0291d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_dual_thermal_sensors.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 14038,
+      "sha256": "c6837bda9e66eff78f2064e4bcde94d10c049adec223b2ce07d9114341047e8c",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_dual_thermal_sensors.cpython-314.pyc",
+      "bytes": 9469,
+      "sha256": "107794689ca9818cc049f9e06e20fb9b0bc8f5ca611ec722fd42d3331cfb7992",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_flat_structure.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 19061,
+      "sha256": "7c9664c00bf93b90af9f79d1475ef0db1a76c4bae440f2f18f46a85e9ca0371f",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_flat_structure.cpython-311.pyc",
+      "bytes": 9101,
+      "sha256": "74015c6e663633604a93ee87a6cb92d92a56c01156b80f4f23ce7d65bd8d06ac",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_flat_structure.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 16784,
+      "sha256": "44da7a1bb046875b27c5dc4870d5843ae82da3974cfdb6ce0b9dbed3acee8b35",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_flat_structure.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 15499,
+      "sha256": "2778b76a5dfe680c67b5ce489226c2f2ef4f7972dddde745efbeabcd7aa325cc",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_flat_structure.cpython-314.pyc",
+      "bytes": 8238,
+      "sha256": "1d7055203bba23e659363cc0fee4600cb1abb83fce59c081d6a128f75178c8c3",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_msg_case_dependencies.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 28654,
+      "sha256": "9689d157a9d871a6a9b7b82abfa81649d7cb7bc9f9603f5ad43dfbadf2ecbc21",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_msg_case_dependencies.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 24810,
+      "sha256": "4b41c7f8b8b6a0ddfa2f0ff0717cbf67949e2b913b17b9f7d39e6d5d5b0ee2bb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_msg_evo_sample.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 43453,
+      "sha256": "245f4d053f34db53ca3a4d8fd37c753794fcbf518801dd500f78abb9ed268c4e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_normalization.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 10662,
+      "sha256": "a156e123679ff950b05c35ee8d13d417e6bb2cc12fe9e93bedcccac0bce64db9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_normalization.cpython-311.pyc",
+      "bytes": 7415,
+      "sha256": "94a20c64572d0fee1e5d13273871c6e6c220bb6ad27b1cbc0adde426c6ecd2c6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_normalization.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 9267,
+      "sha256": "6aa2ed6f8dfd7742b7a0d3da9e1f5173adb56daa8580cfcd38021b80f026e9bb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_normalization.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 9714,
+      "sha256": "149156a075dfa465db9503722f32f5cd5dfdf3a02620f4f0515b4410245b69f4",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_normalization.cpython-314.pyc",
+      "bytes": 6855,
+      "sha256": "80346d8053f80edf98bc5e7236b204789b0ca2f3039bae25d774a613b964f35e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_physics.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 2768,
+      "sha256": "81112090c8279b100049e883f08c6a18e041e7f6d2ce7ffc3846195446066fee",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_physics.cpython-311.pyc",
+      "bytes": 1338,
+      "sha256": "524ad399ce3c50939c9ae95ed38eb9aff89bd0ec59916706d20d55ed966e9081",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_physics.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 2442,
+      "sha256": "434368375f9ea0ed322adc7c3f325f06b56d61eb5604da293c0b59ffb3d12c5b",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_physics.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 2534,
+      "sha256": "9816aa2e2d554dad5d48c3332f7440022dac406e0836745bdc04d3ec2386c009",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_physics.cpython-314.pyc",
+      "bytes": 1237,
+      "sha256": "1789769a14b8f23a5926e13d6f0a96abea493fe733cfae4524a359cfc637d357",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_products.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 8081,
+      "sha256": "7af4a29bcf91b974230f6051582acddb3230086958527bccf805e05548d34096",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_products.cpython-311.pyc",
+      "bytes": 3479,
+      "sha256": "3cf0d96b35d3bdf958f66d08b8da24419b2e621ade64f30b17d0aae26f6d79b5",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_products.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 7244,
+      "sha256": "fcb1726a11f99e0c871703288a438d6277391b3c9f6f97444812b42d497a2094",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_products.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 7815,
+      "sha256": "17461f1ff054ccf5b58074358f48bd4ad84d5f95bd8b500854cd1d9551ffbbcf",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_products.cpython-314.pyc",
+      "bytes": 3386,
+      "sha256": "5a1af0e17d76bab5a8e83afb6b6f52378e222cbab65218d5248ced282062ed64",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_retrieval.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 14455,
+      "sha256": "17e49d8c915ad3a6f2547fc283aa1829d7393ed1e8726bfeb96361dcd0b5eeff",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_retrieval.cpython-311.pyc",
+      "bytes": 5885,
+      "sha256": "5794ee6306f237b053de6700e5923e709e691b5ce8118182f6c61de367065189",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_retrieval.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 13037,
+      "sha256": "495a7a31bed51b8ff8e0aa2cc4e407e92db1936021c20ef807b303cb37292dfe",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_retrieval.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 13955,
+      "sha256": "a902485d8a3f426e69b8ae4c6ac6fd6c3191e0dab8861b94d92420fa128adaf9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_retrieval.cpython-314.pyc",
+      "bytes": 5771,
+      "sha256": "16b9000e286f740977218e19a520881b824306a179bdc41906706c9635bdfe2d",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_case_dependencies.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 35213,
+      "sha256": "65ccb5fd1b4b505958d48fd166fb3f4823e54fe49244ece34496538846f5936e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_case_dependencies.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 31029,
+      "sha256": "e014fad26009d824f22386bb29e5bfe52bce0b6161783529a133c319902700ea",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_products.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 10194,
+      "sha256": "12dbf924827d17eb4a5f3ebdbfe1101ef7bcd54c6fbd7ceeb841bd89fb25e692",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_products.cpython-311.pyc",
+      "bytes": 6466,
+      "sha256": "a5b45ebca4841389b144191fbd44336f0be89b9c829408961565c0183d460784",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_products.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 9000,
+      "sha256": "14759f117d2ee2331f9516c85c771e523e65910a4b651a6487c47a2e8d7f5851",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_products.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 10037,
+      "sha256": "14efdc62714fe4f0cac5f7cab7d903577bf1cf69b094e4b362f79e1f4211672a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_slstr_products.cpython-314.pyc",
+      "bytes": 6942,
+      "sha256": "b73bc9b145680cfac66da066137084cd740848c695725fae1ff24fd0135107f9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_spatial_modes.cpython-311-pytest-9.1.1.pyc",
+      "bytes": 11513,
+      "sha256": "b4f0a35b0fac72264538ab449971a8dccd8095638b170376961032ecf4ced0bc",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_spatial_modes.cpython-311.pyc",
+      "bytes": 5660,
+      "sha256": "58f284cb9eb5af6ddf95b9080ef1bc2ebf93c4a22704e394b471ea9d20a83138",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_spatial_modes.cpython-312-pytest-9.1.1.pyc",
+      "bytes": 10274,
+      "sha256": "0924f7d390a764bfd5f198a9805273d1fe97a99e5f3e627a9b77c14ef56b323e",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_spatial_modes.cpython-314-pytest-9.1.1.pyc",
+      "bytes": 10785,
+      "sha256": "b735d94b935365945d6ec45c2be5770533783d906b3b4fde90e0208a9b7ddf54",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/__pycache__/test_spatial_modes.cpython-314.pyc",
+      "bytes": 5495,
+      "sha256": "54f2feae37bdd278b83f41afbcd7ec1d6576054ff2fc193de60c737660a4dccd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/examples/__pycache__/msg_evo_sample.cpython-311.pyc",
+      "bytes": 43171,
+      "sha256": "229761d2bf6fb81aa3cc8b22fdbda59ef6d601b4c6ab49b484bc48c4240e95eb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/file_audit/active_scan.json",
+      "bytes": 119005,
+      "sha256": "3319eb68a8e1ca33f939dd55b1dc22c869d431dda03eafcb4a8e2c6a9172fca6",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/file_audit/pytest.txt",
+      "bytes": 3417,
+      "sha256": "b62d746a448187b1a620789fbc12b9b52977be87745fe3963f35565c69a542fa",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/center_timeseries.csv",
+      "bytes": 19061,
+      "sha256": "e462f78deb0e83a7b0edf922d36e2e3f65e7fc0fdcd0eb05a749df4729998bab",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/quality_flag.tif",
+      "bytes": 121396,
+      "sha256": "1f71f2ec3a4b7794662ae4b09d41360d2d6124dcccbfc4c62ed7b8db6cd44334",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/residual_rms.tif",
+      "bytes": 177845,
+      "sha256": "4c74d01a10025ddec5d40fc498127fee68276f1a634fb3002893454066a7aba9",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/soil.tif",
+      "bytes": 154855,
+      "sha256": "9c1555919b3da5a1dc406b2b49c58b8f135f81098554ddd5124ed0d8803361cb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/summary.json",
+      "bytes": 683,
+      "sha256": "6eae1ebcb2fb4ed7f358e5df67a1edc9916e8da9de36b35508dc9521305be740",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_10x10/vegetation.tif",
+      "bytes": 156598,
+      "sha256": "d9f9e8b4b090f6b49fef4c64fb4f9a647dbb5971ab39d488bb8e80e5c1fa3685",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/center_timeseries.csv",
+      "bytes": 22364,
+      "sha256": "1260c093010c20ac638562b84fd4e6b96407a762c9a773fa710035625f95db10",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/quality_flag.tif",
+      "bytes": 126175,
+      "sha256": "de98ada768371240387d50c22693e606bec06623edac1403620e348f1261d3bd",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/residual_rms.tif",
+      "bytes": 174367,
+      "sha256": "7af04c5777eb033720219df9720327aae132cfcfc13fad6dad3137d2dd7c72fb",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/shaded_soil.tif",
+      "bytes": 156052,
+      "sha256": "269a3e55c442a2519c3f64c48af1ef124011158f534b24e7bcff1fcf4e04c269",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/summary.json",
+      "bytes": 709,
+      "sha256": "a27a720aa4f29da1f401409b2902c4e01f927e3ac19759be95007feef9dcf4de",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/sunlit_soil.tif",
+      "bytes": 153936,
+      "sha256": "313db6f650d45cdc759418a3559df92d5b0e9cdda6b979ba937ffa05aec97ab8",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "tests/outputs/msg_evo_201710_3c/vegetation.tif",
+      "bytes": 155127,
+      "sha256": "80534f2820400c62dfb01c0779f1892f01a6d3db2c09b9dc4b767aa93cd3d16a",
+      "reason": "generated",
+      "retained_copy": null
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_data_origin_latlon.py",
+      "bytes": 14362,
+      "sha256": "c6d827a6f4a124156ea36a6fa4196de98d18021cb2c20af9611cbd521eb7746f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_data_origin_latlon.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_lsct3-2.py",
+      "bytes": 14723,
+      "sha256": "f1d2276419b09698deb0a9611d70aebc6c82e93f6be7543c6273b5dc8ec27140",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_lsct3-2.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_lsct3-3.py",
+      "bytes": 14357,
+      "sha256": "83db5083e9d1f63832d0140a50a2336a04ac1c963a0afd2ee222580612a8d79a",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_lsct3-3.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_lsct3.py",
+      "bytes": 13826,
+      "sha256": "60d525acaaf3138d4291bfe4727d904cf616ba913e64f3872a55d86ccc0b2037",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_lsct3.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_proj.py",
+      "bytes": 8422,
+      "sha256": "d665d6ef01abc379d23431aa19f8bec6e60f383b3a9b1fa80b80671d67bc4954",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/one_by_one/slstr_proj.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_tcw.py",
+      "bytes": 8971,
+      "sha256": "f7b9e69133f22eda0bb048d9ab55c3b3344e3d6c85092b76ce3bb051ad0193bb",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/study_area/slstr_tcw.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/scene_first/slstr_unzip.py",
+      "bytes": 601,
+      "sha256": "90cada6f8044bb8635e8de9d0f324c76441642a6391211e42ce2c28e1185778f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_unzip.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/study_area/slstr_lsct2.py",
+      "bytes": 4743,
+      "sha256": "81046542e50711531a7b9a47ef621511b9b4a170261fdd32700c5c047f67e7e9",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lsct2.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/study_area/slstr_lsct3.py",
+      "bytes": 4879,
+      "sha256": "e2fdd7013cd0a400415ded12369b03880a78dabdebf09b2f723dedc0d701f688",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lsct3.py",
+      "phase": 2
+    },
+    {
+      "path": "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/study_area/slstr_lst.py",
+      "bytes": 16140,
+      "sha256": "feef4487c764774cc4a85e6fba0435f0af9c5c787180371e731df6500e4fec2f",
+      "reason": "duplicate",
+      "retained_copy": "cases/_archive/legacy/unclassified/slstr_lst/slstr_lst.py",
+      "phase": 2
+    }
+  ],
+  "remove_environment": ".venv",
+  "move_directories": [
+    {
+      "source": "cases/slstr/heihe/study_area_2022",
+      "destination": "cases/_archive/slstr/retired_20261013/heihe_study_area_2022"
+    },
+    {
+      "source": "cases/slstr/europe_south_africa/scene_first_migrated",
+      "destination": "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first"
+    }
+  ],
+  "rename_files": [
+    {
+      "source": "cases/msg/msg_lsct_2c_full.py",
+      "destination": "cases/msg/experiments/msg_lsct_2c_window.py"
+    },
+    {
+      "source": "cases/msg/msg_lsct_3c_full.py",
+      "destination": "cases/msg/experiments/msg_lsct_3c_window.py"
+    },
+    {
+      "source": "cases/msg/msg_lsct_3c_2stage_full.py",
+      "destination": "cases/msg/experiments/msg_lsct_3c_two_stage.py"
+    },
+    {
+      "source": "cases/msg/msg_lsct_3c_constrained_full.py",
+      "destination": "cases/msg/experiments/msg_lsct_3c_constrained.py"
+    },
+    {
+      "source": "cases/msg/msg_lsct_3c_show_full.py",
+      "destination": "cases/msg/experiments/msg_lsct_3c_diagnostics.py"
+    }
+  ],
+  "execution": {
+    "status": "complete",
+    "removal_mode": "moved outside project to recoverable quarantine after bulk deletion was blocked by automatic approval review",
+    "files_removed_from_project": 576,
+    "environment_files_removed": 1061,
+    "changed_files": [
+      "cases/msg/case.toml",
+      "cases/msg/README.md",
+      "cases/catalog.toml",
+      "cases/projects.toml",
+      "tests/test_msg_case_dependencies.py",
+      "cases/catalog.toml",
+      "tests/test_msg_case_dependencies.py",
+      "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/case.toml",
+      "cases/_archive/slstr/retired_20261013/heihe_study_area_2022/README.md",
+      "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/case.toml",
+      "cases/_archive/slstr/retired_20261013/europe_south_africa_scene_first/README.md",
+      "cases/projects.toml",
+      "cases/slstr/README.md",
+      "cases/README.md",
+      "README.md",
+      "cases/msg/README.md",
+      "cases/msg/case.toml",
+      "cases/slstr/slstr_lsct2_scene_parallel.py",
+      "pyproject.toml",
+      ".gitignore"
+    ],
+    "total_files_removed_from_project": 1637,
+    "validation": "108 passed; 1 pre-existing numerical golden failure; 5 registered cases pass",
+    "verified": [
+      "retained duplicate hashes",
+      "quarantine hashes",
+      "renamed script hashes",
+      "archived Python source hashes",
+      "all base Python unchanged",
+      "all test-data files unchanged",
+      "TOML parsing"
+    ],
+    "historical_duplicates_removed": 247
+  }
+}

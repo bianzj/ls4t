@@ -40,7 +40,7 @@ from pathlib import Path
 
 import numpy as np
 
-from slstr.slstr_scene_skip import is_useless, load_scene_skip
+from base.slstr.slstr_scene_skip import is_useless, load_scene_skip
 
 os.environ.setdefault("PROJ_LIB", "/usr/share/proj")
 from osgeo import gdal

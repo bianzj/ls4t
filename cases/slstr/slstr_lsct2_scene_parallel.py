@@ -61,8 +61,8 @@ from base.files import read_image_gdal, read_txt_array, write_image_gdal
 from base.lsct import cal_fvc_from_lai
 from base.radiometry import inv_planck, planck
 from base.spatial import geo2imagexy, lonlat2geo
-from slstr.slstr_scene_skip import is_useless, load_scene_skip
-from slstr.slstr_grid import adjust_xmax_no_g, adjust_xmin_no_g, adjust_ymax_no_g
+from base.slstr.slstr_scene_skip import is_useless, load_scene_skip
+from base.slstr.slstr_grid import adjust_xmax_no_g, adjust_xmin_no_g, adjust_ymax_no_g
 
 warnings.filterwarnings("ignore")
 
@@ -304,7 +304,7 @@ def lsct2_scene(scene: str, year: int, lat: np.ndarray, lon: np.ndarray,
     needed = [lst_dir / "lst_nadir.tif", lst_dir / "lst_obliq.tif",
               tif_dir / "vza_nadir.tif", tif_dir / "vza_obliq.tif"]
     # NB: build a list first - ``all`` is shadowed by numpy through the
-    # ``from cases.support.util_* import *`` imports above.
+    # the historical wildcard imports from case support modules.
     if [p for p in needed if not p.is_file()]:
         return "skipped"
 

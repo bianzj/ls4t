@@ -4,88 +4,81 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from aatsr.aatsr_data import aatsr_extract, aatsr_unzip
-from aatsr.aatsr_project import aatsr_project
-from aatsr.aatsr_region import aatsr_data_region, aatsr_result_region
-from ahi.ahi_extract import ahi_extract
-from ahi.ahi_merge import ahi_merge
-from ahi.ahi_project import ahi_project
-from ahi.ahi_region import ahi_data_region, ahi_result_region
-from aster.aster_extract import aster_extract
-from aster.aster_merge import aster_merge
-from aster.aster_project import aster_project
-from aster.aster_region import aster_data_region, aster_result_region
-from applications import tvdi_years
-from composite import composite_years
-from msg.msg_data import msg_extract
-from msg.msg_project import msg_project
-from msg.msg_region import msg_data_region, msg_result_region
-from modis.modis_extract import modis_extract
-from modis.modis_merge import modis_merge
-from modis.modis_project import modis_project
-from modis.modis_region import modis_data_region, modis_result_region
-from normalization.angle import angle_normalize_years
-from normalization.fusion import fusion_years
-from normalization.sensor import sensor_normalize_years
-from normalization.space import space_normalize_years
-from normalization.time import time_normalize_years
-from slstr.slstr_data import (
+from base.aatsr.aatsr_data import aatsr_extract, aatsr_unzip
+from base.aatsr.aatsr_project import aatsr_project
+from base.aatsr.aatsr_region import aatsr_data_region, aatsr_result_region
+from base.ahi.ahi_extract import ahi_extract
+from base.ahi.ahi_merge import ahi_merge
+from base.ahi.ahi_project import ahi_project
+from base.ahi.ahi_region import ahi_data_region, ahi_result_region
+from base.aster.aster_extract import aster_extract
+from base.aster.aster_merge import aster_merge
+from base.aster.aster_project import aster_project
+from base.aster.aster_region import aster_data_region, aster_result_region
+from base.applications import tvdi_years
+from base.composite import composite_years
+from base.msg.msg_data import msg_extract
+from base.msg.msg_project import msg_project
+from base.msg.msg_region import msg_data_region, msg_result_region
+from base.modis.modis_extract import modis_extract
+from base.modis.modis_merge import modis_merge
+from base.modis.modis_project import modis_project
+from base.modis.modis_region import modis_data_region, modis_result_region
+from base.normalization.angle import angle_normalize_years
+from base.normalization.fusion import fusion_years
+from base.normalization.sensor import sensor_normalize_years
+from base.normalization.space import space_normalize_years
+from base.normalization.time import time_normalize_years
+from base.slstr.slstr_data import (
     SlstrExtractedProduct,
     reconstruct_product,
 )
-from slstr.slstr_extract import slstr_extract
-from slstr.slstr_merge import slstr_merge
-from slstr.slstr_project import slstr_project
-from slstr.slstr_reconstruct import slstr_reconstruct
-from slstr.slstr_region import slstr_data_region, slstr_result_region
-from slstr.slstr_unzip import slstr_unzip
-from viirs.viirs_extract import viirs_extract
-from viirs.viirs_merge import viirs_merge
-from viirs.viirs_project import viirs_project
-from viirs.viirs_region import viirs_data_region, viirs_result_region
+from base.slstr.slstr_extract import slstr_extract
+from base.slstr.slstr_merge import slstr_merge
+from base.slstr.slstr_project import slstr_project
+from base.slstr.slstr_reconstruct import slstr_reconstruct
+from base.slstr.slstr_region import slstr_data_region, slstr_result_region
+from base.slstr.slstr_unzip import slstr_unzip
+from base.viirs.viirs_extract import viirs_extract
+from base.viirs.viirs_merge import viirs_merge
+from base.viirs.viirs_project import viirs_project
+from base.viirs.viirs_region import viirs_data_region, viirs_result_region
 
 
-def test_runtime_tree_is_flat():
+LIBRARY_PACKAGES = (
+    "aatsr",
+    "slstr",
+    "msg",
+    "modis",
+    "viirs",
+    "ahi",
+    "aster",
+    "normalization",
+    "composite",
+    "applications",
+)
+
+
+def test_tree_is_base_and_cases():
     source = Path(__file__).resolve().parents[1]
     assert not (source / "src").exists()
-    for name in (
-        "base",
-        "aatsr",
-        "slstr",
-        "msg",
-        "modis",
-        "viirs",
-        "ahi",
-        "aster",
-        "normalization",
-        "composite",
-        "applications",
-    ):
-        assert (source / name).is_dir()
+    for name in LIBRARY_PACKAGES:
+        assert (source / "base" / name).is_dir()
+        assert not (source / name).exists(), name
+    assert (source / "base" / "templates" / "case").is_dir()
     assert (source / "cases").is_dir()
 
 
-def test_core_has_no_machine_paths_or_direct_execution():
-    root = Path(__file__).resolve().parents[1]
-    core_directories = (
-        "base",
-        "aatsr",
-        "slstr",
-        "msg",
-        "modis",
-        "viirs",
-        "ahi",
-        "aster",
-        "normalization",
-        "composite",
-        "applications",
-    )
-    for directory in core_directories:
-        for path in (root / directory).rglob("*.py"):
-            source = path.read_text(encoding="utf-8")
-            assert "/home/" not in source, path
-            assert "/media/" not in source, path
-            assert 'if __name__ == "__main__"' not in source, path
+def test_library_has_no_machine_paths_or_direct_execution():
+    base = Path(__file__).resolve().parents[1] / "base"
+    templates = base / "templates"
+    for path in base.rglob("*.py"):
+        if path.is_relative_to(templates):
+            continue
+        source = path.read_text(encoding="utf-8")
+        assert "/home/" not in source, path
+        assert "/media/" not in source, path
+        assert 'if __name__ == "__main__"' not in source, path
 
 
 def test_manual_batch_parameters_default_to_none():

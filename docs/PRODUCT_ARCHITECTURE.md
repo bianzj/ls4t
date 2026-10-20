@@ -9,12 +9,12 @@
   `slstr_reconstruct.py`、`slstr_project.py` 和 `slstr_merge.py`。
 - `*_lst.py` 只负责地表温度反演。
 - `*_lsct.py` 只负责组分温度反演。
-- 角度、时间、空间、传感器归一化和融合分别集中在 `normalization/`。
-- `base/` 只保存稳定公共算法、质量标识和产品读写，不能加入目录遍历或传感器流程。
+- 角度、时间、空间、传感器归一化和融合分别集中在 `base/normalization/`。
+- `base/` 顶层模块只保存稳定公共算法、质量标识和产品读写，不能加入目录遍历或传感器流程。
 - `base/spatial.py` 只保存同网格投影、裁剪和像元选择算法；输入文件如何分组仍由
   各传感器的 `*_merge.py` 或 `*_region.py` 决定。
 - MODIS、VIIRS、AHI、ASTER 共用 `base/dual_thermal.py` 的标准产品和双通道算法，
-  但在各自根目录包中保留传感器名称、通道和公开入口。
+  但在各自的 `base/<sensor>/` 包中保留传感器名称、通道和公开入口。
 
 ## 执行单位
 
@@ -26,7 +26,7 @@
 
 ## 执行边界
 
-根目录模块不保存实际输入输出路径、年份或研究区，也不直接执行。`cases/` 中的脚本
+`base/` 中的模块不保存实际输入输出路径、年份或研究区，也不直接执行。`cases/` 中的脚本
 集中定义这些运行参数，并显式传给对应阶段函数。
 
 每个阶段独立执行，不自动衔接。例如 SLSTR 中：
@@ -44,18 +44,12 @@ case 应优先从上述阶段模块导入函数。项目不提供总调度器和
 
 ```text
 ls4t/
-├── base/
-├── aatsr/
-├── slstr/
-├── msg/
-├── modis/
-├── viirs/
-├── ahi/
-├── aster/
-├── normalization/
-├── composite/
-├── applications/
-└── cases/
+├── base/              函数库 + 案例模板
+│   ├── *.py、rt/      公共算法
+│   ├── aatsr/ slstr/ msg/ modis/ viirs/ ahi/ aster/
+│   ├── normalization/ composite/ applications/
+│   └── templates/
+└── cases/             执行案例
 ```
 
 旧脚本仍是实际数据回归的依据，但不属于新的运行源码。

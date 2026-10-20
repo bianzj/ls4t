@@ -4,7 +4,7 @@
 
 | 内容 | 位置 | 修改影响 |
 |---|---|---|
-| 传感器读取、投影、LST/LSCT、拼接、归一化、合成 | 根目录模块 | 只有采用该 LS4T 提交的案例受影响 |
+| 传感器读取、投影、LST/LSCT、拼接、归一化、合成 | `base/` | 只有采用该 LS4T 提交的案例受影响 |
 | 研究区、时期、轨道分组、算法选择 | `case.toml` 和 `stages/` | 只影响当前案例 |
 | 数据盘路径、并行数、临时盘、调度方式 | `machines/*.toml` | 只影响当前机器 |
 | 旧实验、重复版本、结果图 | `cases/_archive/` | 不属于当前运行入口 |
@@ -15,7 +15,7 @@
 ## 2. 建立案例
 
 ```bash
-python cases/_templates/new_case.py slstr africa 2026-dry-season \
+python base/templates/new_case.py slstr africa 2026-dry-season \
   --mode scene-first
 cp cases/slstr/africa/2026-dry-season/machines/example.toml \
    cases/slstr/africa/2026-dry-season/machines/local.toml
@@ -26,6 +26,7 @@ cp cases/slstr/africa/2026-dry-season/machines/example.toml \
 
 ## 3. 分阶段运行
 
+案例可以复制模板按阶段运行，也可以直接写脚本调用 `base/` 中的函数，两种方式可混用。
 标准批处理能力可通过案例内的 `run_standard_stage.py` 每次运行一个阶段：
 
 ```bash
@@ -49,12 +50,12 @@ python cases/slstr/africa/2026-dry-season/run_standard_stage.py \
 提交前运行：
 
 ```bash
-python cases/_templates/audit_cases.py
+python base/templates/audit_cases.py
 python -m pytest -q
 ```
 
 ## 5. 代码回流和归档
 
-一个计算函数在两个以上案例重复，或不再依赖具体路径/区域时，连同测试移到根目录。
+一个计算函数在两个以上案例重复，或不再依赖具体路径/区域时，连同测试移到 `base/`。
 案例只保留参数和调用。停止使用的实现先整体移入 `_archive/`，记录原因；确认已有替代、
 无需复现后再单独决定是否删除。

@@ -35,11 +35,11 @@ SCRIPTS = (
     "msg_site_repro_lst.py",
     "msg_site_repro_lsct.py",
     "msg_site_validate_multisite.py",
-    "msg_lsct_2c_full.py",
-    "msg_lsct_3c_2stage_full.py",
-    "msg_lsct_3c_full.py",
-    "msg_lsct_3c_constrained_full.py",
-    "msg_lsct_3c_show_full.py",
+    "experiments/msg_lsct_2c_window.py",
+    "experiments/msg_lsct_3c_two_stage.py",
+    "experiments/msg_lsct_3c_window.py",
+    "experiments/msg_lsct_3c_constrained.py",
+    "experiments/msg_lsct_3c_diagnostics.py",
 )
 
 
@@ -48,7 +48,7 @@ def test_msg_case_is_flat_and_base_only():
         pytest.skip("MSG execution case is archived")
     for directory in ("support", "implementation", "ingest", "europe_africa"):
         assert not (CASE / directory).exists(), directory
-    scripts = sorted(path.name for path in CASE.glob("*.py"))
+    scripts = sorted(path.relative_to(CASE).as_posix() for path in CASE.rglob("*.py"))
     assert scripts == sorted(SCRIPTS)
     for name in SCRIPTS:
         source = (CASE / name).read_text(encoding="utf-8")
