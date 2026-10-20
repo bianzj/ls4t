@@ -1,0 +1,23 @@
+{
+  "schema": "ls4t.real-slstr-test-sample/v1",
+  "synthetic": false,
+  "site": "EVO",
+  "station_latitude_deg": 38.540244,
+  "station_longitude_deg": -8.003368,
+  "scene": "S3A_SL_1_RBT____20170517T111543_20170517T111843_20170518T151827_0179_017_365_2340_LN2_O_NT_002.SEN3",
+  "acquisition_start_utc": "2017-05-17T11:15:43Z",
+  "shape_each_native_view": [10, 10],
+  "station_anchor_row_col": [5, 5],
+  "source_package": "/home/hero/data/SLSTR_EVO_10x10_2017_2018",
+  "source_window": "scenes/2017/S3A_SL_1_RBT____20170517T111543_20170517T111843_20170518T151827_0179_017_365_2340_LN2_O_NT_002.SEN3/window.h5",
+  "files": {
+    "window.h5": "9ac78d6940cb445bcb1c0b4989a27562383c075368fca07c5759701f4ab445e4",
+    "IGBP_Emi.txt": "02e2106f43874a8286e0524ab6e17d0b14261419ab0dd966932ca1dc7252148d"
+  },
+  "limitations": [
+    "The HDF5 window contains existing LST; this example does not rerun the split-window LST stage.",
+    "Nadir values are mapped to the oblique 10x10 window by stored nearest-geolocation indices.",
+    "The source window also contains older retrieved components; the example does not use them as inputs or accuracy reference.",
+    "No ground temperatures are included, so output checks do not establish retrieval accuracy."
+  ]
+}

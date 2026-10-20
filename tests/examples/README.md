@@ -133,3 +133,29 @@ GeoTIFF 结果、缺测不填补，以及两种解法与独立邻域最小二乘
 
 提取器只读取源产品，不修改 MSG 原始文件；逐文件核验时间、网格和 HDF5
 定标属性，输出的小样例与来源记录一起保存到 `tests/data/`。
+
+# SLSTR EVO 真实窗口测试样例
+
+`tests/data/slstr_evo_20170517_10x10/` 保存一景 2017-05-17 的真实 EVO
+双视角 10×10 窗口和 IGBP 发射率表，附有 SHA-256 来源清单。样例从窗口内已有的
+双视角 LST 开始，调用当前欧洲年度批次使用的
+`homogeneous_3component_bayes_map_5x5_lai_only_v5` 逐景求解函数；不依赖数据盘挂载。
+天底窗口依已保存的最近地理位置映射到斜视窗口，最大映射距离 1.12 km。
+局部 LAI、土地类型及发射率替代生产程序索引的全球辅助网格，求解器本身不改动。
+
+```bash
+cd /home/hero/work/ls4t
+/home/hero/anaconda3/envs/env_311/bin/python -B tests/examples/slstr_evo_sample.py run
+/home/hero/anaconda3/envs/env_311/bin/python -B -m unittest discover -s tests -p test_slstr_evo_sample.py -v
+```
+
+结果写入被 Git 忽略的 `tests/outputs/slstr_evo_20170517_10x10/`：四个组分温度
+GeoTIFF 和 `summary.json`。当前样例运行写出 36 个有效像元，站点锚点有结果。
+另可执行 `--force-night --output tests/outputs/slstr_evo_20170517_night_gate`，
+将样例太阳天顶角替换为 100°，检查白天筛选返回 `no_valid`；这是受控检查，
+并非另一景真实夜间观测。
+
+本样例检验三组分求解和白天筛选，不重算分裂窗 LST，也不代表完整场景运行。
+窗口内虽保留旧方法组分结果，程序不会把它们当输入或真值。未附站点地面温度，
+因此有效像元数和物理范围检查不构成 EVO 精度验证；源 TIFF 未提供真实地图
+投影，生成的温度 TIFF 也仅表示本地 10×10 数组坐标。
