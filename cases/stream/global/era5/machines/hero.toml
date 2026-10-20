@@ -1,0 +1,6 @@
+[machine]
+id = "hero"
+
+[paths]
+download_root = "/media/hero/新加卷1/stream_download"
+output_root = "/media/hero/stream_input"

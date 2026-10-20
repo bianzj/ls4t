@@ -14,7 +14,8 @@ cases/
 ├── _archive/                      归档区
 │   ├── aatsr/、msg/、slstr/       逐次迁移留下的历史归档
 │   └── legacy/、shared/、compatibility/  更早的旧实现与兼容层
-├── aatsr/  msg/  slstr/  aster/   执行案例
+├── aatsr/  msg/  slstr/  aster/   传感器执行案例
+├── stream/global/era5/              STREAM 的 ERA5 驱动数据执行案例
 ├── catalog.toml                   案例登记
 └── projects.toml                  独立运行项目的来源索引
 ```
@@ -22,6 +23,8 @@ cases/
 执行案例目前有：`aatsr/`（全球 0.01° 日/月生产 + 全图 LSCT 变体 + 站点）、
 `msg/`（下载/提取/投影/LST/LSCT + 站点测试与复现）、
 `slstr/`（解压/重整/投影/LST/LSCT 五环节 + 两个旧区域快照）、`aster/`（待导入说明）。
+STREAM 的 ERA5 下载、逐日驱动提取及检查见 `stream/global/era5/README.md`；
+它是模型输入数据案例，不是 LS4T 的传感器反演阶段。
 每个案例里有什么见各自的 `README.md`、`case.toml`，以及 `catalog.toml`、`projects.toml`。
 
 ## 三层边界仍然有效
@@ -44,4 +47,4 @@ python cases/_templates/audit_cases.py
 ```
 
 审计只会检查带 `case.toml` 的登记案例；`_archive/` 下的目录会被跳过，所以当前
-4 个在用案例会输出 `OK: 4 registered cases`。
+已登记案例会输出 `OK: <数量> registered cases`。

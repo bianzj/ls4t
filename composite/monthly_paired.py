@@ -10,7 +10,7 @@ Input are the daily mosaics written by
 ``cases/slstr/slstr_daily_mosaic_scene.py``::
 
     <daily>/lst/<year>/<YYYYMMDD>_lst_nadir_<view>_<tag>_0p01.tif
-    <daily>/lsct2/<year>/<YYYYMMDD>_lsct2_obliq_<view>_<tag>_0p01.tif
+    <daily>/lsct/<year>/<YYYYMMDD>_lsct2_obliq_<view>_<tag>_0p01.tif
 
 Output is one 4-band Float32 GeoTIFF per region-month-view::
 
@@ -42,7 +42,7 @@ def collect_month(daily_root: Path, tag: str, year: int, month: int,
                   view: str) -> list[dict]:
     """The LST / LSCT2 file pairs of one month that can be composited."""
     lst_dir = Path(daily_root) / "lst" / str(year)
-    lsct_dir = Path(daily_root) / "lsct2" / str(year)
+    lsct_dir = Path(daily_root) / "lsct" / str(year)
     if not lst_dir.is_dir():
         raise FileNotFoundError(f"no daily LST directory: {lst_dir}")
     prefix = f"{year}{month:02d}"
@@ -54,7 +54,7 @@ def collect_month(daily_root: Path, tag: str, year: int, month: int,
         lsct_path = lsct_dir / f"{stamp}_lsct2_obliq_{view}_{tag}_0p01.tif"
         if lst_path.is_file() and lsct_path.is_file():
             pairs.append({"stamp": stamp, "view": view,
-                          "lst": lst_path, "lsct2": lsct_path})
+                          "lst": lst_path, "lsct": lsct_path})
     return pairs
 
 
@@ -73,7 +73,7 @@ def monthly_paired(daily_root: Path, tag: str, year: int, month: int,
         with rasterio.open(pair["lst"]) as src:
             lst_raw = src.read(1)
             profile = src.profile
-        with rasterio.open(pair["lsct2"]) as src:
+        with rasterio.open(pair["lsct"]) as src:
             lsct = src.read()
         lst_valid = (lst_raw > 0) & (lst_raw < 65535)
         lsct_valid = ((lsct[0] > 0) & np.isfinite(lsct[0]) &

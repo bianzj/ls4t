@@ -33,6 +33,15 @@ entrypoints = [
 ]
 
 [[case]]
+id = "stream-global-era5-forcing"
+sensor = "stream"
+region = "global"
+status = "draft"
+spatial_mode = "fixed-grid"
+path = "stream/global/era5"
+entrypoints = ["run.py"]
+
+[[case]]
 id = "msg-europe-africa-dual-disk"
 sensor = "msg"
 region = "europe-africa"

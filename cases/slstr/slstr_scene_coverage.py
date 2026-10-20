@@ -90,25 +90,41 @@ def sample_geo(path: Path, sample_rows: int = SAMPLE_ROWS, bands: int = 3) -> np
 
 def classify_scene(root: Path, year: int, scene: str, window: dict,
                    classif0: np.ndarray, res: float,
-                   sample_rows: int = SAMPLE_ROWS, bands: int = 3) -> dict:
+                   sample_rows: int = SAMPLE_ROWS, bands: int = 3,
+                   row0: int = 0, col0: int = 0) -> dict:
     """Which views of this scene can touch the window on a valid land class.
 
     ``useless`` lists the views that cannot: no sampled pixel both inside the
     window and on a land-cover class the retrieval keeps (``0 < class < 17``).
     """
     result = {"useful": [], "useless": [], "missing_inputs": False,
-              "land_samples": 0, "inside_samples": 0, "reason": None}
+              "land_samples": 0, "water_samples": 0,
+              "non_land_samples": 0, "inside_samples": 0, "reason": None}
     tif_dir = root / str(year) / "tif" / scene
-    needed = [tif_dir / f"{band}_{view}.tif" for view in VIEWS for band in ("lat", "lon")]
-    if any(not p.is_file() for p in needed):
+    missing_views = [
+        view for view in VIEWS
+        if any(not (tif_dir / f"{band}_{view}.tif").is_file()
+               for band in ("lat", "lon"))
+    ]
+    if missing_views:
         result["missing_inputs"] = True
         result["reason"] = "missing_inputs"
+        result["useless"] = missing_views
         return result
 
-    inside_total = land_total = 0
+    inside_total = land_total = water_total = non_land_total = 0
     for view in VIEWS:
-        lat = sample_geo(tif_dir / f"lat_{view}.tif", sample_rows, bands)
-        lon = sample_geo(tif_dir / f"lon_{view}.tif", sample_rows, bands)
+        try:
+            lat = sample_geo(tif_dir / f"lat_{view}.tif", sample_rows, bands)
+            lon = sample_geo(tif_dir / f"lon_{view}.tif", sample_rows, bands)
+        except (OSError, rasterio.errors.RasterioError):
+            # A truncated/invalid TIFF exists on disk but is no more usable
+            # than a missing input.  Record the affected view instead of
+            # aborting the audit for the whole year.
+            result["missing_inputs"] = True
+            result["reason"] = "unreadable_inputs"
+            result["useless"].append(view)
+            continue
         if lat.size != lon.size or lat.size == 0:
             result["useless"].append(view)
             continue
@@ -126,17 +142,30 @@ def classify_scene(root: Path, year: int, scene: str, window: dict,
             continue
         row = np.rint((90.0 - lat[inside]) / res).astype(np.int64)
         col = np.rint((lon[inside] + 180.0) / res).astype(np.int64)
+        row -= row0
+        col -= col0
         np.clip(row, 0, classif0.shape[0] - 1, out=row)
         np.clip(col, 0, classif0.shape[1] - 1, out=col)
         klass = classif0[row, col]
         land = int(((klass > 0) & (klass < 17)).sum())
+        water = int((klass == 0).sum())
+        non_land = int(klass.size - land)
         land_total += land
+        water_total += water
+        non_land_total += non_land
         (result["useful"] if land else result["useless"]).append(view)
 
     result["land_samples"] = land_total
+    result["water_samples"] = water_total
+    result["non_land_samples"] = non_land_total
     result["inside_samples"] = inside_total
-    if result["useless"]:
-        result["reason"] = "no_land_in_window" if inside_total else "outside_window"
+    if result["useless"] and result["reason"] is None:
+        if not inside_total:
+            result["reason"] = "outside_window"
+        elif land_total == 0 and water_total > 0 and water_total * 2 >= non_land_total:
+            result["reason"] = "water_in_window"
+        else:
+            result["reason"] = "no_land_in_window"
     return result
 
 
@@ -167,15 +196,23 @@ def main() -> None:
     case = load_case(args.case, args.machine)
     root = case["source_root"]
     t0 = time.time()
-    from base.files import read_image_gdal
-
-    classif, *_ = read_image_gdal(str(case["type_reference"]))
-    classif0 = np.asarray(classif, np.int16)
-    print(f"land-cover reference {case['type_reference'].name} {classif0.shape} "
+    res = case["window"]["res"]
+    with rasterio.open(case["type_reference"]) as ds:
+        row0 = max(0, int(np.floor((90.0 - case["window"]["north"]) / res)) - 1)
+        row1 = min(ds.height,
+                   int(np.ceil((90.0 - case["window"]["south"]) / res)) + 2)
+        col0 = max(0, int(np.floor((case["window"]["west"] + 180.0) / res)) - 1)
+        col1 = min(ds.width,
+                   int(np.ceil((case["window"]["east"] + 180.0) / res)) + 2)
+        classif0 = np.asarray(
+            ds.read(1, window=Window(col0, row0, col1 - col0, row1 - row0)),
+            np.int16)
+    print(f"land-cover reference {case['type_reference'].name} window "
+          f"({row0}:{row1}, {col0}:{col1}) {classif0.shape} "
           f"in {time.time() - t0:.0f}s", flush=True)
 
     tif_dir = root / str(args.year) / "tif"
-    scenes = sorted(e.name for e in os.scandir(tif_dir) if e.is_dir(follow_symlinks=False))
+    scenes = sorted(e.name for e in os.scandir(tif_dir) if e.is_dir(follow_symlinks=True))
     if args.scene:
         scenes = [s for s in scenes if s in set(args.scene)]
     if args.limit:
@@ -201,7 +238,8 @@ def main() -> None:
                 continue
             payload["scenes"][scene] = {"reason": "missing_inputs",
                                         "useless_views": useless,
-                                        "land_samples": 0, "inside_samples": 0}
+                                        "land_samples": 0, "water_samples": 0,
+                                        "non_land_samples": 0, "inside_samples": 0}
             added += 1
         payload["counts"]["missing_inputs"] = payload["counts"].get("missing_inputs", 0) + added
         payload["inputs_checked"] = time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -219,16 +257,18 @@ def main() -> None:
         info = None
         for sample_rows, bands in samplings:
             info = classify_scene(root, args.year, scene, case["window"], classif0,
-                                  case["window"]["res"], sample_rows, bands)
+                                  res, sample_rows, bands, row0=row0, col0=col0)
             # the cheap sampling already sees a usable pixel, or the scene is
             # not readable at all: nothing to gain from sampling it again
             if info["useful"] or info["missing_inputs"]:
                 break
         info["sampling"] = f"{sample_rows}x{bands}"
         counts[info["reason"] or "keep"] = counts.get(info["reason"] or "keep", 0) + 1
-        if info["useless"] and not info["missing_inputs"]:
+        if info["useless"]:
             skip[scene] = {"reason": info["reason"], "useless_views": info["useless"],
                            "land_samples": info["land_samples"],
+                           "water_samples": info["water_samples"],
+                           "non_land_samples": info["non_land_samples"],
                            "inside_samples": info["inside_samples"],
                            "sampling": info["sampling"]}
         if args.scene:

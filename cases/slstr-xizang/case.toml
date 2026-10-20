@@ -1,0 +1,43 @@
+schema_version = 1
+
+[case]
+id = "slstr-xizang-scene-first"
+sensor = "slstr"
+region = "xizang"
+status = "active"
+spatial_mode = "scene-first"
+description = "Xizang/Tibet SLSTR scene products, with exact Heihe scenes reused by symlink."
+
+[period]
+years = [2017, 2018]
+
+[grid]
+id = "xizang_0p01"
+crs = "EPSG:4326"
+resolution_degree = 0.01
+# west, south, east, north; broad Tibet/Xizang processing window
+bounds = [78.0, 26.0, 100.0, 37.0]
+width_px = 2200
+height_px = 1100
+
+[processing]
+views = ["nadir", "obliq"]
+products = ["lst_nadir", "lst_obliq", "lsct", "time"]
+day_solar_zenith_threshold = 90.0
+overlap_rule = "later acquisition overwrites earlier"
+lst_cloud_mask_in_retrieval = false
+mosaic_cloud_mask = true
+lsct2_lai_min = 0.05
+overwrite = false
+
+[stages]
+inventory = "stages/inventory_and_reuse.py"
+raw = "stages/stage_raw.py"
+
+[provenance]
+source_case = "cases/slstr-heihe"
+source_scripts = [
+  "cases/slstr/slstr_data_scene_origin.py",
+  "cases/slstr/slstr_lst_scene_parallel.py",
+  "cases/slstr/slstr_lsct2_scene_parallel.py",
+]

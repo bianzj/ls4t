@@ -1,0 +1,16 @@
+[machine]
+id = "hero"
+
+[paths]
+scene_root = "/media/hero/slstr_heihe/huailai"
+reuse_root = "/media/hero/slstr_heihe/heihe"
+output_root = "/media/hero/slstr_heihe/huailai_daily_0p01"
+monthly_output_root = "/media/hero/slstr_heihe/huailai_monthly_0p01"
+auxiliary_root = "/home/hero/data/rs"
+emissivity_root = "/home/hero/data/rs/emissivity"
+type_reference = "/home/hero/data/rs/land-cover/type/type_world_1000.tif"
+tcwv_root = "/home/hero/data/rs/tcwv"
+
+[runtime]
+python = "/home/hero/anaconda3/envs/env_311/bin/python3.11"
+workers = 4

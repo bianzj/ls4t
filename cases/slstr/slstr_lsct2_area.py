@@ -21,7 +21,7 @@ if __name__ == '__main__':
     indir_tif = r'/home/hero/data/SLSTR_heihe/tif/'
     indir_lst = r'/home/hero/data/SLSTR_heihe/lst/'
     indir_lai = r'/home/hero/data/SLSTR_heihe/lai/' 
-    outdir_lsct = r'/home/hero/data/SLSTR_heihe/lsct2/'
+    outdir_lsct = r'/home/hero/data/SLSTR_heihe/lsct/'
     mkdir_if_not_exist(outdir_lsct)
 
     indir_type = r'/home/hero/data/LSCT3/LSCT_dm_2022/0_base/type/'

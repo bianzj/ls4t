@@ -22,7 +22,7 @@ height_px = 575
 
 [processing]
 views = ["nadir", "obliq"]
-products = ["lst_nadir", "lsct2", "time"]
+products = ["lst_nadir", "lsct", "time"]
 day_solar_zenith_threshold = 90.0
 overlap_rule = "later acquisition overwrites earlier"
 # 温度反演保留云；拼接阶段按景云标记剔云（--no-cloud-mask 可关）
