@@ -8,7 +8,9 @@
 cases/
 ├── aatsr/  msg/  slstr/  aster/   各传感器的执行案例
 ├── slstr-heihe/ slstr-europe/ slstr-america/  由模板生成的 SLSTR 日拼接案例
+├── slstr-huailai/ slstr-xizang/     追加的 SLSTR 区域案例
 ├── msg/experiments/               MSG 方法对照，独立于正式反演
+├── stream/global/era5/             STREAM 的 ERA5 驱动数据案例
 ├── _archive/                      归档区
 │   ├── aatsr/、msg/、slstr/       逐次迁移留下的历史归档
 │   └── legacy/、shared/、compatibility/  更早的旧实现与兼容层
@@ -20,6 +22,8 @@ cases/
 `msg/`（下载/提取/投影/LST/LSCT + 站点测试与复现）、
 `slstr/`（解压/重整/投影/LST/LSCT 五环节；旧区域快照已归档）、`aster/`（待导入说明），
 以及 `slstr-heihe/`、`slstr-europe/`、`slstr-america/` 三个模板案例。
+另有 `slstr-huailai/`、`slstr-xizang/` 区域案例。STREAM 的 ERA5 下载、逐日驱动提取及检查见
+`stream/global/era5/README.md`；它是模型输入数据案例。
 每个案例里有什么见各自的 `README.md`、`case.toml`，以及 `catalog.toml`、`projects.toml`。
 
 ## 边界
@@ -40,4 +44,5 @@ python base/templates/new_case.py slstr heihe summer-2022 --mode study-area-firs
 python base/templates/audit_cases.py
 ```
 
-审计只检查 `catalog.toml` 中登记、带 `case.toml` 的案例；`_archive/` 下的目录会被跳过。
+审计只检查 `catalog.toml` 中登记、带 `case.toml` 的案例；`_archive/` 下的目录会被跳过，
+完成后输出 `OK: <数量> registered cases`。

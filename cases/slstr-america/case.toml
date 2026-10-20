@@ -23,7 +23,7 @@ height_px = 4500
 
 [processing]
 views = ["nadir", "obliq"]
-products = ["lst_nadir", "lsct2", "time"]
+products = ["lst_nadir", "lsct", "time"]
 day_solar_zenith_threshold = 90.0
 overlap_rule = "later acquisition overwrites earlier"
 lst_cloud_mask_in_retrieval = false

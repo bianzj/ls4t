@@ -11,7 +11,7 @@ acquisition time and footprint centre, so every day can produce up to four
 files:
 
     <out>/lst/<year>/<YYYYMMDD>_lst_nadir_{day,night}_<region>_0p01.tif
-    <out>/lsct2/<year>/<YYYYMMDD>_lsct2_obliq_{day,night}_<region>_0p01.tif
+    <out>/lsct/<year>/<YYYYMMDD>_lsct2_obliq_{day,night}_<region>_0p01.tif
     <out>/time/<year>/<YYYYMMDD>_{day,night}_time_<region>_0p01.tif
 
 Within a class, scenes are ordered by acquisition time and later scenes
@@ -53,12 +53,12 @@ warnings.filterwarnings("ignore")
 PRODUCTS = {
     "lst": dict(subdir="lst", file="lst_nadir.tif", view="nadir", bands=1,
                 dtype=np.uint16, gdal_type=gdal.GDT_UInt16, label="lst_nadir"),
-    "lsct2": dict(subdir="lsct2", file="lsct2.tif", view="obliq", bands=2,
-                  dtype=np.float32, gdal_type=gdal.GDT_Float32, label="lsct2_obliq"),
+    "lsct": dict(subdir="lsct", file="lsct2.tif", view="obliq", bands=2,
+                 dtype=np.float32, gdal_type=gdal.GDT_Float32, label="lsct2_obliq"),
 }
 
 # case.toml -> PRODUCTS keys
-CASE_PRODUCTS = {"lst_nadir": "lst", "lsct2": "lsct2"}
+CASE_PRODUCTS = {"lst_nadir": "lst", "lsct": "lsct"}
 SCENE_TIME_RE = re.compile(r"RBT____(\d{8})T(\d{6})")
 
 
@@ -74,7 +74,7 @@ def load_case(case_dir: Path, machine: str) -> dict:
     west, south, east, north = (float(v) for v in grid["bounds"])
     res = float(grid.get("resolution_degree", 0.01))
     products = []
-    for name in processing.get("products", ["lst_nadir", "lsct2"]):
+    for name in processing.get("products", ["lst_nadir", "lsct"]):
         key = CASE_PRODUCTS.get(name)
         if key and key not in products:
             products.append(key)
@@ -122,7 +122,7 @@ def day_scenes(root: Path, year: int, product: str) -> dict[str, list[str]]:
     # before their geolocation pair is read again
     no_land = load_scene_skip(root, year)
     with os.scandir(base) as entries:
-        names = [e.name for e in entries if e.is_dir(follow_symlinks=False)]
+        names = [e.name for e in entries if e.is_dir(follow_symlinks=True)]
     for scene in names:
         if is_useless(no_land, scene, (spec["view"],)):
             continue
@@ -511,7 +511,7 @@ def main():
     ap.add_argument("--machine", default="hero")
     ap.add_argument("--source-root", type=Path, default=None)
     ap.add_argument("--output-root", type=Path, default=None)
-    ap.add_argument("--product", choices=("lst", "lsct2", "both"), default=None,
+    ap.add_argument("--product", choices=("lst", "lsct", "both"), default=None,
                     help="default: the products listed in case.toml")
     ap.add_argument("--year", type=int, required=True)
     ap.add_argument("--start-date", default=None)
@@ -537,7 +537,7 @@ def main():
     sza_threshold = case["sza_threshold"] if args.sza_threshold is None else args.sza_threshold
     cloud_mask = case["cloud_mask"] if args.cloud_mask is None else args.cloud_mask
     products = tuple(case["products"]) if args.product is None else \
-        {"lst": ("lst",), "lsct2": ("lsct2",), "both": ("lst", "lsct2")}[args.product]
+        {"lst": ("lst",), "lsct": ("lsct",), "both": ("lst", "lsct")}[args.product]
     print(f"case {case['case_id']} ({case['region']}): window "
           f"{win['west']}..{win['east']} E, {win['south']}..{win['north']} N at {win['res']} deg, "
           f"products {products}, sza<{sza_threshold:g} day, cloud mask {cloud_mask}", flush=True)

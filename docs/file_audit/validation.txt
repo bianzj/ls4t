@@ -6,7 +6,7 @@ ____________ test_window_component_retrieval_matches_aatrs_history ____________
     def test_window_component_retrieval_matches_aatrs_history():
         """Golden values from the AATSR implementation restored into base."""
         from base.lsct import inv_lsct2_window, inv_lsct3_window
-    
+
         rng = np.random.default_rng(7)
         nl = ns = 9
         n, m, ws, wl = 2, 2, 5, 10.8

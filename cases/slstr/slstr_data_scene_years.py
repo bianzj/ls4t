@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 
-WORKER = Path(__file__).with_name("slstr_data_origin.py")
+WORKER = Path(__file__).with_name("slstr_data_scene_origin.py")
 
 
 def main() -> int:

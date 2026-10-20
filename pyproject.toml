@@ -17,6 +17,7 @@ aatsr = ["pyepr>=1.1"]
 msg = ["satpy>=0.49", "GDAL>=3.6"]
 raster = ["GDAL>=3.6"]
 projection = ["GDAL>=3.6"]
+stream-era5 = ["netCDF4>=1.6", "h5py>=3", "cdsapi>=0.7"]
 msg-sample = ["pytest>=7", "GDAL>=3.6", "h5py>=3", "scipy>=1.10", "scikit-learn>=1.2", "pvlib>=0.10"]
 
 [tool.setuptools.packages.find]

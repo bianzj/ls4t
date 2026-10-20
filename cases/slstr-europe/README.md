@@ -8,7 +8,7 @@
 |---|---|
 | 网格 | EPSG:4326，0.01°，5400 × 4150（-12–42°E，30–71.5°N） |
 | 昼夜 | 景内中位太阳天顶角 < 90° 为 day |
-| 产品 | `lst_nadir`、`lsct2`（2 波段）、`time`（HHMMSS）；`lst_obliq` 暂不输出 |
+| 产品 | `lst_nadir`、`lsct`（文件 `lsct2.tif`，2 波段）、`time`（HHMMSS）；`lst_obliq` 暂不输出 |
 | 叠置 | 按获取时间，后景覆盖前景 |
 | 云 | 反演保留云；拼接默认按 `cloud_{view}.tif` 剔云 |
 

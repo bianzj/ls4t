@@ -114,7 +114,7 @@ if __name__ == '__main__':
     for kyear in range(2018,2019):
         indir_tif_temp = indir_tif0 + "/%04d/"%kyear + "/tif/"
         indir_lst_temp = indir_lst0 + "/%04d/"%kyear + "/lst/"
-        indir_lsct_temp = indir_lsct0 + "/%04d/"%kyear + "/lsct2/"
+        indir_lsct_temp = indir_lsct0 + "/%04d/"%kyear + "/lsct/"
         indir_lai_temp = indir_lai + "/%04d/"%kyear
         indir_tcw_temp = indir_tcw + "/%04d/"%kyear
 

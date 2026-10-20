@@ -33,6 +33,15 @@ entrypoints = [
 ]
 
 [[case]]
+id = "stream-global-era5-forcing"
+sensor = "stream"
+region = "global"
+status = "draft"
+spatial_mode = "fixed-grid"
+path = "stream/global/era5"
+entrypoints = ["run.py"]
+
+[[case]]
 id = "msg-europe-africa-dual-disk"
 sensor = "msg"
 region = "europe-africa"
@@ -100,6 +109,24 @@ path = "slstr-america"
 entrypoints = [
   "run_standard_stage.py",
 ]
+
+[[case]]
+id = "slstr-huailai-scene-first"
+sensor = "slstr"
+region = "huailai"
+status = "active"
+spatial_mode = "scene-first"
+path = "slstr-huailai"
+entrypoints = ["stages/run_scene_pipeline.sh", "stages/prepare_reuse.py", "stages/audit_outputs.py"]
+
+[[case]]
+id = "slstr-xizang-scene-first"
+sensor = "slstr"
+region = "xizang"
+status = "active"
+spatial_mode = "scene-first"
+path = "slstr-xizang"
+entrypoints = ["stages/run_scene_pipeline.sh", "stages/inventory_and_reuse.py", "stages/stage_raw.py"]
 
 [[archive]]
 path = "_archive/aatsr/product_history"

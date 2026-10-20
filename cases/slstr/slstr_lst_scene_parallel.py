@@ -49,6 +49,7 @@ from pathlib import Path
 
 import h5py
 import numpy as np
+from osgeo import gdal
 
 
 warnings.filterwarnings("ignore")
@@ -126,8 +127,35 @@ def tcwv_file(tcwv_root: Path, day_str: str) -> Path | None:
     return path if path.is_file() else None
 
 
-def discover(root: Path, year: int) -> dict[str, list[str]]:
-    """Scene directories of one year that still lack an LST result, by day."""
+def scene_overlaps_bounds(tif_dir: Path, bounds: tuple[float, float, float, float]) -> bool:
+    """Conservative footprint screen from subsampled oblique geolocation."""
+    lat_path = tif_dir / 'lat_obliq.tif'
+    lon_path = tif_dir / 'lon_obliq.tif'
+    if not lat_path.is_file() or not lon_path.is_file():
+        return False
+    lat_ds = gdal.Open(str(lat_path), gdal.GA_ReadOnly)
+    lon_ds = gdal.Open(str(lon_path), gdal.GA_ReadOnly)
+    if lat_ds is None or lon_ds is None:
+        return False
+    lat = lat_ds.ReadAsArray(buf_xsize=90, buf_ysize=120).astype(np.float32) / 100
+    lon = lon_ds.ReadAsArray(buf_xsize=90, buf_ysize=120).astype(np.float32) / 100
+    lat_ds = lon_ds = None
+    drop_file_cache(lat_path)
+    drop_file_cache(lon_path)
+    lat = np.where(lat >= 90, -(lat - 90), lat)
+    lon = np.where(lon >= 180, -(lon - 180), lon)
+    west, south, east, north = bounds
+    good = np.isfinite(lat) & np.isfinite(lon) & (np.abs(lat) <= 90) & (np.abs(lon) <= 180)
+    if not good.any():
+        return False
+    return bool(lat[good].min() <= north and lat[good].max() >= south
+                and lon[good].min() <= east and lon[good].max() >= west)
+
+
+def discover(root: Path, year: int, overwrite: bool = False,
+             bounds: tuple[float, float, float, float] | None = None,
+             excluded: set[str] | None = None) -> dict[str, list[str]]:
+    """Scene directories with usable input views, including existing results on overwrite."""
     tif_dir = root / str(year) / "tif"
     lst_dir = root / str(year) / "lst"
     by_day: dict[str, list[str]] = defaultdict(list)
@@ -137,8 +165,13 @@ def discover(root: Path, year: int) -> dict[str, list[str]]:
     # outside the window) never produce a pixel here, so they are left alone
     no_land = load_scene_skip(root, year) if SKIP_MARKED_SCENES else {}
     with os.scandir(tif_dir) as entries:
-        names = sorted(e.name for e in entries if e.is_dir(follow_symlinks=False))
-    for scene in names:
+        names = sorted(e.name for e in entries if e.is_dir(follow_symlinks=True))
+    for scene_index, scene in enumerate(names, 1):
+        if excluded and scene in excluded:
+            continue
+        if bounds is not None and scene_index % 1000 == 0:
+            print(f'  {year} footprint scan {scene_index}/{len(names)}; '
+                  f'selected {builtins.sum(map(len, by_day.values()))}', flush=True)
         if is_useless(no_land, scene, ("nadir", "obliq")):
             continue
         # a scene is finished when every view it *can* produce has been
@@ -146,7 +179,7 @@ def discover(root: Path, year: int) -> dict[str, list[str]]:
         # nadir result and is not retried for ever
         produced = {view: (lst_dir / scene / f"lst_{view}.tif").is_file()
                     for view in ("nadir", "obliq")}
-        if all(produced.values()):
+        if all(produced.values()) and not overwrite:
             continue
         tif_scene = tif_dir / scene
         possible = {view: all((tif_scene / f"{band}_{view}.tif").is_file()
@@ -154,10 +187,24 @@ def discover(root: Path, year: int) -> dict[str, list[str]]:
                     for view in ("nadir", "obliq")}
         if not any(possible.values()):
             continue
-        if all(produced[view] or not possible[view] for view in possible):
+        if all((produced[view] and not overwrite) or not possible[view] for view in possible):
+            continue
+        if bounds is not None and not scene_overlaps_bounds(tif_scene, bounds):
             continue
         by_day[scene.split("____")[1][:8]].append(scene)
     return by_day
+
+
+def drop_file_cache(path: Path) -> None:
+    """Release clean input pages after GDAL/HDF5 has closed the file."""
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_CLOEXEC)
+        try:
+            os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
+        finally:
+            os.close(fd)
+    except OSError:
+        pass
 
 
 def load_state(root: Path, base: Path, type_ref: Path, emis_pair: tuple[str, str]) -> dict:
@@ -165,6 +212,8 @@ def load_state(root: Path, base: Path, type_ref: Path, emis_pair: tuple[str, str
     emis1, _, _, _, _, _ = read_image_gdal(str(find_base_file(base, emis_pair[0])))
     emis2, _, _, _, _, _ = read_image_gdal(str(find_base_file(base, emis_pair[1])))
     classif, _, _, _, _, _ = read_image_gdal(str(type_ref))
+    for path in (find_base_file(base, emis_pair[0]), find_base_file(base, emis_pair[1]), type_ref):
+        drop_file_cache(path)
     return dict(
         emis1_s0=emis1,
         emis2_s0=emis2,
@@ -211,6 +260,8 @@ def lst_view(view: str, tif_dir: Path, out_file: Path, lai0: np.ndarray,
     vza, _, _, _, _, _ = read_image_gdal(str(vza_file))
     lat, _, _, _, _, _ = read_image_gdal(str(lat_file))
     lon, _, _, _, _, _ = read_image_gdal(str(lon_file))
+    for path in (bt8_file, bt9_file, vza_file, lat_file, lon_file):
+        drop_file_cache(path)
 
     # int16 encodings used by the extraction step
     BT8 = BT8 / 100.0
@@ -287,7 +338,9 @@ def lst_view(view: str, tif_dir: Path, out_file: Path, lai0: np.ndarray,
     LST[(LST > LST_MAX_K) | (LST < LST_MIN_K)] = 0
     LST_uint16 = (LST * 100.0)[:nl, :ns].astype(np.uint16)
     out_file.parent.mkdir(parents=True, exist_ok=True)
-    write_image_gdal(LST_uint16, ns, nl, 1, geog, proj, str(out_file))
+    tmp_file = out_file.with_suffix('.tmp.tif')
+    write_image_gdal(LST_uint16, ns, nl, 1, geog, proj, str(tmp_file))
+    os.replace(tmp_file, out_file)
     return "written" if np.any(LST_uint16) else "empty"
 
 
@@ -296,7 +349,7 @@ def process_day(task) -> dict:
     year = int(day_str[:4])
     day = date(year, int(day_str[4:6]), int(day_str[6:8]))
     stats = dict(day=day_str, scenes=len(scenes), written=0, empty=0, skipped=0,
-                 error=None, empty_scenes=[])
+                 error=None, scene_errors=[], empty_scenes=[], updated_scenes=[])
 
     lai_path = lai_file(year, day)
     tcw_path = tcwv_file(_STATE["tcwv_root"], day_str)
@@ -308,6 +361,7 @@ def process_day(task) -> dict:
     if _STATE.get("lai_path") != lai_path:
         with h5py.File(str(lai_path), "r") as handle:
             _STATE["lai0"] = np.array(handle["/data"])
+        drop_file_cache(lai_path)
         _STATE["lai_path"] = lai_path
     if _STATE.get("tcw_path") != tcw_path:
         with h5py.File(str(tcw_path), "r") as handle:
@@ -319,6 +373,7 @@ def process_day(task) -> dict:
             # scale_factor = 0.01; the coefficient table wants cm
             cube = np.asarray(field[...], dtype=np.float32) * \
                 float(field.attrs.get("scale_factor", 1.0))
+        drop_file_cache(tcw_path)
         cube = cube / 10.0
         if cube.max() > 20.0:
             raise ValueError(f"{tcw_path.name}: TCWV reaches {cube.max():.1f} cm, "
@@ -334,6 +389,7 @@ def process_day(task) -> dict:
             hour = int(scene.split("____")[1][9:11])
         except (IndexError, ValueError):
             stats["skipped"] += 1
+            stats["scene_errors"].append({"scene": scene, "error": "invalid scene timestamp"})
             continue
         view_stats = []
         for view in ("nadir", "obliq"):
@@ -343,11 +399,17 @@ def process_day(task) -> dict:
                                            tcw_day, hour, _STATE["overwrite"]))
             except Exception as exc:  # noqa: BLE001
                 view_stats.append("error")
-                stats["error"] = f"{scene} {view}: {exc!r}"
-        if "written" in view_stats:
-            stats["written"] += 1
-        elif "error" in view_stats:
+                stats["scene_errors"].append({"scene": scene, "view": view,
+                                              "error": repr(exc)[:350]})
+        if len(view_stats) == 2 and all(status in ("written", "empty") for status in view_stats):
+            stats["updated_scenes"].append(scene)
+        if "skipped" in view_stats:
+            stats["scene_errors"].append({"scene": scene,
+                                          "error": "one or both LST views lack usable input"})
+        if "error" in view_stats or "skipped" in view_stats:
             stats["skipped"] += 1
+        elif "written" in view_stats:
+            stats["written"] += 1
         else:
             stats["empty"] += 1
             stats["empty_scenes"].append(scene)
@@ -373,9 +435,16 @@ def main():
     ap.add_argument("--limit-days", type=int, default=None)
     ap.add_argument("--force-scenes", nargs="*", default=None,
                     help="process exactly these scenes (used for validation)")
+    ap.add_argument("--exclude-scenes", nargs="*", default=[],
+                    help="documented scenes with unreadable source data to omit")
+    ap.add_argument("--bounds", type=float, nargs=4, default=None,
+                    metavar=("WEST", "SOUTH", "EAST", "NORTH"),
+                    help="conservatively select scene footprints overlapping this window")
     ap.add_argument("--overwrite", action="store_true",
                     help="recompute scenes that already have an output")
     ap.add_argument("--report", type=Path, default=None)
+    ap.add_argument("--max-scene-errors", type=int, default=0,
+                    help="continue past up to this many bad scenes; keep each in the report")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--all-scenes", action="store_true",
                     help="ignore the coverage skip list and read every scene")
@@ -388,16 +457,19 @@ def main():
     if args.force_scenes:
         by_day = defaultdict(list)
         for scene in args.force_scenes:
-            by_day[scene.split("____")[1][:8]].append(scene)
+            if scene not in args.exclude_scenes:
+                by_day[scene.split("____")[1][:8]].append(scene)
     else:
-        by_day = discover(args.root, args.year)
+        by_day = discover(args.root, args.year, overwrite=args.overwrite,
+                          bounds=tuple(args.bounds) if args.bounds else None,
+                          excluded=set(args.exclude_scenes))
     days = sorted(by_day)
     if args.days:
         days = [d for d in days if d in set(args.days)]
     if args.limit_days:
         days = days[:args.limit_days]
     total = builtins.sum(len(by_day[d]) for d in days)
-    print(f"{args.year}: {total} scenes without LST over {len(days)} acquisition days "
+    print(f"{args.year}: {total} scenes selected for LST over {len(days)} acquisition days "
           f"({time.time() - t0:.0f}s scan)", flush=True)
     if args.dry_run or not days:
         return
@@ -414,8 +486,11 @@ def main():
 
     tasks = [(d, by_day[d]) for d in days]
     report = dict(year=args.year, root=str(args.root), out_root=str(out_root),
+                  bounds_wsen=args.bounds,
+                  excluded_scenes=sorted(set(args.exclude_scenes)),
                   workers=args.workers, emis_pair=[p for p in emis_pair],
                   scenes=total, days=len(days), days_report=[], empty_scenes=[],
+                  updated_scenes=[], failed_scenes=[], max_scene_errors=args.max_scene_errors,
                   started=time.strftime("%Y-%m-%dT%H:%M:%S"))
     done = written = empty = skipped = 0
     t0 = time.time()
@@ -428,8 +503,10 @@ def main():
             written += stats["written"]
             empty += stats["empty"]
             skipped += stats["skipped"]
-            report["days_report"].append({k: v for k, v in stats.items() if k != "empty_scenes"})
+            report["days_report"].append({k: v for k, v in stats.items() if k not in ("empty_scenes", "updated_scenes")})
             report["empty_scenes"].extend(stats["empty_scenes"])
+            report["updated_scenes"].extend(stats["updated_scenes"])
+            report["failed_scenes"].extend(stats["scene_errors"])
             elapsed = time.time() - t0
             rate = done / elapsed if elapsed else 0
             eta = (total - done) / rate / 60 if rate else 0
@@ -445,6 +522,10 @@ def main():
         print("report ->", args.report)
     print(f"done: written {written}, empty {empty}, skipped {skipped} "
           f"in {(time.time() - t0) / 60:.1f} min")
+    if (any(day["error"] for day in report["days_report"])
+            or skipped > args.max_scene_errors
+            or len(report["updated_scenes"]) + skipped != total):
+        raise SystemExit(3)
 
 
 if __name__ == "__main__":
