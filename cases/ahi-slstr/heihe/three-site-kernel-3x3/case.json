@@ -1,0 +1,54 @@
+{
+  "schema": "ls4t.standalone-case/v1",
+  "id": "ahi-slstr-heihe-three-site-kernel-3x3-20190512",
+  "title": "黑河三站 AHI + SLSTR 3×3 核驱动角度归一化",
+  "date": "2019-05-12",
+  "sensors": [
+    "AHI",
+    "S3B SLSTR nadir",
+    "S3B SLSTR oblique"
+  ],
+  "sites": [
+    {
+      "code": "DM",
+      "name": "大满"
+    },
+    {
+      "code": "AR",
+      "name": "阿柔"
+    },
+    {
+      "code": "SDQ",
+      "name": "四道桥"
+    }
+  ],
+  "entrypoint": "run.py",
+  "offline_entrypoint": "replay.ps1",
+  "frozen_data": "data/2019-05-12-s3b",
+  "reference_report": "data/2019-05-12-s3b/report.md",
+  "requirements": "requirements.txt",
+  "data_sha256_manifest": "case_files.sha256.json",
+  "window_shape": [
+    3,
+    3
+  ],
+  "matched_footprints": 27,
+  "native_slstr_cells_per_footprint_per_view": 4,
+  "models": [
+    "LSF",
+    "LSF-RL"
+  ],
+  "rl_width": 1.0,
+  "validation": "Whole-footprint leave-one-out; AHI included in calibration; spatially dependent",
+  "reference_accepted_footprints": {
+    "DM": 9,
+    "AR": 0,
+    "SDQ": 9
+  },
+  "limitations": [
+    "AR correction proposals all exceed the 10 K bound; diagnostics only",
+    "Offline replay begins at frozen extracted observations; raw raster extraction and date search require external archive",
+    "Cross-view agreement does not establish ground accuracy or spectral harmonization"
+  ],
+  "source_run": "D:\\cases\\ls4t\\ahi-slstr-three-site-kernel-3x3\\run_20261028_233133_228292"
+}

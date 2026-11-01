@@ -1,0 +1,223 @@
+{
+  "fixed": {
+    "lai": 0.387,
+    "tcwv_cm": 0.628,
+    "soil_emissivity": [
+      0.971,
+      0.977
+    ],
+    "vegetation_emissivity": [
+      0.985,
+      0.99
+    ],
+    "hotspot": 0.2
+  },
+  "observations": [
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR nadir",
+      "vza": 6.59,
+      "sza": 60.370000000000005,
+      "raa": 117.3,
+      "wavelength_um": 10.85,
+      "bt1_k": 273.76041212916675,
+      "bt2_k": 273.59781195523,
+      "sigma_k": 1.0,
+      "use_for_fit": true,
+      "coefficient_file": "C:\\work\\ls4t\\gui\\examples\\ahi_slstr\\slstr_coefficients.npz",
+      "time_utc": "2019-01-01T02:50:00Z"
+    },
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR obliq",
+      "vza": 54.910000000000004,
+      "sza": 60.370000000000005,
+      "raa": 40.81,
+      "wavelength_um": 10.85,
+      "bt1_k": 274.7550001321332,
+      "bt2_k": 274.44000180798577,
+      "sigma_k": 1.0,
+      "use_for_fit": true,
+      "coefficient_file": "C:\\work\\ls4t\\gui\\examples\\ahi_slstr\\slstr_coefficients.npz",
+      "time_utc": "2019-01-01T02:50:00Z"
+    },
+    {
+      "sensor": "AHI",
+      "name": "AHI 留出检验",
+      "vza": 48.42187502834754,
+      "sza": 60.43,
+      "raa": 18.37633822373192,
+      "wavelength_um": 10.4,
+      "bt1_k": 274.82,
+      "bt2_k": 273.84000000000003,
+      "sigma_k": 1.0,
+      "use_for_fit": false,
+      "coefficient_file": "C:\\work\\ls4t\\gui\\examples\\ahi_slstr\\ahi_coefficients.npz",
+      "time_utc": "2019-01-01T02:50:00Z"
+    }
+  ],
+  "components": 2,
+  "reference_vza": 0.0,
+  "reference_raa": 0.0,
+  "optimize": true,
+  "prior_strength": 0.0,
+  "prior_sigma_k": 10.0,
+  "prior_k": [
+    280.0,
+    280.0
+  ],
+  "provenance": {
+    "label": "2019-01-01 中国中部真实观测 / 已知参数情景",
+    "source_root": "E:\\remote-sensing",
+    "longitude": 112.0004632234324,
+    "latitude": 32.0064840691038,
+    "ahi_grid_pixel": [
+      1694,
+      1232
+    ],
+    "grid": "AHI UTM49N 2 km cell; SLSTR aligned 2x2 radiance average",
+    "selection": "Nearest covered clear-flag pixel to 112E,32N within fixed 20 km window; no retrieval-error selection",
+    "fixed_sources": {
+      "lai": "MUSYQ LAI_2019001, scale 0.001",
+      "tcwv": "SLSTR archived tcw; assumed kg m-2 x100 -> cm x0.001",
+      "soil_emissivity": "MODIS LSE11/12 map scale 0.001; spectral proxy for AHI/SLSTR",
+      "vegetation_emissivity": "User-editable scenario assumptions 0.985/0.990, not measured truth",
+      "hotspot": "Fixed homogeneous-canopy scenario 0.2"
+    },
+    "limitations": [
+      "Exploratory real-observation replay; no ground temperature accuracy claim.",
+      "SLSTR ancillary angles/time/cloud are 10 km nearest-neighbour; spatial footprints remain approximate.",
+      "Archived time values are decoded as HHMM UTC (range and AHI pairing consistent); no raw L1 timestamp audit.",
+      "AHI view derived from nominal 140.7E geostationary geometry; not per-scan navigation.",
+      "AHI screening uses existing positive LST as valid-mask proxy; no independent native cloud flag.",
+      "Known parameter scenario and local legacy coefficient tables are not sensor response validation."
+    ],
+    "decoding": {
+      "bt": "stored K x100; zero invalid",
+      "angles": "stored degrees x100",
+      "time": "stored HHMM UTC; nearest AHI <=5 min"
+    },
+    "files": [
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_bt1_nadir.tif",
+        "size": 40572064,
+        "sha256": "c95f875e978eba8346291bd6fae5aaea1a518960e3b25c6a2fb68a93581b5990"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_bt2_nadir.tif",
+        "size": 40572064,
+        "sha256": "06396e9aeb9d022395b4c9e2819d1eb5563434a75eed726f6474f629818151bc"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_bt1_obliq.tif",
+        "size": 40572064,
+        "sha256": "387a50fe7452b9134e75a22a2f401da3e029d1ce892b3df0328773b989f98227"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_bt2_obliq.tif",
+        "size": 40572064,
+        "sha256": "05af6fd5e12edb0020f44da564ead883d3a2875351c934bf3ec4a43401f70d3e"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_cloud_nadir.tif",
+        "size": 406257,
+        "sha256": "0f5094a31dfcf1214414bed97e0d62cc42f52cc82fd04dfbe387ee13d4c8bc36"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_cloud_obliq.tif",
+        "size": 406257,
+        "sha256": "c0150a20aa7e931e4d7d171f78a95ad98c8fbebef04c4fdc284fb616b3e2c275"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_time.tif",
+        "size": 406257,
+        "sha256": "d1ce5aca91e6f8b667e01e5b756c6c5458d100372fcc2555752c89ded9ebf655"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_tcw.tif",
+        "size": 406260,
+        "sha256": "8fff73e68c2e2fafaafa634e4a5b46e61300bd1c19af100bb7acc51683344829"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_vza_nadir.tif",
+        "size": 406257,
+        "sha256": "99ca9648bed0efff566c1978d43f17c3f3647e0cb397e0b523135c56836f6737"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_vza_obliq.tif",
+        "size": 406257,
+        "sha256": "50582d0967e030db34a21210fb27f3f5e559804d113bd28cfc2e093eaa702f3b"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_sza_nadir.tif",
+        "size": 406257,
+        "sha256": "6593922a4a3b1c73323de2f341f19138ee6b8990df5884717b19da13006eff10"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_saa_nadir.tif",
+        "size": 406257,
+        "sha256": "b4a314ff699962c03aa605ed92c6eb7cda5c0cf95832fe918892739a852e4ac5"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_vaa_nadir.tif",
+        "size": 406257,
+        "sha256": "7ea1a5fa2e9b9b209e81c968bb1a192a83304271603fa4d8f570a6ca13e97c19"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\s3a_tif\\S3A_2019001_day_vaa_obliq.tif",
+        "size": 406257,
+        "sha256": "598aaae557b05dd99b765efbd19b9ac1d6ab142001c577fd2e13e2984a37c8d4"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\ahi_tif\\01\\01\\AHI_2019001_0250_bt1.tif",
+        "size": 10151282,
+        "sha256": "1fcccfd892165bde9b570d7e6fe4bfe98b3b0037740f31d79f2071dfd8e4e1de"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\ahi_tif\\01\\01\\AHI_2019001_0250_bt2.tif",
+        "size": 10151282,
+        "sha256": "d9a790e3c3b5d35eac6082362b45845b034997d05c67ddc14872914a66bafd4d"
+      },
+      {
+        "path": "E:\\remote-sensing\\vegetation-structure-state\\MUSYQ-LAI\\standardized\\lai_2002-2020_0p01deg\\2019\\LAI_2019001.h5",
+        "size": 149107918,
+        "sha256": "a134ecdfdbdf95ec4722e3820bd22babea90395ae37c5ea19185f625eb1f3b5b"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\emissivity\\AG1km.v003.SoilEmi.MODIS.Global.001D_LSE11.tif",
+        "size": 1296288504,
+        "sha256": "179f44e9e627be73eae04424e3adf351e68a71331ccaf1af89125efe6916697c"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\emissivity\\AG1km.v003.SoilEmi.MODIS.Global.001D_LSE12.tif",
+        "size": 1296288504,
+        "sha256": "be6e68866bdfa3abf4982c45a6dc02fcc7f6064bc619f3ae6b75059e7244675e"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\emissivity\\Sentinel3A_SLSTR_SW_Seebor_Coef_Day.txt",
+        "size": 10997,
+        "sha256": "8fc14fbb5b353b521b00cf3a41b13fc48ed2ba95938a8ca521137b68c05ec238"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\emissivity\\map-ahi\\Himawari8_AHI_SW_Seebor_Coef_Day.txt",
+        "size": 10987,
+        "sha256": "0e1233e84543308b149d471afdbc63268874909d5da03988245289732fda13ef"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\ahi_tif\\01\\01\\AHI_2019001_0250_sza.tif",
+        "size": 406251,
+        "sha256": "739114bb67abbe9b4dc42034e4efd78f675be7f7545ff17a4e6ad79e2b0ffdbe"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\ahi_tif\\01\\01\\AHI_2019001_0250_saa.tif",
+        "size": 406251,
+        "sha256": "38a76bf4ffe589296ad3516a0d349a43d93b0f79fb4bc0f46dfae12ae4780383"
+      },
+      {
+        "path": "E:\\remote-sensing\\temperature-emissivity\\multi-sensor-2019\\ahi_lst\\01\\01\\AHI_2019001_0250_lst.tif",
+        "size": 10151068,
+        "sha256": "b78167f080210de620f832140bc622f4d47a37e4e1a9768eabc816d607393042"
+      }
+    ]
+  }
+}

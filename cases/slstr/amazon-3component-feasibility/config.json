@@ -1,0 +1,33 @@
+{
+  "scene": "S3A_SL_1_RBT____20240426T140123_20240426T140423_20240427T232617_0179_111_338_3060_PS1_O_NT_004.SEN3",
+  "year": 2024,
+  "source_root": "E:/",
+  "region_wsen": [
+    -80.0,
+    -18.0,
+    -44.0,
+    12.0
+  ],
+  "lai": "H:/data/rs/lai/lai-modis-doy/2024/LAI_2024117.h5",
+  "output_root": "E:/lsct/lsct3/feasibility_20261101_day285K",
+  "original_method": "homogeneous_3component_bayes_map_5x5_lai_only_v5",
+  "git_head": "9c17aa2ada8e5da7ca902b02ae6f3fc66cb34d90",
+  "original_code_sha256": "12ca4a57fb3578955f9a6cb8bb4e484722871b5ac23151dfb070775000f8d06e",
+  "notes": "Single daytime existing SLSTR scene. Existing LST is read as input; no original input data are modified. MATLAB or MCMC not used. Historical HEAD variant, not byte-verified to have produced the existing product. NumPy 2 batched solve compatibility: right-hand side explicitly (N,M,1); numerical objective unchanged. Original failed trial kept at E:/lsct/lsct3/feasibility_20261101. User-selected 285 K cutoff applied to input observation pairs before 5x5 accumulation and to all three output components. Rejected outputs are NoData=0. Historical unfiltered trial and monthly products are retained.",
+  "baseline_output_root": "E:/lsct/lsct3/feasibility_20261101_numpy2",
+  "quality_control": {
+    "daytime_only": true,
+    "input_lst_min_k": 285.0,
+    "component_temp_min_k": 285.0,
+    "input_pair_rule": "both_views_at_or_above_minimum",
+    "output_rule": "all_three_components_at_or_above_minimum",
+    "invalid_value": 0
+  },
+  "prior_code_sha256": {
+    "retrieval_v5.py": "4b32022ef77a8fd104859dabfc66fbba345c64b1727b21438af9541f327e1fce",
+    "run.py": "433f2f433c05d8cdd02a7ba0a2fa006ddd2f9e828235663e558d3d18676cfb0f",
+    "config.json": "1d4b8f3bfef37209ff2dfe40bcd1b1ed05207473094ae8b66f33ff1525a38725",
+    "README.md": "12484508a575d0b3c3c653c0ef2c2b19e2f3fb86ef699e769fff537ae884bd4f",
+    "diagnose_cloud_cold.py": "8eab14da08c07dc46b7fef79f58b7a55bc45efb0813f06fc8bd965048bcb8c2e"
+  }
+}

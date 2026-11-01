@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LS4T · 反演与角度归一化</title>
+<link rel="icon" href="data:,"><link rel="stylesheet" href="/workbench.css"><link rel="stylesheet" href="/navigation.css">
+</head>
+<body>
+<div id="site-navigation"></div>
+<main>
+<div class="heading"><div><h1 id="route-title">组分温度反演</h1><p id="route-description">固定已知参数，求解土壤与植被温度；优化设置仅用于本路线。</p></div>
+<div class="tools"><button id="load-sample">加载 AHI + SLSTR 样例</button><button id="import">导入配置</button><button id="export">导出配置</button><button id="run-top" class="primary">运行计算</button><input id="import-file" type="file" accept=".json" hidden></div></div>
+<p id="source-label" class="source-label">正在加载本地样例…</p>
+<p id="sample-note" class="hint" hidden>样例使用真实亮温；植被发射率为设定值，时间与水汽沿用归档编码假设。用于流程测试，不能作为地面精度验证。</p>
+<div class="workspace">
+<aside class="parameters">
+<form id="parameters-form">
+<section id="fixed-section"><h2>已知参数 <span class="fixed-tag">固定</span></h2><p class="hint">这些量不参与优化。水汽只用于亮温 → LST。</p>
+<div class="fields">
+<label>LAI <span>m²/m²</span><input id="lai" type="number" min="0.01" max="10" step="0.001" required></label>
+<label>大气水汽 TCWV <span>cm</span><input id="tcwv_cm" type="number" min="0" max="10" step="0.001" required></label>
+<div class="pair-title">土壤发射率</div>
+<label>波段 1<input id="soil1" type="number" min="0.8" max="1" step="0.001" required></label>
+<label>波段 2<input id="soil2" type="number" min="0.8" max="1" step="0.001" required></label>
+<div class="pair-title">植被发射率</div>
+<label>波段 1<input id="veg1" type="number" min="0.8" max="1" step="0.001" required></label>
+<label>波段 2<input id="veg2" type="number" min="0.8" max="1" step="0.001" required></label>
+<label>热点参数<input id="hotspot" type="number" min="0.01" max="1" step="0.01" required></label>
+<label>组分模型<select id="components"><option value="2">土壤 + 植被</option><option value="3">光照土壤 + 阴影土壤 + 植被</option></select></label>
+</div><p class="hint" id="fixed-hint">双波段输入用于大气校正；组分分解使用波段 1。传感器独立发射率可在高级配置中指定。</p></section>
+<section id="optimization-section"><h2>温度优化</h2><label class="check"><input id="optimize" type="checkbox" checked>启用稳健优化（soft L1）</label>
+<div class="fields"><label>先验强度<input id="prior_strength" type="number" min="0" max="100" step="0.1" value="0" required></label>
+<label>先验不确定度 <span>K</span><input id="prior_sigma_k" type="number" min="0.1" max="100" step="0.1" value="10" required></label></div>
+<label>温度先验 <span>K，按组分顺序用逗号分隔</span><input id="prior_k" value="280, 280" required></label>
+<p class="hint">强度为 0 时不使用先验。优化只调整组分温度，范围为 220–365 K。</p></section>
+<section id="angular-section" hidden><h2>角度模型</h2><p class="hint">T(θ) = a + c × (sec θ − 1)。直接处理已有 LST，不反演组分温度。</p>
+<label>角度系数来源<select id="coefficient_mode"><option value="fit">用同传感器多角度 LST 标定</option><option value="supplied">使用已有角度系数</option></select></label>
+<label id="coefficient-field" hidden>角度系数 c <span>K</span><input id="coefficient_k" type="number" min="-100" max="100" step="any" value="0"></label>
+<p class="hint">配对标定需要同一地表、近同时的不同观测天顶角。模型不包含太阳或方位角效应。</p>
+<h2>参考观测方向</h2><div class="fields">
+<label>天顶角 <span>°</span><input id="reference_vza" type="number" min="0" max="75" step="any" value="0" required></label>
+ </div>
+<button id="nadir" type="button" class="text-button">设为天底（0°）</button>
+<p class="hint">仅输出目标角度的 LST 与修正量，不做时间或光谱归一化。</p></section>
+<div class="run-actions"><button id="run" class="primary" type="submit">开始组分反演</button><span id="run-state" role="status">准备就绪</span></div>
+</form></aside>
+<div class="analysis">
+<section class="observations"><div class="section-heading"><h2 id="observations-title">多视角观测</h2><button id="add-observation">添加观测</button></div>
+<p class="hint" id="observation-hint">参与拟合的观测求解组分温度；留出观测仅检验。观测应来自同一地表，时间跨度不超过 10 分钟。</p>
+<div id="observation-list"></div>
+<details class="advanced"><summary>高级配置与数据来源</summary><p class="hint">编辑当前路线的独立配置。应用后需重新计算；不会修改另一条路线。</p><textarea id="advanced-json" rows="12" aria-label="高级 JSON 配置" spellcheck="false"></textarea><button id="apply-json">应用 JSON 配置</button><pre id="provenance"></pre></details>
+</section>
+<div id="error" role="alert" hidden></div>
+<section id="results" aria-live="polite"></section>
+</div></div>
+<footer>LS4T · 地表温度反演与归一化工作台 <a href="https://sentiwiki.copernicus.eu/web/slstr-products" target="_blank" rel="noreferrer">SLSTR 产品说明</a></footer>
+</main><script src="/navigation.js"></script><script src="/workbench.js"></script>
+</body></html>

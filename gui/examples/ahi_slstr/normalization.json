@@ -1,0 +1,44 @@
+{
+  "route": "normalization",
+  "coefficient_mode": "fit",
+  "reference_vza": 0,
+  "observations": [
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR nadir",
+      "lst_k": 274.6199730101605,
+      "vza": 6.59,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": true
+    },
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR obliq",
+      "lst_k": 276.01994310149047,
+      "vza": 54.910000000000004,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": true
+    },
+    {
+      "sensor": "AHI",
+      "name": "AHI 留出检验",
+      "lst_k": 275.9338487903607,
+      "vza": 48.42187502834754,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": false
+    }
+  ],
+  "provenance": {
+    "label": "AHI + SLSTR 已有 LST / 独立角度归一化示例",
+    "lst_source": "Frozen LST values from 2019-01-01 sample result.json; no online brightness-temperature or component retrieval",
+    "method": "SLSTR dual-view calibration of one secant coefficient; AHI held out and transferred without fitting its offset",
+    "limitations": [
+      "两角度标定无额外自由度；系数仅适用于此情景。",
+      "AHI 采用 SLSTR 角度系数为探索性跨传感器迁移，未证明普遍适用。",
+      "沿用原始样例时间、云和足迹限制；不是独立地面精度验证。"
+    ]
+  }
+}

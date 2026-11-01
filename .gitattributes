@@ -1,2 +1,9 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Fixture manifests hash the original LF bytes on every platform.
+tests/data/**/*.txt text eol=lf
+tests/data/**/*.json text eol=lf
+
+# Standalone reference snapshots use the recorded raw UTF-8/LF script bytes.
+base/templates/references/**/run.py text eol=lf

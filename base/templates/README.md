@@ -1,28 +1,43 @@
 # Case templates
 
-这里是案例模板：用 `new_case.py` 把 `case/` 骨架复制到 `cases/` 下，改配置后运行。
-也可以不用模板，直接在案例脚本里调用 `base/` 中的函数。
+`new_case.py` 默认把 `base/templates/references/` 中的自包含代码复制到新案例目录。
+科学函数和实际执行代码都在案例自己的 `run.py`；无需导入 LS4T，无统一调度器。
+也可以手动复制参考目录，或从 base 选取需要的函数粘贴到案例。
 
-模板不提供全项目统一调度器。一个案例对应一个明确的
-传感器、研究区、科学设置和时间范围；同一案例可以有多个机器配置，不应为换机器复制
-整套算法。
+一个案例对应明确的卫星或卫星组合、研究区、科学设置和时间范围；副本可独立修改，
+base 后续变化不会自动改变案例结果。来源记录只用于查对，不参与运行。
 
 ## 新建案例
 
 从项目根目录运行：
 
 ```bash
-python base/templates/new_case.py slstr heihe summer-2022 \
-  --mode study-area-first
+python base/templates/new_case.py slstr heihe summer-2022 --reference normalization
+python cases/slstr/heihe/summer-2022/run.py
 ```
 
-生成位置为 `cases/slstr/heihe/summer-2022/`。随后：
+多个卫星的具体任务可用组合名称，例如：
+
+```bash
+python base/templates/new_case.py slstr-modis heihe fusion-2022 --reference normalization
+```
+
+名称只确定任务目录；实际读取哪些卫星、如何配对和处理仍直接写在本任务代码中。
+
+生成位置为 `cases/slstr/heihe/summer-2022/`。可选 `components`、`normalization`、
+`kernel_atc`。安装目录内第三方依赖后可移到仓库外运行。
+真实任务修改 `USE_DEMO`、输入路径、参数和末尾 `main()`，按需要增加日期循环与并行。
+参考内容与输入约定见 [参考组装](references/README.md)。
+
+## 旧配置式模板（兼容）
+
+显式指定 `--legacy-template --mode study-area-first` 才复制 `case/` 骨架。旧案例可继续：
 
 1. 编辑 `case.toml`，确定年份、网格、阶段及 LS4T 版本；
 2. 复制 `machines/example.toml` 为 `machines/local.toml` 并填写本机路径；
 3. 用 `run_standard_stage.py --list` 查看该传感器已有的标准批处理阶段；
 4. 把研究区分组、下载、LSCT 权重准备和验证写入 `stages/`；
-5. 可复用的科学计算移到 `base/`，不要在多个案例间复制。
+5. 新增算法可复制到本案例内；通用改进也可以人工整理回 `base/`，不自动同步。
 
 机器文件中的路径会原样传给标准函数的 `*_root` 参数；各传感器现有的年份/日期子目录
 约定并不完全相同，接入既有数据树前应先核对对应模块。特别是当前 SLSTR 批量 LST

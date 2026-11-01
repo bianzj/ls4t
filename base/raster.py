@@ -31,6 +31,8 @@ def write_raster(
     fields: dict[str, np.ndarray],
     metadata_values: dict[str, str],
     reference_path: str | Path | None = None,
+    *,
+    nodata: float | None = None,
 ) -> None:
     gdal = _gdal()
     destination = Path(path)
@@ -75,6 +77,8 @@ def write_raster(
             band.WriteArray(np.asarray(value, dtype=np.float32))
             band.SetDescription(name)
             band.SetMetadataItem("LS4T_FIELD", name)
+            if nodata is not None:
+                band.SetNoDataValue(float(nodata))
         for key, value in metadata_values.items():
             dataset.SetMetadataItem(str(key), str(value))
         dataset.FlushCache()

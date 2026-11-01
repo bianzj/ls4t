@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LS4T · 地表温度批处理（全链路）</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/navigation.css">
+</head>
+<body>
+<div><div id="site-navigation"></div><header class="top">
+  <h1>地表温度批处理（全链路）<small>SLSTR 解压、重整、LST 与组分反演</small></h1>
+  <button class="plain" id="open-settings" type="button">运行环境</button>
+</header></div>
+
+<div class="shell">
+  <aside class="tasks" aria-labelledby="tasks-title">
+    <div class="tasks-head">
+      <h2 id="tasks-title">任务</h2>
+      <button class="primary" id="new-task" type="button">新建任务</button>
+    </div>
+    <ul class="task-list" id="task-list"></ul>
+  </aside>
+
+  <section class="detail" id="detail" aria-live="polite"></section>
+</div>
+
+<dialog id="settings">
+  <h2>运行环境</h2>
+  <div class="form" id="settings-form"></div>
+  <div class="actions">
+    <button class="primary" id="save-settings" type="button">保存</button>
+    <button class="plain" id="close-settings" type="button">关闭</button>
+    <span class="note">对所有任务生效，保存在 gui/local.json。</span>
+  </div>
+</dialog>
+
+<dialog id="picker">
+  <h2 id="picker-title">选择位置</h2>
+  <div class="form">
+    <div class="wide row"><input id="picker-path" aria-label="当前路径"><button class="plain" id="picker-up" type="button">上一级</button></div>
+    <div class="wide picker-list" id="picker-list"></div>
+  </div>
+  <div class="actions">
+    <button class="primary" id="picker-ok" type="button">使用此位置</button>
+    <button class="plain" id="picker-cancel" type="button">取消</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/navigation.js"></script><script src="/app.js"></script>
+</body>
+</html>

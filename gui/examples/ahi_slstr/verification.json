@@ -1,0 +1,61 @@
+{
+  "verified_on": "2026-10-25",
+  "status": "PASS",
+  "scope": "Local workbench, controlled tests and one exploratory real-observation sample; not ground validation",
+  "tests": {
+    "passed": 46,
+    "command": "python -m pytest tests/test_known_inputs.py tests/test_workbench_api.py tests/test_gui.py tests/test_gui_tasks.py tests/test_retrieval.py tests/test_calibration.py -q"
+  },
+  "browser": {
+    "desktop": [
+      1440,
+      1050
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "mobile_scroll_width": 390,
+    "checked": [
+      "sample load and run",
+      "two-component output",
+      "three-component insufficient-observation error",
+      "three-component solve with third view",
+      "parameter edit invalidates result and export",
+      "malformed JSON preserves old configuration",
+      "reference curves and results table",
+      "batch route HTTP 200"
+    ],
+    "screenshots": [
+      "workbench-desktop.png",
+      "workbench-mobile.png"
+    ]
+  },
+  "independent_review": {
+    "important_findings": 1,
+    "resolved": 1,
+    "remaining": 0
+  },
+  "files": {
+    "sample.json": {
+      "bytes": 9545,
+      "sha256": "cc407850f1e7542a4366d0daaa733b29f80eea3e0d3b682021d777fea5416f03"
+    },
+    "result.json": {
+      "bytes": 13243,
+      "sha256": "3b26264a17762439a9a29cf14cf380262ac14349945da00b876167ae50f02a89"
+    },
+    "source_pixels.npz": {
+      "bytes": 4452,
+      "sha256": "1442c0fe21931320f29ee88068a6520fe6bfa336c31c8c0cfff9b6a16b3cadac"
+    },
+    "slstr_coefficients.npz": {
+      "bytes": 4890,
+      "sha256": "6985cb5300d0690e30345134965b924413191afebe9c094ba8423aa08cf35037"
+    },
+    "ahi_coefficients.npz": {
+      "bytes": 4893,
+      "sha256": "1e0d0e64797210b9e43b0185a8e5b7404008beedf47d8d6ffb1d76213a2a901f"
+    }
+  }
+}

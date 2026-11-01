@@ -101,7 +101,13 @@ SLSTR 单景处理必须先完成几何重建，但不要求先投影。需要�
 - `base/normalization/angle.py`
 - `base/normalization/time.py`
 - `base/normalization/space.py`
+- `base/normalization/downscale.py`（辅助变量降尺度，保持粗像元温度均值）
 - `base/normalization/sensor.py`
 - `base/normalization/fusion.py`
 
 每一步都有自己的输入目录、输出目录、年份和物理参数。
+
+GeoTIFF 单景入口为 `base/normalization/raster.py` 中的 `angle_normalize_raster`、
+`time_normalize_raster`、`downscale_raster`。多源显式配置及离线示例见
+[多源归一化案例](../cases/multisource-normalization/README.md)。阶段产品记录来源和校正历史；
+尚未具备共同基准及不确定度时，不自动标记为可融合 L3N。

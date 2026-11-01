@@ -132,7 +132,6 @@
 | [cases/aatsr/machines/example.toml](<../../cases/aatsr/machines/example.toml>) | 机器路径与运行资源配置：example；仅该机器运行时必需 | 维护说明/配置 | 未发现当前静态导入（非删改依据） | 保留维护；模板/配置应随其调用方一起调整 |
 | [cases/aatsr/machines/hero.toml](<../../cases/aatsr/machines/hero.toml>) | 机器路径与运行资源配置：hero；仅该机器运行时必需 | 维护说明/配置 | 未发现当前静态导入（非删改依据） | 保留维护；模板/配置应随其调用方一起调整 |
 | [cases/aatsr/util_aatsr.py](<../../cases/aatsr/util_aatsr.py>) | AATSR 案例专用辅助数据和站点读取、反演支持函数；模块说明：AATSR case helpers moved from the run project on 2026-09-16.；定义：aatsr_read_aux_data, aatsr_read_crown_data, aatsr_clo_optimized, aatsr_read_sites_obs, aatsr_read_sites_clo … | 案例按需保留 | 引用：cases/aatsr/aatsr_lsct.py; cases/aatsr/aatsr_lsct_latlon.py; cases/aatsr/aatsr_lsct_ndvi.py 等 8 个 | 仅对应传感器/区域任务需要；停止该任务后可整体归档 |
-| [cases/aster/README.md](<../../cases/aster/README.md>) | 所在模块的用途、运行约定或迁移说明；标题：ASTER cases | 维护说明/配置 | 未发现当前静态导入（非删改依据） | 保留维护；模板/配置应随其调用方一起调整 |
 | [cases/catalog.toml](<../../cases/catalog.toml>) | 案例状态、入口及归档登记；已退出失效 SLSTR 旧入口 | 维护说明/配置 | 文档/配置：README.md; base/templates/README.md | 保留维护；模板/配置应随其调用方一起调整 |
 | [cases/msg/README.md](<../../cases/msg/README.md>) | 所在模块的用途、运行约定或迁移说明；标题：MSG cases | 维护说明/配置 | 未发现当前静态导入（非删改依据） | 保留维护；模板/配置应随其调用方一起调整 |
 | [cases/msg/Validation_Stats_Nadir_vs_Obs.csv](<../../cases/msg/Validation_Stats_Nadir_vs_Obs.csv>) | 历史 EVO LST 验证对照表；保留一份可追溯基准 | 测试/基准必需 | 文档/配置：cases/msg/README.md | 保留测试与输入基准；相同像元内容不代表同一观测时次 |

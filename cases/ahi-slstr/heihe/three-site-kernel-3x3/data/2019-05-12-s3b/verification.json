@@ -1,0 +1,246 @@
+{
+  "window_shape": [
+    3,
+    3
+  ],
+  "ahi_used_for_calibration": true,
+  "validation": "whole-footprint leave-one-out; spatially dependent",
+  "heldout_perturbation": [
+    {
+      "fit_id": "DM:lsf:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "DM:lsf_rl:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "AR:lsf_rl:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:0",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:1",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:2",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:3",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:4",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:5",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:6",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:7",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    },
+    {
+      "fit_id": "SDQ:lsf_rl:8",
+      "heldout_value_perturbation_max_coefficient_change": 0.0
+    }
+  ],
+  "source_grid_m": {
+    "SLSTR": 1000,
+    "AHI": 2000
+  },
+  "native_cells_per_ahi_footprint": 4,
+  "matched_triplets_by_site": {
+    "DM": 9,
+    "AR": 9,
+    "SDQ": 9
+  },
+  "code_hashes": {
+    "config.json": "160e5b1cb507bbbe2d6463ea16518513bb4e465ebc891c8c07fb4f92c3eb1f65",
+    "functions.py": "051fada06e5e54a4f98095681583dba44bcbd97d6eb90082f29b56efa3125923",
+    "joint.py": "0708d3e534fee09ccd787b9c7b1a1ac8e1b115a8721ecff92fa59de6b5e41cb9",
+    "prepare.py": "c9fce3ce133e14b6d2e79bacf8978421f00c6a1099dd8b59447fa346e159930a",
+    "README.md": "dbc1828b5f46823818d5bb06266fa8b1a6a776aa0472a27c9574a1c3791b28c2",
+    "requirements.txt": "cca95cdd0d399b18e5c26f24377842dba091a64941aef323dff3ca112ce60d2a",
+    "run.ps1": "fb32213e9a087d766d3fc1b08dff1a76e11bdd330a38e8ea2e178c93a7236de1",
+    "run.py": "ea65832d49d22846322d555a0754d53a87efc31d7af7951d9de6a965e4265626"
+  }
+}

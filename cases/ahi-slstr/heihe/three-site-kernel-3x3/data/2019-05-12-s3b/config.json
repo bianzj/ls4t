@@ -1,0 +1,28 @@
+{
+  "data_root": "H:/data/rs/data2019",
+  "station_file": "H:/data/field/heihe_site.txt",
+  "output_parent": "D:/cases/ls4t/ahi-slstr-three-site-kernel-3x3",
+  "date": "2019-05-12",
+  "platform": "S3B",
+  "date_selection_note": "花寨子替换为阿柔后，原2019-10-30阿柔无完整AHI质量合格配对。按2019-05-01至10-31日期升序、同日S3A再S3B检查，选择首个三站各9组完整质量合格配对的日期2019-05-12 S3B；未使用拟合结果或残差选日，质量阈值不变。",
+  "sites": [
+    "DM",
+    "AR",
+    "SDQ"
+  ],
+  "site_names": {
+    "DM": "大满",
+    "AR": "阿柔",
+    "SDQ": "四道桥"
+  },
+  "window_size": 3,
+  "minimum_complete_triplets": 5,
+  "maximum_condition": 100,
+  "maximum_time_difference_minutes": 5,
+  "maximum_acquisition_span_minutes": 10,
+  "maximum_ahi_tcc_proxy": 0.2,
+  "maximum_correction_k": 10,
+  "rl_width": 1.0,
+  "width_sensitivity": [],
+  "seed": 20261028
+}

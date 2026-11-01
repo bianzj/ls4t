@@ -1,0 +1,16 @@
+{
+  "commit": "9c17aa2ada8e5da7ca902b02ae6f3fc66cb34d90",
+  "reason": "Preserve existing GUI batch algorithms after case scripts were removed; byte-identical snapshots, not restored case directories",
+  "files": [
+    {
+      "source": "cases/slstr/slstr_lst_scene_parallel.py",
+      "file": "slstr_lst_scene_parallel.py",
+      "sha256": "54e87d0a5c4988211490472e8c92593025683bffcb45c7310c68ba0172c3cb92"
+    },
+    {
+      "source": "cases/slstr/slstr_lsct2_scene_parallel.py",
+      "file": "slstr_lsct2_scene_parallel.py",
+      "sha256": "31405951cd2199057ee3aa602e19adae671692f17019250cd6a9d28a7e4231a2"
+    }
+  ]
+}

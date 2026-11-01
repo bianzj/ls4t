@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-26",
+  "scope": "Two workspaces and seven independent functional entries",
+  "test_command": "python -m pytest tests/test_workspace_tools.py tests/test_separate_routes.py tests/test_known_inputs.py tests/test_workbench_api.py tests/test_gui.py tests/test_gui_tasks.py tests/test_retrieval.py tests/test_calibration.py -q",
+  "tests_passed": 57,
+  "browser_checks": [
+    "Home shows exactly three retrieval and four normalization entries",
+    "Surface retrieval outputs existing sample LST without component temperatures",
+    "Component and angular samples reproduce previous route results",
+    "Time controlled example executes and restores result after visiting space page",
+    "Space controlled example produces weighted 303 K and missing cells",
+    "Normalization batch completes two independent controlled example jobs",
+    "Empty time amplitude draft survives navigation and old results stay absent",
+    "Trailing-slash surface URL stays in surface route and restores its own result",
+    "Existing raster task list remains readable without executing new production",
+    "Surface, time and raster task page document widths are 390 at 390-pixel viewport"
+  ],
+  "review": "Cloud rejection, per-job exception isolation and trailing-slash handling fixed; no remaining blocking findings",
+  "screenshots": ["workspace-home.png", "time-workspace.png", "surface-mobile.png", "time-mobile.png"],
+  "limits": "Time and space examples are controlled demonstrations. AHI/SLSTR sample remains exploratory workflow verification, not ground accuracy validation. Normalization batch processes independent JSON configurations; raster full-chain processing remains the existing SLSTR stage task queue."
+}

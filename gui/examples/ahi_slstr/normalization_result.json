@@ -1,0 +1,69 @@
+{
+  "schema": "ls4t.angular-result/v1",
+  "route": "normalization",
+  "method": "secant",
+  "coefficient_mode": "fit",
+  "coefficient_k": 1.9101907713194124,
+  "reference_vza": 0.0,
+  "observations": [
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR nadir",
+      "lst_k": 274.6199730101605,
+      "vza": 6.59,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": true,
+      "correction_k": -0.012704935772754843,
+      "normalized_k": 274.6072680743877,
+      "predicted_k": 274.6199730101606,
+      "residual_k": -1.1368683772161603e-13
+    },
+    {
+      "sensor": "SLSTR",
+      "name": "SLSTR obliq",
+      "lst_k": 276.01994310149047,
+      "vza": 54.910000000000004,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": true,
+      "correction_k": -1.4126750271027058,
+      "normalized_k": 274.6072680743878,
+      "predicted_k": 276.0199431014905,
+      "residual_k": -5.684341886080802e-14
+    },
+    {
+      "sensor": "AHI",
+      "name": "AHI 留出检验",
+      "lst_k": 275.9338487903607,
+      "vza": 48.42187502834754,
+      "sigma_k": 1.0,
+      "time_utc": "2019-01-01T02:50:00Z",
+      "use_for_fit": false,
+      "correction_k": -0.9681602432693529,
+      "normalized_k": 274.9656885470913,
+      "predicted_k": 275.5754283176572,
+      "residual_k": 0.35842047270347166
+    }
+  ],
+  "warnings": [
+    "独立 secant 角度模型；不求解组分温度，不改变观测时间，不校正太阳/方位角和光谱差异。",
+    "两角度仅确定截距和角度系数，没有额外标定自由度；零残差不是精度证明。",
+    "向另一传感器应用同一角度系数属于探索性迁移；留出差异仍含光谱和足迹影响。"
+  ],
+  "fit_count": 2,
+  "heldout_count": 1,
+  "fit_rmse_k": 8.987733679556355e-14,
+  "heldout_rmse_k": 0.35842047270347166,
+  "condition_number": 3.1586274723637,
+  "provenance": {
+    "label": "AHI + SLSTR 已有 LST / 独立角度归一化示例",
+    "lst_source": "Frozen LST values from 2019-01-01 sample result.json; no online brightness-temperature or component retrieval",
+    "method": "SLSTR dual-view calibration of one secant coefficient; AHI held out and transferred without fitting its offset",
+    "limitations": [
+      "两角度标定无额外自由度；系数仅适用于此情景。",
+      "AHI 采用 SLSTR 角度系数为探索性跨传感器迁移，未证明普遍适用。",
+      "沿用原始样例时间、云和足迹限制；不是独立地面精度验证。"
+    ]
+  }
+}

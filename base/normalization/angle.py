@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+from dataclasses import dataclass
 
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
 from base.parameters import require_parameters
+from base.quality import usable
+from ._fit import fit_linear
+from ._validation import quality_flags
 
 
 # Execution paths and years are supplied by cases.
@@ -35,7 +39,10 @@ def angular_basis(
         secant = 1.0 / np.cos(np.deg2rad(vza)) - 1.0
     azimuth = np.cos(np.deg2rad(raa))
     solar = np.cos(np.deg2rad(sza))
-    return np.stack((secant, secant * azimuth, secant * solar), axis=-1)
+    valid = (np.isfinite(vza) & (vza >= 0) & (vza < 90)
+             & np.isfinite(sza) & (sza >= 0) & (sza <= 180) & np.isfinite(raa))
+    basis = np.stack((secant, secant * azimuth, secant * solar), axis=-1)
+    return np.where(valid[..., None], basis, np.nan)
 
 
 def normalize_directional(
@@ -62,11 +69,51 @@ def normalize_directional(
         reference_solar_zenith_deg,
         reference_relative_azimuth_deg,
     )
+    if not np.isfinite(reference).all():
+        raise ValueError("invalid reference geometry")
     coeff = np.asarray(coefficients_k, dtype=np.float64)
-    if coeff.shape[-1] != 3:
+    if coeff.ndim == 0 or coeff.shape[-1] != 3:
         raise ValueError("directional coefficients must end with three kernel coefficients")
     correction = np.sum((reference - observed) * coeff, axis=-1)
-    return np.asarray(temperature_k, dtype=np.float64) + correction
+    temperature = np.asarray(temperature_k, dtype=np.float64)
+    result = temperature + correction
+    valid = np.isfinite(temperature) & (temperature >= 150) & (temperature <= 400)
+    return np.where(valid & np.isfinite(result) & (result >= 150) & (result <= 400), result, np.nan)
+
+
+@dataclass(frozen=True)
+class DirectionalFit:
+    coefficients_k: np.ndarray
+    rmse_k: float
+    sample_count: int
+
+
+def fit_directional_coefficients(
+    temperature_k, reference_temperature_k, view_zenith_deg, solar_zenith_deg,
+    relative_azimuth_deg, *, reference_view_zenith_deg=0.,
+    reference_solar_zenith_deg=30., reference_relative_azimuth_deg=0.,
+    weights=1., quality_flag=0,
+) -> DirectionalFit:
+    """Calibrate one three-kernel model from matched same-time reference pairs.
+
+    Supply co-located, same-state reference temperatures at the stated reference
+    geometry. Mixing unrelated dates/land covers can confound geometry and LST.
+    rmse_k is an in-sample diagnostic, not independent retrieval accuracy.
+    """
+    t, ref, v, s, a, w, flags = np.broadcast_arrays(
+        *[np.asarray(x) for x in (temperature_k, reference_temperature_k,
+          view_zenith_deg, solar_zenith_deg, relative_azimuth_deg, weights, quality_flag)]
+    )
+    reference = angular_basis(reference_view_zenith_deg, reference_solar_zenith_deg,
+                              reference_relative_azimuth_deg)
+    if not np.isfinite(reference).all():
+        raise ValueError("invalid reference geometry")
+    design = angular_basis(v, s, a) - reference
+    valid = (np.isfinite(design).all(axis=-1) & np.isfinite(t) & np.isfinite(ref)
+             & (t >= 150) & (t <= 400) & (ref >= 150) & (ref <= 400)
+             & np.isfinite(w) & (w > 0) & usable(quality_flags(flags)))
+    coefficients, rmse = fit_linear(design[valid], (t-ref)[valid], w[valid])
+    return DirectionalFit(coefficients, rmse, int(valid.sum()))
 
 
 def angle_normalize_years(

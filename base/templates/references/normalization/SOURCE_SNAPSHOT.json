@@ -1,0 +1,184 @@
+{
+  "copied_on": "2026-10-24",
+  "policy": "Frozen source copy; edits and upgrades are case-local and manual.",
+  "hash_conventions": "reference_sha256 and file_sha256: raw file bytes; definition text hashes: UTF-8 with LF and final newline",
+  "reference_sha256": "195e62d0050c3c14fcb2e71ead096a9a26c57d20008df43c74a81255adf9d3a1",
+  "sources": [
+    {
+      "path": "base/quality.py",
+      "file_sha256": "746201ea3278083ab426014fd1377000ee4119744a50e41a6797f77f08b382e3",
+      "definitions": [
+        {
+          "symbol": "QualityFlag",
+          "line": 10,
+          "end_line": 20,
+          "original_text_sha256": "345c889ded7a0c22a1fa995b7838be5e27d7175299b55a9778e5ced70ebe51b1",
+          "copied_text_sha256": "345c889ded7a0c22a1fa995b7838be5e27d7175299b55a9778e5ced70ebe51b1"
+        },
+        {
+          "symbol": "INVALID_FLAGS",
+          "line": 23,
+          "end_line": 31,
+          "original_text_sha256": "4fe7f5c6af6c6d10d931bdf43054520201a398f552cc54e37e84ceeb3399a5e0",
+          "copied_text_sha256": "4fe7f5c6af6c6d10d931bdf43054520201a398f552cc54e37e84ceeb3399a5e0"
+        },
+        {
+          "symbol": "new_flags",
+          "line": 34,
+          "end_line": 35,
+          "original_text_sha256": "6eb0cb5eb82901b6d935833c4c9733a8a31841cbba859f62d518a034ff8e5909",
+          "copied_text_sha256": "6eb0cb5eb82901b6d935833c4c9733a8a31841cbba859f62d518a034ff8e5909"
+        },
+        {
+          "symbol": "set_flag",
+          "line": 38,
+          "end_line": 39,
+          "original_text_sha256": "58514608ecf3ac2606090dfc301a4b831fb2ae611eda8d537769b781d86bbda0",
+          "copied_text_sha256": "58514608ecf3ac2606090dfc301a4b831fb2ae611eda8d537769b781d86bbda0"
+        },
+        {
+          "symbol": "usable",
+          "line": 42,
+          "end_line": 43,
+          "original_text_sha256": "d92a391a30f5d0abf13d86a8841f8b90cbd17e0723b0478aa616176cffff8d49",
+          "copied_text_sha256": "d92a391a30f5d0abf13d86a8841f8b90cbd17e0723b0478aa616176cffff8d49"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/normalization/_fit.py",
+      "file_sha256": "c3564f1dd5df7e7a0b39856696a0509d47eae612fb4b7c6ee226bc991dcf0a14",
+      "definitions": [
+        {
+          "symbol": "fit_linear",
+          "line": 7,
+          "end_line": 23,
+          "original_text_sha256": "33985532a4005230c98a8a43d1fef1e8a58b7e103dd2a84ea833e21d0a3a0eec",
+          "copied_text_sha256": "33985532a4005230c98a8a43d1fef1e8a58b7e103dd2a84ea833e21d0a3a0eec"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/normalization/_validation.py",
+      "file_sha256": "e990f67f895a49f15a6d87f793ad0ef2b9f1ec4fbca77f2b9c21f32413dd6359",
+      "definitions": [
+        {
+          "symbol": "quality_flags",
+          "line": 7,
+          "end_line": 11,
+          "original_text_sha256": "3f48f23e1606ff3510eb5b1d79a6292cbed532ecef96dc533a101ac226d83af9",
+          "copied_text_sha256": "3f48f23e1606ff3510eb5b1d79a6292cbed532ecef96dc533a101ac226d83af9"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/normalization/angle.py",
+      "file_sha256": "5f808db6c6110025f8578112375a4d09d9f9567dfabce4dca87e54579f12ee74",
+      "definitions": [
+        {
+          "symbol": "REFERENCE_VIEW_ZENITH_DEG",
+          "line": 22,
+          "end_line": 22,
+          "original_text_sha256": "a666deda1260a430c789a3d963add07cd0d0ec151860f2012ffc9c0ddeaa7844",
+          "copied_text_sha256": "a666deda1260a430c789a3d963add07cd0d0ec151860f2012ffc9c0ddeaa7844"
+        },
+        {
+          "symbol": "REFERENCE_SOLAR_ZENITH_DEG",
+          "line": 23,
+          "end_line": 23,
+          "original_text_sha256": "a8e98445f6fb29052b153a97b1541409b03ae8908e30e5b573095f102a483c90",
+          "copied_text_sha256": "a8e98445f6fb29052b153a97b1541409b03ae8908e30e5b573095f102a483c90"
+        },
+        {
+          "symbol": "REFERENCE_RELATIVE_AZIMUTH_DEG",
+          "line": 24,
+          "end_line": 24,
+          "original_text_sha256": "61e1ad715eda14dc642529c4c53a5f7ca8b59ee81b6d78c3d5067d504ec3f999",
+          "copied_text_sha256": "61e1ad715eda14dc642529c4c53a5f7ca8b59ee81b6d78c3d5067d504ec3f999"
+        },
+        {
+          "symbol": "angular_basis",
+          "line": 28,
+          "end_line": 45,
+          "original_text_sha256": "68d2a38711fd799cf457f6049ed73dcf151ad3eee73e3c22c14a2b70bcd7a257",
+          "copied_text_sha256": "68d2a38711fd799cf457f6049ed73dcf151ad3eee73e3c22c14a2b70bcd7a257"
+        },
+        {
+          "symbol": "normalize_directional",
+          "line": 48,
+          "end_line": 81,
+          "original_text_sha256": "ac9eddb0c9ffca09d191ee785374c7e5096a861159e774e92995dbce696d626f",
+          "copied_text_sha256": "ac9eddb0c9ffca09d191ee785374c7e5096a861159e774e92995dbce696d626f"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/normalization/time.py",
+      "file_sha256": "535f51cae57b28bca011699d996b3c1c36de37d7930b0d0f18cf2af24b2ef0d6",
+      "definitions": [
+        {
+          "symbol": "REFERENCE_LOCAL_SOLAR_TIME_HOUR",
+          "line": 20,
+          "end_line": 20,
+          "original_text_sha256": "c396f8322ec912f6237bc0467e0ecdddc4f852964bb4382c7266c9ee569f1286",
+          "copied_text_sha256": "c396f8322ec912f6237bc0467e0ecdddc4f852964bb4382c7266c9ee569f1286"
+        },
+        {
+          "symbol": "diurnal_anomaly",
+          "line": 24,
+          "end_line": 37,
+          "original_text_sha256": "794b62cf064a7d7860046b5f3fcf91e75d7dce7ff47422b425fc75ca5174f47d",
+          "copied_text_sha256": "794b62cf064a7d7860046b5f3fcf91e75d7dce7ff47422b425fc75ca5174f47d"
+        },
+        {
+          "symbol": "normalize_local_solar_time",
+          "line": 40,
+          "end_line": 57,
+          "original_text_sha256": "1e8ffe33918ec1655b924d418b0342bb41c9f7c4abfff7c0840d265866b63c70",
+          "copied_text_sha256": "1e8ffe33918ec1655b924d418b0342bb41c9f7c4abfff7c0840d265866b63c70"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/normalization/downscale.py",
+      "file_sha256": "280b3857ec518a467f294c831cdca6d2ae294308dd21748dff8a4136fc93e95f",
+      "definitions": [
+        {
+          "symbol": "DownscaleResult",
+          "line": 17,
+          "end_line": 26,
+          "original_text_sha256": "86dafc7b4df14d1b9d299c4725f56b68bcfcdf4f96b0deae62e44d93ba292ea6",
+          "copied_text_sha256": "86dafc7b4df14d1b9d299c4725f56b68bcfcdf4f96b0deae62e44d93ba292ea6"
+        },
+        {
+          "symbol": "tsharp_cover_fraction",
+          "line": 29,
+          "end_line": 40,
+          "original_text_sha256": "69040b12af51e9c7d2c3167965e236f5240723127b0a79b876329e19979f5554",
+          "copied_text_sha256": "69040b12af51e9c7d2c3167965e236f5240723127b0a79b876329e19979f5554"
+        },
+        {
+          "symbol": "downscale_temperature",
+          "line": 43,
+          "end_line": 141,
+          "original_text_sha256": "c55fe2bedd4270e13713f5b2013877c2ea3171c183ee1191ed758c0911edcfba",
+          "copied_text_sha256": "c55fe2bedd4270e13713f5b2013877c2ea3171c183ee1191ed758c0911edcfba"
+        },
+        {
+          "symbol": "downscale_tsharp",
+          "line": 144,
+          "end_line": 153,
+          "original_text_sha256": "135ba533b88bddb5235f8c2ad2bbc11c53c71640ced8f585bd7eceb740f63315",
+          "copied_text_sha256": "135ba533b88bddb5235f8c2ad2bbc11c53c71640ced8f585bd7eceb740f63315"
+        }
+      ],
+      "adaptation": "none"
+    }
+  ],
+  "execution_policy": "External data/product paths must be explicitly supplied; no default storage roots."
+}

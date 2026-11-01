@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LS4T · 归一化工作台</title><link rel="icon" href="data:,"><link rel="stylesheet" href="/workbench.css"><link rel="stylesheet" href="/navigation.css"></head>
+<body><div id="site-navigation"></div><main>
+<div class="heading"><div><h1 id="tool-title"></h1><p id="tool-description"></p></div><div class="tools"><button id="example">加载演示样例</button><button id="import">导入配置</button><button id="export-config">导出配置</button><input id="config-file" type="file" accept=".json" hidden></div></div>
+<form id="normalize-form" class="normalization-editor">
+<section><h2>归一化设置</h2>
+<div id="time-fields"><label>参考地方太阳时 / h<input id="reference-hour" type="number" min="0" max="23.999" step="any" value="13.5" required></label><label>日变化振幅 / K<input id="amplitude" type="number" min="0" max="100" step="any" value="10" required></label><label>峰值地方太阳时 / h<input id="peak-hour" type="number" min="0" max="23.999" step="any" value="14" required></label><p>使用外部给定的单谐波日变化参数。所有时刻使用地方太阳时，不能直接填入 UTC 或北京时间。</p></div>
+<div id="space-fields" hidden><label>目标行数<input id="grid-rows" type="number" min="1" max="256" value="2" required></label><label>目标列数<input id="grid-columns" type="number" min="1" max="256" value="2" required></label><p>输入已映射到目标网格的行列号，从 0 开始。按正权重聚合；空格保留缺测。</p></div>
+<div id="batch-fields" hidden><p>导入时间、角度或空间归一化页面导出的 JSON 配置。每份配置独立执行，失败任务不会阻断其他任务。</p><label>选择配置文件（可多选）<input id="batch-files" class="batch-files" type="file" accept=".json" multiple></label><button id="clear-jobs" type="button">清空任务</button><p>最多 64 个任务；结果统一导出。</p></div>
+<button id="run-normalize" class="primary" type="submit">开始归一化</button><span id="status" role="status"></span></section>
+<section><h2 id="input-title">观测数据</h2><div id="rows-input"><label for="observations-text" id="columns-label"></label><textarea id="observations-text" aria-label="观测数据行" spellcheck="false" required></textarea><p id="input-note"></p></div><div id="job-list" hidden></div><p id="provenance-label" class="hint"></p></section>
+</form><div id="error" role="alert" hidden></div><section id="results" aria-live="polite"></section>
+<footer>LS4T · 归一化工作台 · 各路线独立计算</footer>
+</main><script src="/navigation.js"></script><script src="/normalize.js"></script></body></html>

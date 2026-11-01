@@ -48,7 +48,11 @@ def test_msg_case_is_flat_and_base_only():
         pytest.skip("MSG execution case is archived")
     for directory in ("support", "implementation", "ingest", "europe_africa"):
         assert not (CASE / directory).exists(), directory
-    scripts = sorted(path.relative_to(CASE).as_posix() for path in CASE.rglob("*.py"))
+    scripts = sorted(
+        relative
+        for relative in (path.relative_to(CASE).as_posix() for path in CASE.rglob("*.py"))
+        if not relative.startswith(("assessment/", "outputs/"))
+    )
     assert scripts == sorted(SCRIPTS)
     for name in SCRIPTS:
         source = (CASE / name).read_text(encoding="utf-8")

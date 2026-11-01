@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from pathlib import Path
+from dataclasses import dataclass
 
 import numpy as np
 
 from base.files import read_npz_payload, write_npz_atomic
 from base.parameters import require_parameters
+from base.quality import usable
+from ._fit import fit_linear
+from ._validation import quality_flags
 
 
 # Execution paths and years are supplied by cases.
@@ -27,7 +31,10 @@ def diurnal_anomaly(
         np.asarray(amplitude_k, dtype=np.float64),
         np.asarray(peak_hour, dtype=np.float64),
     )
-    return amplitude * np.cos(2.0 * np.pi * (time - peak) / 24.0)
+    valid = (np.isfinite(time) & (time >= 0) & (time < 24)
+             & np.isfinite(amplitude) & (amplitude >= 0)
+             & np.isfinite(peak) & (peak >= 0) & (peak < 24))
+    return np.where(valid, amplitude * np.cos(2.0 * np.pi * (time - peak) / 24.0), np.nan)
 
 
 def normalize_local_solar_time(
@@ -40,9 +47,53 @@ def normalize_local_solar_time(
 ) -> np.ndarray:
     if reference_hour is None:
         reference_hour = REFERENCE_LOCAL_SOLAR_TIME_HOUR
+    if not np.isfinite(reference_hour) or not 0 <= reference_hour < 24:
+        raise ValueError("reference hour must be in [0, 24)")
     observed = diurnal_anomaly(local_solar_time_hour, amplitude_k, peak_hour)
     reference = diurnal_anomaly(reference_hour, amplitude_k, peak_hour)
-    return np.asarray(temperature_k, dtype=np.float64) + reference - observed
+    temperature = np.asarray(temperature_k, dtype=np.float64)
+    result = temperature + reference - observed
+    valid = np.isfinite(temperature) & (temperature >= 150) & (temperature <= 400)
+    return np.where(valid & np.isfinite(result) & (result >= 150) & (result <= 400), result, np.nan)
+
+
+@dataclass(frozen=True)
+class DiurnalFit:
+    mean_k: float
+    amplitude_k: float
+    peak_hour: float
+    rmse_k: float
+    sample_count: int
+
+
+def fit_diurnal_cycle(temperature_k, local_solar_time_hour, *, weights=1.,
+                      quality_flag=0, minimum_span_hours=6.) -> DiurnalFit:
+    """Fit one 24-hour harmonic to one site's/day's geometry-normalized samples.
+
+    Hours must use the same local solar time convention as the target. The
+    minimum circular time coverage prevents fitting a narrow overpass cluster.
+    This empirical baseline does not model clouds or asymmetric day/night DTC.
+    """
+    if not np.isfinite(minimum_span_hours) or not 0 < minimum_span_hours < 24:
+        raise ValueError("minimum time coverage must be in (0, 24)")
+    t, hour, w, flags = np.broadcast_arrays(*[np.asarray(x) for x in
+        (temperature_k, local_solar_time_hour, weights, quality_flag)])
+    valid = (np.isfinite(t) & (t >= 150) & (t <= 400) & np.isfinite(hour)
+             & (hour >= 0) & (hour < 24) & np.isfinite(w) & (w > 0) & usable(quality_flags(flags)))
+    t, hour, w = t[valid], hour[valid], w[valid]
+    if len(t) < 4:
+        raise ValueError("at least four valid diurnal samples are required")
+    ordered = np.sort(hour)
+    span = 24 - np.max(np.diff(np.r_[ordered, ordered[0] + 24]))
+    if span < minimum_span_hours:
+        raise ValueError("insufficient time span / coverage for a diurnal fit")
+    phase = 2*np.pi*hour/24
+    design = np.column_stack((np.ones(len(t)), np.cos(phase), np.sin(phase)))
+    coefficients, rmse = fit_linear(design, t, w)
+    mean, cosine, sine = coefficients
+    amplitude = float(np.hypot(cosine, sine))
+    peak = float((np.arctan2(sine, cosine)*24/(2*np.pi)) % 24) if amplitude > 1e-10 else 0.
+    return DiurnalFit(float(mean), amplitude, peak, rmse, len(t))
 
 
 def time_normalize_years(

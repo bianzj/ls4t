@@ -1,48 +1,21 @@
-# LS4T cases
+# LS4T 当前案例
 
-这里是**执行案例区**：每个子目录是一个单独的执行案例，用真实数据、真实机器路径运行。
-函数和模板都在 `base/`，案例只从 `base` 导入；怎么用不做限制——可以从
-`base/templates/` 复制模板改配置运行，也可以直接写脚本调用 `base/` 中的函数。
+案例保存具体任务的代码、配置和说明。完整输入与运行结果在仓库外；少量固定样本用于离线复现。
 
-```text
-cases/
-├── aatsr/  msg/  slstr/  aster/   各传感器的执行案例
-├── slstr-heihe/ slstr-europe/ slstr-america/  由模板生成的 SLSTR 日拼接案例
-├── slstr-huailai/ slstr-xizang/     追加的 SLSTR 区域案例
-├── msg/experiments/               MSG 方法对照，独立于正式反演
-├── stream/global/era5/             STREAM 的 ERA5 驱动数据案例
-├── _archive/                      归档区
-│   ├── aatsr/、msg/、slstr/       逐次迁移留下的历史归档
-│   └── legacy/、shared/、compatibility/  更早的旧实现与兼容层
-├── catalog.toml                   案例登记
-└── projects.toml                  独立运行项目的来源索引
-```
+| 当前目录 | 定位 | 状态与边界 |
+|---|---|---|
+| [黑河三站 3×3](ahi-slstr/heihe/three-site-kernel-3x3/README.md) | 2019-05-12 大满、阿柔、四道桥 AHI+SLSTR 联合角度核拟合 | 含固定 27 组输入、参考结果及离线重放；AHI 参与拟合，阿柔质量拒绝 |
+| [黑河原窗口](ahi-slstr/heihe/three-site-kernel/README.md) | 较早窗口实验 | 保留原实现；不与 3×3 固定样本混为同一批次 |
+| [Amazon 三组分试验](slstr/amazon-3component-feasibility/README.md) | SLSTR 三组分可行性与低温筛选 | 使用外部现存 LST、LAI；不是独立精度验证，结果位于 E 盘显式配置目录 |
+| [非洲下载](slstr-africa/README.md) | Earthdata 数据获取 | 需要账号与联网；本轮不执行下载，不随对外案例分发认证信息 |
+| [_archive](_archive/README.md) | 历史脚本 | 不作为当前生产或对外推广入口 |
 
-执行案例目前有：`aatsr/`（全球 0.01° 日/月生产 + 全图 LSCT 变体 + 站点）、
-`msg/`（下载/提取/投影/LST/LSCT + 站点测试与复现）、
-`slstr/`（解压/重整/投影/LST/LSCT 五环节；旧区域快照已归档）、`aster/`（待导入说明），
-以及 `slstr-heihe/`、`slstr-europe/`、`slstr-america/` 三个模板案例。
-另有 `slstr-huailai/`、`slstr-xizang/` 区域案例。STREAM 的 ERA5 下载、逐日驱动提取及检查见
-`stream/global/era5/README.md`；它是模型输入数据案例。
-每个案例里有什么见各自的 `README.md`、`case.toml`，以及 `catalog.toml`、`projects.toml`。
+对外推广以 `D:\发布\ls4t\推广案例` 的说明、固定数据和验证回执为准。
+历史 MSG 完整结果仍在 `D:\cases\ls4t\msg\official-results`；不把其精度直接归给当前代码。
 
-## 边界
+新案例从 [通用参考脚本](../base/templates/references/README.md) 复制所需方法，按区域和时间组织，
+显式写入数据与输出路径。见 [新建工具说明](../base/templates/README.md) 和
+[案例工作流程](../docs/CASE_WORKFLOW.md)。
 
-```text
-base/             函数库：标准、可复用的实现（解压、投影、提取、LST/LSCT、角度核、rt/ 等）
-base/templates/   案例模板与审计工具
-tests/            合成与真实输入自动化测试
-cases/            执行案例：路径、年份、研究区、并行和调度
-```
-
-案例中写的计算如果被两个以上案例用到、且不再依赖具体路径/区域，就整理进 `base/` 并补测试。
-
-## 新建案例
-
-```bash
-python base/templates/new_case.py slstr heihe summer-2022 --mode study-area-first
-python base/templates/audit_cases.py
-```
-
-审计只检查 `catalog.toml` 中登记、带 `case.toml` 的案例；`_archive/` 下的目录会被跳过，
-完成后输出 `OK: <数量> registered cases`。
+旧 `catalog.toml`、`projects.toml` 及 AATSR/MSG 等旧执行根目录已不在当前活动工作树。
+现存 `base/aatsr`、`base/msg` 等算法仍保留；不恢复已移除的任务目录，不把归档当作已验收生产入口。

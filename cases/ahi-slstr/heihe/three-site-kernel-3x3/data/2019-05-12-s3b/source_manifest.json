@@ -1,0 +1,721 @@
+{
+  "files": [
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_time.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023332000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "417ce0d0803b284946697ebbc08dc52d44a8101dd20aff6b80a1ebed285fd580"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_red_nadir.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023328000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "60e10f03c64cf8dac8c7ac45b0ee7c94b23bfa6c77e1692abe27bca07cc472eb"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_nir_nadir.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023326000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "62b77c1a58c0ec7fffbb14ff777744da71e9748025607294e9e07fcc8814e69d"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\lst\\S3B_2019132_day_lst_nadir.tif",
+      "size": 1018572,
+      "mtime_ns": 1670250062000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "43a57488894ab4a06ed1f3ceb63d7569f9bc9579e432671e7ce95d1bcc4a5257"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_cloud_nadir.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023324000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "873233f891c47e1e0b0fba0d0fcdc8d3e2d35f04f03baa950bf8b7444e45a7a7"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_vza_nadir.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023334000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "275b0ad2a76e4ab1adbbc9ae2d4a0ce04e11828b9db4a7e5db7575caaf74fce7"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_sza_nadir.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023330000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "85a8ff8bd4111bb0a93954a9115f87f086adcbfecc6e4f2534e66460f1f5bff3"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_vaa_nadir.tif",
+      "size": 1018572,
+      "mtime_ns": 1710057392000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "4e3e883b7b579830661f8aa23800de1be8a2f2e3cc89beed52b765710f46fb33"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_saa_nadir.tif",
+      "size": 1018572,
+      "mtime_ns": 1710057602000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "4eb7537b0fa5b12e0a1f8d48788b36ac52088128cfb38a8c6755f2a81fc19cc0"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\lst\\S3B_2019132_day_lst_obliq.tif",
+      "size": 1018572,
+      "mtime_ns": 1670251126000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "1b3504e37f6a51889ae151d7e18612850460d64dad8f18e136a6591766d98a69"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_cloud_obliq.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023326000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "64ad29f308c918eadab70434d24027c756cbadeeb48e0e863c05703514e193fc"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_vza_obliq.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023336000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "91bc5d611d33666de28b48a04f8506ec7204443409edfdbc893b9362e83e0ccc"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_sza_obliq.tif",
+      "size": 1018569,
+      "mtime_ns": 1669023332000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "790299868faa519b945528b6ad8b3a85f01043a23d72fc22f3f8067402ebea48"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_vaa_obliq.tif",
+      "size": 1018572,
+      "mtime_ns": 1710057392000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "321771a9697bb43fe757060a9585c62bb96e67409ebd6797916ef7ca6c2cb4d2"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\s3b_heihe\\s3b_heihe\\tif\\S3B_2019132_day_saa_obliq.tif",
+      "size": 1018572,
+      "mtime_ns": 1710057602000000000,
+      "shape": [
+        582,
+        437
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        1000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -1000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "6b3394494443f43b1480934f7cbaabe850a4ff49906acb02738b03e3d7121389"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\lst\\05\\12\\AHI_2019132_0400_lst.tif",
+      "size": 255474,
+      "mtime_ns": 1670843104000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "603626640e10644b263ecd10c65961c29930dfb1345542a1c3c353bafa300799"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0400_tcc.tif",
+      "size": 255471,
+      "mtime_ns": 1670622414000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "a8e782dfeae7c43496d84b6c4d7c1471a1390b1989f52cc234033f0276c69f75"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0400_sza.tif",
+      "size": 255471,
+      "mtime_ns": 1670622414000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "0dff6aaa4e7ede24e836b53197060b74fa96cd799fc1c1876c965ac8ae3f6a73"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0400_saa.tif",
+      "size": 255471,
+      "mtime_ns": 1670622414000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "939d6031fde51b486bd16f6cace7245dba7d789d3ae5eac6b7443af4d19da09f"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\lst\\05\\12\\AHI_2019132_0350_lst.tif",
+      "size": 255474,
+      "mtime_ns": 1670843104000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "f9468441d299f9b35fdf61f8a333521ced39ff26232888f01e1ffab939565acd"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0350_tcc.tif",
+      "size": 255471,
+      "mtime_ns": 1670622414000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "7121441fe05177687ebba52de224c7b779e14ec41702dac5675019defa79aeae"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0350_sza.tif",
+      "size": 255471,
+      "mtime_ns": 1670622412000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "f2b52efcf608bb1cf531ffb61e554821e0fdac6a955c03cf6db6d203b8202222"
+    },
+    {
+      "path": "H:\\data\\rs\\data2019\\ahi2019_heihe\\tif\\05\\12\\AHI_2019132_0350_saa.tif",
+      "size": 255471,
+      "mtime_ns": 1670622412000000000,
+      "shape": [
+        291,
+        219
+      ],
+      "crs": "EPSG:32649",
+      "transform": [
+        2000.0,
+        0.0,
+        -680505.432,
+        0.0,
+        -2000.0,
+        4805591.695,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "dtype": "float32",
+      "nodata": null,
+      "scales": [
+        1.0
+      ],
+      "offsets": [
+        0.0
+      ],
+      "sha256": "3fa9ad93f191e878bff617ef70416477e4f07545e11a5c66d354e040a6e888e4"
+    }
+  ],
+  "stations": [
+    {
+      "code": "DM",
+      "lon": 100.3722,
+      "lat": 38.8556,
+      "elevation_m": 1556.0,
+      "name": "大满"
+    },
+    {
+      "code": "AR",
+      "lon": 100.4643,
+      "lat": 38.0473,
+      "elevation_m": 3033.0,
+      "name": "阿柔"
+    },
+    {
+      "code": "SDQ",
+      "lon": 101.1374,
+      "lat": 42.0012,
+      "elevation_m": 873.0,
+      "name": "四道桥"
+    }
+  ],
+  "station_file": {
+    "path": "H:/data/field/heihe_site.txt",
+    "sha256": "fff5b7540ee19c44d9fd6c60495dbdb207272a663c616e2de621004a36632f98"
+  }
+}

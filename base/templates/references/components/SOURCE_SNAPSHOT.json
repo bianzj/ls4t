@@ -1,0 +1,114 @@
+{
+  "copied_on": "2026-10-24",
+  "policy": "Frozen source copy; edits and upgrades are case-local and manual.",
+  "hash_conventions": "reference_sha256 and file_sha256: raw file bytes; definition text hashes: UTF-8 with LF and final newline",
+  "reference_sha256": "c05206cbe1e2621d8aa0d20c3862759b9d0569ed9766e2753f7cfa05fd3dc8c9",
+  "sources": [
+    {
+      "path": "base/quality.py",
+      "file_sha256": "746201ea3278083ab426014fd1377000ee4119744a50e41a6797f77f08b382e3",
+      "definitions": [
+        {
+          "symbol": "QualityFlag",
+          "line": 10,
+          "end_line": 20,
+          "original_text_sha256": "345c889ded7a0c22a1fa995b7838be5e27d7175299b55a9778e5ced70ebe51b1",
+          "copied_text_sha256": "345c889ded7a0c22a1fa995b7838be5e27d7175299b55a9778e5ced70ebe51b1"
+        },
+        {
+          "symbol": "INVALID_FLAGS",
+          "line": 23,
+          "end_line": 31,
+          "original_text_sha256": "4fe7f5c6af6c6d10d931bdf43054520201a398f552cc54e37e84ceeb3399a5e0",
+          "copied_text_sha256": "4fe7f5c6af6c6d10d931bdf43054520201a398f552cc54e37e84ceeb3399a5e0"
+        },
+        {
+          "symbol": "new_flags",
+          "line": 34,
+          "end_line": 35,
+          "original_text_sha256": "6eb0cb5eb82901b6d935833c4c9733a8a31841cbba859f62d518a034ff8e5909",
+          "copied_text_sha256": "6eb0cb5eb82901b6d935833c4c9733a8a31841cbba859f62d518a034ff8e5909"
+        },
+        {
+          "symbol": "set_flag",
+          "line": 38,
+          "end_line": 39,
+          "original_text_sha256": "58514608ecf3ac2606090dfc301a4b831fb2ae611eda8d537769b781d86bbda0",
+          "copied_text_sha256": "58514608ecf3ac2606090dfc301a4b831fb2ae611eda8d537769b781d86bbda0"
+        },
+        {
+          "symbol": "usable",
+          "line": 42,
+          "end_line": 43,
+          "original_text_sha256": "d92a391a30f5d0abf13d86a8841f8b90cbd17e0723b0478aa616176cffff8d49",
+          "copied_text_sha256": "d92a391a30f5d0abf13d86a8841f8b90cbd17e0723b0478aa616176cffff8d49"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/radiometry.py",
+      "file_sha256": "93edab1406ac8e2726f79df41a0b9355564d0ce5f12e2d5dc06f92a40af2df3e",
+      "definitions": [
+        {
+          "symbol": "C1_UM",
+          "line": 11,
+          "end_line": 11,
+          "original_text_sha256": "f9581b88265edb1926df2f4e120fdef71f093912b63db93de4c9778e0f087ba0",
+          "copied_text_sha256": "f9581b88265edb1926df2f4e120fdef71f093912b63db93de4c9778e0f087ba0"
+        },
+        {
+          "symbol": "C2_UM_K",
+          "line": 12,
+          "end_line": 12,
+          "original_text_sha256": "9eaee4a7f6df5970de1b4de991bd5d58b79848927204e3a7978ba8183d4b783d",
+          "copied_text_sha256": "9eaee4a7f6df5970de1b4de991bd5d58b79848927204e3a7978ba8183d4b783d"
+        },
+        {
+          "symbol": "planck_radiance",
+          "line": 15,
+          "end_line": 24,
+          "original_text_sha256": "616ba03e98f893e1627fa06a1b5eda8a568980a09be1659cc8dc853e0045c2a0",
+          "copied_text_sha256": "616ba03e98f893e1627fa06a1b5eda8a568980a09be1659cc8dc853e0045c2a0"
+        },
+        {
+          "symbol": "inverse_planck",
+          "line": 27,
+          "end_line": 36,
+          "original_text_sha256": "d98649d15aa0bea088ec8e4fc4ebe438e5a044decbfb1ca0a888dec93d8fef84",
+          "copied_text_sha256": "d98649d15aa0bea088ec8e4fc4ebe438e5a044decbfb1ca0a888dec93d8fef84"
+        }
+      ],
+      "adaptation": "none"
+    },
+    {
+      "path": "base/lsct.py",
+      "file_sha256": "754bae48245548486776e1e2f9d23d3d7e33f1ec0330b57818cc298eea3956d9",
+      "definitions": [
+        {
+          "symbol": "ComponentRetrievalResult",
+          "line": 17,
+          "end_line": 23,
+          "original_text_sha256": "4373654330e1eba9b3e320e164f524fb047b53030ed11879e295c4c505a65963",
+          "copied_text_sha256": "4373654330e1eba9b3e320e164f524fb047b53030ed11879e295c4c505a65963"
+        },
+        {
+          "symbol": "retrieve_components",
+          "line": 26,
+          "end_line": 112,
+          "original_text_sha256": "1260c699f9c55254eb52d4b5e2cb484cf9e4a32ff554d463ccff75ae60f3a118",
+          "copied_text_sha256": "1260c699f9c55254eb52d4b5e2cb484cf9e4a32ff554d463ccff75ae60f3a118"
+        },
+        {
+          "symbol": "retrieve_components_window",
+          "line": 115,
+          "end_line": 182,
+          "original_text_sha256": "f4605508730426faba3bbc6a5be1ec7a80f666d9436ce662cbcadc2419be10cc",
+          "copied_text_sha256": "f4605508730426faba3bbc6a5be1ec7a80f666d9436ce662cbcadc2419be10cc"
+        }
+      ],
+      "adaptation": "none"
+    }
+  ],
+  "execution_policy": "External data/product paths must be explicitly supplied; no default storage roots."
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-25",
+  "scope": "Independent component retrieval and angular normalization routes",
+  "python_tests": {
+    "command": "python -m pytest tests/test_separate_routes.py tests/test_known_inputs.py tests/test_workbench_api.py tests/test_gui.py tests/test_gui_tasks.py tests/test_retrieval.py tests/test_calibration.py -q",
+    "passed": 51
+  },
+  "javascript_syntax": "node --check gui/static/workbench.js passed",
+  "browser": {
+    "url": "http://127.0.0.1:8840/",
+    "desktop_viewport": [1440, 1050],
+    "mobile_viewport": [390, 844],
+    "mobile_scroll_width": 390,
+    "checks": [
+      "Component route returns component temperatures and residuals without normalization outputs",
+      "Normalization route uses existing LST without known inputs or component solver",
+      "Fit and supplied coefficient modes both execute",
+      "Independent route parameters and results survive switching",
+      "Incomplete one-observation component draft remains editable after switching",
+      "Blank normalization LST remains blank after switching"
+    ],
+    "screenshots": ["retrieval-route.png", "normalization-route.png", "normalization-mobile.png"]
+  },
+  "independent_review": "No remaining blocking findings after draft-restoration fix",
+  "scientific_limit": "Single-case workflow verification and cross-view consistency only; no ground-truth accuracy validation. Cross-sensor angular coefficient transfer is exploratory."
+}

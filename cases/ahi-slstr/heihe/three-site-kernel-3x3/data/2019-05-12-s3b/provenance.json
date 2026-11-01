@@ -1,0 +1,74 @@
+{
+  "schema": "ls4t.frozen-case-provenance/v1",
+  "source_run": "D:\\cases\\ls4t\\ahi-slstr-three-site-kernel-3x3\\run_20261028_233133_228292",
+  "source_checksums_sha256": "9e2111004be4749f3bac332127286baee2d3be2eb399fe5797e09ff4a52c4e67",
+  "date_selection_source": "D:\\cases\\ls4t\\ahi-slstr-three-site-kernel-3x3\\site_replacement_AR_selection_20261028.json",
+  "date_selection_sha256": "0b86059e09b04e39bef5d41a3e52f5d15908ba640b1a1041a57300512f9e7bf7",
+  "data_scope": "Decoded matched footprint table with native SLSTR temperatures and kernels; not original raster products",
+  "packaging_environment": {
+    "python": "3.11.14 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 18:30:03) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "packages": {
+      "numpy": "2.2.6",
+      "scipy": "1.17.1",
+      "pandas": "3.0.2",
+      "matplotlib": "3.10.9",
+      "rasterio": "1.4.4",
+      "pyproj": "3.7.2"
+    }
+  },
+  "frozen_files": {
+    "checksums.json": {
+      "bytes": 995,
+      "sha256": "9e2111004be4749f3bac332127286baee2d3be2eb399fe5797e09ff4a52c4e67"
+    },
+    "config.json": {
+      "bytes": 962,
+      "sha256": "33a0438a9a09a69cc7e797349b63beedcdca9ec7aad6108ced102036d9f4757b"
+    },
+    "date_selection.json": {
+      "bytes": 16212,
+      "sha256": "0b86059e09b04e39bef5d41a3e52f5d15908ba640b1a1041a57300512f9e7bf7"
+    },
+    "diagnostics.json": {
+      "bytes": 954,
+      "sha256": "3138ae6f522873828437d2b7c2c5c73528a1c676b419bf86cbdfb2416c655cca"
+    },
+    "metrics.csv": {
+      "bytes": 13419,
+      "sha256": "c6ffc54a6e8126006f026095cb0110e5082e8e1355a19c4c8f4820d37c5dde26"
+    },
+    "models.json": {
+      "bytes": 45239,
+      "sha256": "39fb85eded3ded81a6585038b5b19a72ae5d820cb10ed676934fbc9699798a4f"
+    },
+    "observations.csv": {
+      "bytes": 24345,
+      "sha256": "22b5e1758d4cabeb52769c7083c68c7748f0b7dbbc2e57026aded615b8ee05a5"
+    },
+    "predictions.csv": {
+      "bytes": 123748,
+      "sha256": "9c8762bc5b5a30b1f7a9943790adf51b9e09c7d63be4ffb5bf6df874075114d8"
+    },
+    "report.md": {
+      "bytes": 3391,
+      "sha256": "4eb2c45b8a129de09966f5043aae450ea0a363a52b8e21770ebaa1482fa131bc"
+    },
+    "source_manifest.json": {
+      "bytes": 15751,
+      "sha256": "4b914c67602d36b2ff5912d3edbadc2481f9a98d049ad7062746d72733962ba5"
+    },
+    "station_results.csv": {
+      "bytes": 7438,
+      "sha256": "f6d41fc69815e23c0ad14ace7ddf2bbd2a9a74c4af1486466e80a1ec25563d82"
+    },
+    "verification.json": {
+      "bytes": 7024,
+      "sha256": "bcb04044716b09c6bec11ddafb2df647a8b3e2e1e031d0c9afb4b5724c717a71"
+    },
+    "window_differences.png": {
+      "bytes": 208806,
+      "sha256": "887cc77626a6ba24142cc00b8b7165b048b0f09820574f461c8e8ef1c01aec1f"
+    }
+  }
+}

@@ -10,8 +10,14 @@ build/
 dist/
 tests/outputs/
 
-# Case-local machine settings and generated products
+# Defensive ignores; production data/products must physically stay outside code.
+outputs/
+products/
+results/
+# Case-local machine settings and logs
 cases/**/machines/local.toml
+gui/local.json
+gui/tasks.json
 cases/**/.case-state/
 cases/**/runs/
 cases/**/outputs/

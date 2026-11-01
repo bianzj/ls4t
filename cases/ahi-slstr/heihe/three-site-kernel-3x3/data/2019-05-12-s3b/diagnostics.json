@@ -1,0 +1,41 @@
+[
+  {
+    "site": "DM",
+    "centre_row": 225,
+    "centre_col": 128,
+    "centre_ndvi": 0.12110687878108896,
+    "slstr_minute": 236.0,
+    "requested_footprints": 9,
+    "slstr_qa_footprints": 9,
+    "complete_triplets": 9,
+    "centre_ahi_qa": true,
+    "centre_tcc": 0.0,
+    "status": "eligible"
+  },
+  {
+    "site": "AR",
+    "centre_row": 270,
+    "centre_col": 127,
+    "centre_ndvi": 0.2377106252611057,
+    "slstr_minute": 236.0,
+    "requested_footprints": 9,
+    "slstr_qa_footprints": 9,
+    "complete_triplets": 9,
+    "centre_ahi_qa": true,
+    "centre_tcc": 0.149,
+    "status": "eligible"
+  },
+  {
+    "site": "SDQ",
+    "centre_row": 54,
+    "centre_col": 181,
+    "centre_ndvi": 0.2234090567173161,
+    "slstr_minute": 233.0,
+    "requested_footprints": 9,
+    "slstr_qa_footprints": 9,
+    "complete_triplets": 9,
+    "centre_ahi_qa": true,
+    "centre_tcc": 0.0,
+    "status": "eligible"
+  }
+]
